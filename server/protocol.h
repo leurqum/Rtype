@@ -1,53 +1,98 @@
-#pragma once
-
-#define	SERVER_PORT				4242	// TODO: PAS ENCORE PRIS EN COMPTE
-#define STRING_SEPARATOR		':'
-#define MIN_NB_SEPARATOR_USER	2
-
-
-enum ECommandId
-{
 /*
-	ID commande			|   valeur du data dans la structure package    ||  valeurs de retour
+** protocol.h for  in /home/marche_m/workspace/tek3/cpp/r-type/Rtype/server
+** 
+** Made by marche_m (Maxime Marchès)
+** Login   <marche_m@epitech.net>
+** 
+** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
+// Last update Sun Dec 16 16:32:45 2012 marche_m (Maxime Marchès)
 */
-	CONNECT,			//	loginSTRING_SEPARATORmodDePasse				||	retourne un packet contenant un int avec les valeur decrites en dessous.
-	SET_STATUS,			//	string du status							||	ne revoie rien. / TODO: broadcast le nouveau status a tout ceux qui l'ont ds les contacts ?
-	GET_STATUS,			//  string login du User						||	retourne un packet avec la string du status
-	NEW_SUBSCRIBER,		//	newLoginSTRING_SEPARATORmotDePasse			||	returne les meme valeurs que l'ajout d'un contact.
-	START_CALL,			//	loginPeerSTRING_SEPARATORnbPort				||	retourne un packet avec la confirmation ou non de lancer un server sur le demandeur
-	ADD_CONTACT,		//  loginNewContact								||	retourne un packet avec les valeurs de retour decrites en dessous.
-	GET_CONTACTS,		//												||	retourne un packet avec tous les logins des contacts
-	END_CALL			// pour dire au server que les 2 client son plus en converse
-};
 
-/*
--------- valeurs de retour: -------- 
-ajout d'un contact:
-	0:	login du demandeur invalide
-	1:	success
-	2:	login du contact non existant
-	3:	login du contact deja dans la liste de contact de l'utilisateur
+#ifndef __PROTOCOOL__
+# define __PROTOCOOL__
 
-connexion:
-	0:	login non existant
-	1:	success
-	2:	mauvais mot de passe.
-
-nouveau compte:
-	0:	login deja pris
-	1:	success
-
-start_call:
-	0:	pas possible
-	1:	ok pour lancer le serveur sur le port donne
-
-*/
+#include <utility>
 
 typedef struct
 {
-	int		cmdId;
-	int		size;
-	void	* data;
-	
-}		s_protocol;
+  int	id;
+  int	size;
+}	package;
 
+typedef	struct
+{
+  int	nb_monstre;
+  int	nb_obstacle;
+  int	nb_ship;
+}	 monde_param;
+
+typedef	struct
+{
+  int				id;
+  int				type;
+  std::pair<float x, float y>	position;
+}	drawable;
+
+typedef	struct
+{
+  int	id;
+}	player;
+
+
+//------------------------------------------------
+
+
+typedef	struct
+{
+  int	nb_parties;
+}	parties;
+
+typedef	struct
+{
+  char	* partyName;
+  int	nb_players;
+}	party;
+
+
+//------------------------------------------------
+
+
+typedef struct
+{
+  int	response;
+}	response;
+
+
+//------------------------------------------------
+
+
+typedef	struct
+{
+  std::pair<float x, float y>	velocity
+}	move;
+
+typedef	struct
+{
+  char	* login;
+  char	* passwd;
+}	create_account;
+
+typedef	struct
+{
+  char	* login;
+  char	* passwd;
+}	login;
+
+typedef	struct
+{
+  char	* party_name;
+}	join_game;
+
+typedef	struct
+{
+  char	* party_name;
+}	create_party;
+
+
+
+#endif	// __PROTOCOOL__
