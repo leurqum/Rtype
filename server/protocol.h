@@ -13,6 +13,20 @@
 
 #include <utility>
 
+enum type_cmd
+{
+	REGISTER,
+	LOGIN,
+	GET_GAME_LIST,
+	JOIN_GAME,
+	CREATE_GAME,
+	SEND_WORLD,
+	MOVE,
+	FIRE
+};
+
+
+
 typedef struct
 {
   int	id;
