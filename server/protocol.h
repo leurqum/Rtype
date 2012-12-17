@@ -52,7 +52,7 @@ typedef	struct
 
 typedef	struct
 {
-  char	* partyName;
+  char	partyName[50];
   int	nb_players;
 }	party;
 
