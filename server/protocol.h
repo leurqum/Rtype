@@ -19,6 +19,8 @@ typedef struct
   int	size;
 }	package;
 
+//------------------------------------------------
+
 typedef	struct
 {
   int	nb_monstre;
@@ -33,11 +35,12 @@ typedef	struct
   std::pair<float x, float y>	position;
 }	drawable;
 
+/* struct WTF
 typedef	struct
 {
   int	id;
 }	player;
-
+*/
 
 //------------------------------------------------
 
@@ -73,24 +76,24 @@ typedef	struct
 
 typedef	struct
 {
-  char	* login;
-  char	* passwd;
+  char	login[50];
+  char	passwd[50];
 }	create_account;
 
 typedef	struct
 {
-  char	* login;
-  char	* passwd;
+  char	login[50];
+  char	passwd[50];
 }	login;
 
 typedef	struct
 {
-  char	* party_name;
+  char	party_name[50];
 }	join_game;
 
 typedef	struct
 {
-  char	* party_name;
+  char	party_name[50];
 }	create_party;
 
 
