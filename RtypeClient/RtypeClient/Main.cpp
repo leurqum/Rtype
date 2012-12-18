@@ -2,7 +2,7 @@
 
 int main()
 {
-	sf::RenderWindow Window(sf::VideoMode(800, 600, 32), "Coucou");
+	sf::RenderWindow Window(sf::VideoMode(800, 600, 32), "what ?");
 	while (Window.isOpen())
 	{
 		sf::Event Event;
