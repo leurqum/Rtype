@@ -63,7 +63,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="GraphicsManagerSFML.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneTitle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="GraphicsManagerSFML.h" />
+    <ClInclude Include="IGraphicsManager.h" />
+    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="IDrawable.h" />
+    <ClInclude Include="IScene.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="SceneTitle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

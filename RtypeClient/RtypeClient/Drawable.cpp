@@ -10,15 +10,15 @@ Drawable::~Drawable(void)
 {
 }
 
-	Vector2f Drawable::getPosition() const
+	Vector2<float> Drawable::getPosition() const
 	{
-		return Vector2f();
+		return Vector2<float>();
 	}
 	const std::string& Drawable::getSpriteSheetFilename() const
 	{
 		return this->spriteFilename;
 	}
-	const Rectangle& Drawable::getRectSpriteSheet() const
+	const Rectangle<int>& Drawable::getRectSpriteSheet() const
 	{
 		return *this->rectSource;
 	}

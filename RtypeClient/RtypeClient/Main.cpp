@@ -1,24 +1,14 @@
 #include <SFML/Graphics.hpp>
+#include "GraphicsManagerSFML.h"
 
 int main()
 {
-	sf::RenderWindow Window(sf::VideoMode(800, 600, 32), "what ?");
-	while (Window.isOpen())
+	IGraphicsManager* graphManager = GraphicsManagerSFML::getInstance();
+
+	bool isRunning = true;
+	while (isRunning)
 	{
-		sf::Event Event;
-		while (Window.pollEvent(Event))
-		{
-			switch (Event.type)
-			{
-			case sf::Event::Closed:
-				Window.close();
-				break;
-			default:
-				break;
-			}
-		}
-		Window.clear(sf::Color(0, 255, 255));
-		Window.display();
+		graphManager->draw();
 	}
 	return 0;
 }

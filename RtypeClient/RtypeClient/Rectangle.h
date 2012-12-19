@@ -1,10 +1,13 @@
 #pragma once
+
+#include "Vector2.h"
+
+template<typename T>
 struct Rectangle
 {
 public:
-	float positionX;
-	float positionY;
-	float width;
-	float height;
+	Vector2<T> position;
+	T width;
+	T height;
 };
 
