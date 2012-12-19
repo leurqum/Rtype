@@ -18,4 +18,4 @@ add_executable (
 	       ${src_files}
 )
 
-target_link_libraries (rtypeClient sfml)
+target_link_libraries (rtypeClient sfml-window sfml-graphics)

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <list>
 #include <map>
 
@@ -10,7 +11,7 @@ class Drawable :
 private:
 	Rectangle<int>* rectSource;
 	std::string spriteFilename;
-	std::map<int, std::list<Rectangle<int>>> animationList;
+	std::map<int, std::list<Rectangle<int> > > animationList;
 public:
 
 	Drawable(void);
