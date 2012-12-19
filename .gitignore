@@ -11,3 +11,8 @@
 *.lai
 *.la
 *.a
+
+#user specific CMake related files
+/RtypeClient/CMakeFiles
+/RtypeClient/cmake_install.cmake
+/RtypeClient/Makefile
