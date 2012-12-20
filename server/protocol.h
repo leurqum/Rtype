@@ -75,6 +75,14 @@ typedef	struct
 
 //------------------------------------------------
 
+enum reponse_type
+{
+	OK,
+	INVALID_LOGIN,
+	INVALID_PASSWORD,
+	INVALID_GAME_NAME,
+	CANT_JOIN_GAME
+};
 
 typedef struct
 {
