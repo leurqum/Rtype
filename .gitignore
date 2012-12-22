@@ -1,3 +1,7 @@
+# user backups or automatic saves
+*~
+\#*\#
+
 # Compiled Object files
 *.slo
 *.lo
@@ -12,9 +16,20 @@
 *.la
 *.a
 
-#user specific CMake related files
+#user specific CMake related files :
 /RtypeClient/CMakeFiles
-/RtypeClient/bin
 /RtypeClient/cmake_install.cmake*
 /RtypeClient/Makefile
 /RtypeClient/CMakeCache.txt*
+/RtypeClient/bin
+
+#user specific visual studio 2012 files :
+/RtypeClient/Debug
+/RtypeClient/Release
+/RtypeClient/Win32
+*.vcxproj*
+*.v11*
+*.opensdf*
+*.sdf*
+*.dir
+*.sln
