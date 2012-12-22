@@ -18,7 +18,7 @@ public:
 
 	static GraphicsManagerSFML* getInstance();
 	template<typename T>
-	static const sf::Rect<T>& rectangleToSFMLRect(const Rectangle<T>&);
+	static const sf::Rect<T> rectangleToSFMLRect(const Rectangle<T>&);
 
 	const sf::Window& getWindow() const;
 private:

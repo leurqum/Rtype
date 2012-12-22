@@ -51,7 +51,7 @@ GraphicsManagerSFML* GraphicsManagerSFML::getInstance()
 }
 
 template<typename T>
-const sf::Rect<T>& GraphicsManagerSFML::rectangleToSFMLRect(const Rectangle<T>& r)
+const sf::Rect<T> GraphicsManagerSFML::rectangleToSFMLRect(const Rectangle<T>& r)
 {
 	sf::Rect<T> r_sfml;
 	r_sfml.height = r.height;
