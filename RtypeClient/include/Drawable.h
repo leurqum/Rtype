@@ -4,17 +4,22 @@
 #include <map>
 
 #include "IDrawable.h"
+#include "SpriteSheet.h"
+
+#include "../../protocol.h"
 
 class Drawable :
 	public IDrawable
 {
 private:
-	Rectangle<int>* rectSource;
-	std::string spriteFilename;
-	std::map<int, std::list<Rectangle<int> > > animationList;
+	int animationId;
+	int animationPosition;
+	Vector2<float> position;
+
+	const SpriteSheet& spriteSheet;
 public:
 
-	Drawable(void);
+	Drawable(const SpriteSheet&);
 	~Drawable(void);
 
 	Vector2<float> getPosition() const;

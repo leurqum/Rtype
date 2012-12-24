@@ -14,6 +14,7 @@ public:
 	UsersManager(std::string const & file);
 	UsersManager();
 	~UsersManager(void);
+	// WTF: s_protocol ? what is it ?
 	s_protocol	* executeCmd(s_protocol * package, ISocket * sock);
 
 private:
