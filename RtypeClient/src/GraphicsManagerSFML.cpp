@@ -8,8 +8,14 @@ GraphicsManagerSFML::GraphicsManagerSFML(void) : window(sf::VideoMode(800, 600, 
 
 	std::map<int, std::list<Rectangle<int> > > animList;
 	std::list<Rectangle<int> > firstAnim;
-	firstAnim.push_back(Rectangle<int>(30, 15));
-	firstAnim.push_back(Rectangle<int>(30, 15, Vector2<int>(30, 0)));
+	firstAnim.push_back(Rectangle<int>(33, 17));
+	firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 0)));
+	firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 0)));
+	firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 0)));
+	firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(132, 0)));
+	firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 0)));
+	firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 0)));
+	firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 0)));
 	spriteSheets.front()->animations[0] = firstAnim;
 }
 
@@ -28,18 +34,34 @@ void GraphicsManagerSFML::addDrawableToScene(const IDrawable& drawable)
 }
 void GraphicsManagerSFML::draw()
 {
+	// FIXME: put that in a scene.
 	window.clear(sf::Color());
 	for( std::pair<int, Drawable*> dpair : drawables)
 	{
-		window.draw(sf::Sprite(*getTextureFromFilename(dpair.second->getSpriteSheetFilename()), GraphicsManagerSFML::rectangleToSFMLRect( dpair.second->getRectSpriteSheet())));		
+		sf::Sprite s(*getTextureFromFilename(dpair.second->getSpriteSheetFilename()),
+			GraphicsManagerSFML::rectangleToSFMLRect( dpair.second->getRectSpriteSheet()));
+		std::cout << dpair.second->getPosition().x << std::endl;
+		s.setPosition(dpair.second->getPosition().x, dpair.second->getPosition().y);
+		window.draw(s);
 	}
 	window.display();
+}
+
+void GraphicsManagerSFML::update(float milliseconds)
+{
+	for( std::pair<int, Drawable*> dpair : drawables)
+	{
+		// FIXME: just update the fkin scenes
+		dpair.second->update(milliseconds);
+	}
 }
 
 IDrawable* GraphicsManagerSFML::createDrawableFrom( const Protocol::drawable& d )
 {
 	Drawable* ret = new Drawable(*spriteSheets.front());
 
+	std::cout << d.xPosition << std::endl;
+	ret->setPosition(d.xPosition, d.yPosition);
 	drawables[d.id] = ret;
 	return ret;
 }
@@ -66,7 +88,7 @@ const sf::Rect<T> GraphicsManagerSFML::rectangleToSFMLRect(const Rectangle<T>& r
 	r_sfml.height = r.height;
 	r_sfml.width = r.width;
 	r_sfml.left = r.position.x;
-	r_sfml.left = r.position.y;
+	r_sfml.top = r.position.y;
 	return r_sfml;
 }
 

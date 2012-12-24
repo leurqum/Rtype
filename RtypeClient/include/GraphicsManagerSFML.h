@@ -15,6 +15,7 @@ public:
 	virtual void reset();
 	virtual void addDrawableToScene(const IDrawable& drawable);
 	virtual void draw();
+	virtual void update(float);
 	virtual IDrawable* createDrawableFrom( const Protocol::drawable& d );
 	virtual void deleteDrawable(const IDrawable*);
 
