@@ -7,6 +7,11 @@ public:
 	{
 
 	}
+
+	Vector2(const Vector2<T>& v) : x(v.x), y(v.y)
+	{
+
+	}
 	T x;
 	T y;
 };

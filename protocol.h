@@ -59,8 +59,8 @@ typedef	struct
 {
   int  id;
   int  type;
-  int  xPosition;
-  int  yPosition;
+  float  xPosition;
+  float  yPosition;
 }	drawable;
 
 /* struct WTF
