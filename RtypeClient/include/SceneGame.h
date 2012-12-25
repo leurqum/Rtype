@@ -2,7 +2,7 @@
 
 #include "IScene.h"
 #include "SceneManager.h"
-#include "../protocol.h"
+#include "../../protocol.h"
 
 class SceneGame :
 	public IScene

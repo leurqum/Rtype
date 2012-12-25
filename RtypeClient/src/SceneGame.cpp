@@ -10,7 +10,6 @@ SceneGame::SceneGame(void)
 	d.yPosition = 123;
 	IDrawable* drawable = SceneManager::getInstance()->getGraphicsManager()->createDrawableFrom(d);
 	ship = drawable;
-
 }
 
 
