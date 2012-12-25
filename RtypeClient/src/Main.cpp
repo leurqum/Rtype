@@ -1,24 +1,20 @@
 #include <SFML/Graphics.hpp>
 #include "GraphicsManagerSFML.h"
+#include "SceneManager.h"
+#include "SceneGame.h"
 
 int main()
 {
-	GraphicsManagerSFML* graphManager = GraphicsManagerSFML::getInstance();
+	SceneManager* sm = SceneManager::getInstance();
+
+	sm->changeScene(new SceneGame());
 
 	bool isRunning = true;
-	Protocol::drawable d;
-	d.id = 0;
-	d.type = Protocol::SHIP;
-	d.xPosition = 123;
-	d.yPosition = 123;
-
-	IDrawable* drawable = graphManager->createDrawableFrom(d);
-	
 	while (isRunning)
 	{
 		// FIXME: use real milliseconds..
-		graphManager->update(1);
-		graphManager->draw();
+		sm->update(1);
+		sm->draw();
 	}
 	return 0;
 }

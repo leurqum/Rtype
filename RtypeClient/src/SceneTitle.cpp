@@ -12,7 +12,7 @@ SceneTitle::~SceneTitle(void)
 
 IScene* SceneTitle::update(float elapsedTime)
 {
-	return 0;
+	return this;
 }
 
 void SceneTitle::draw()

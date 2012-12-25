@@ -1,4 +1,9 @@
 #pragma once
+
+#include "IScene.h"
+#include "IGraphicsManager.h"
+#include "GraphicsManagerSFML.h" // FIXME: That's hard coded... :(
+
 class SceneManager
 {
 public:
@@ -7,11 +12,15 @@ public:
 
 	//getInputManager();
 	void draw();
-	void update();
-	void changeScene();
+	void update(float milliseconds);
+	void changeScene(IScene* newScene);
+	IScene* getCurrentScene();
+	IGraphicsManager* getGraphicsManager();
 private:
+	SceneManager();
 	static SceneManager* instance;
-
-	SceneManager(void);
+	
+	IScene* current;
+	IGraphicsManager* graphicManager;
 };
 

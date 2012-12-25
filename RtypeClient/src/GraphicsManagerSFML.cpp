@@ -3,6 +3,7 @@
 
 GraphicsManagerSFML::GraphicsManagerSFML(void) : window(sf::VideoMode(800, 600, 32), "what ?")
 {
+	// TODO: do more SpriteSheets
 	spriteSheets.push_back(new SpriteSheet());
 	spriteSheets.front()->filename = "sprites/r-typesheet42.gif";
 
@@ -28,10 +29,7 @@ void GraphicsManagerSFML::reset()
 {
 
 }
-void GraphicsManagerSFML::addDrawableToScene(const IDrawable& drawable)
-{
-	window.draw(sf::Sprite(*getTextureFromFilename(drawable.getSpriteSheetFilename()), GraphicsManagerSFML::rectangleToSFMLRect( drawable.getRectSpriteSheet())));
-}
+
 void GraphicsManagerSFML::draw()
 {
 	// FIXME: put that in a scene.
@@ -58,6 +56,7 @@ void GraphicsManagerSFML::update(float milliseconds)
 
 IDrawable* GraphicsManagerSFML::createDrawableFrom( const Protocol::drawable& d )
 {
+	// TODO: use adapted spritesheet depending on type
 	Drawable* ret = new Drawable(*spriteSheets.front());
 
 	std::cout << d.xPosition << std::endl;
@@ -68,17 +67,6 @@ IDrawable* GraphicsManagerSFML::createDrawableFrom( const Protocol::drawable& d 
 void GraphicsManagerSFML::deleteDrawable(const IDrawable*)
 {
 
-}
-
-GraphicsManagerSFML* GraphicsManagerSFML::_instance = nullptr;
-
-GraphicsManagerSFML* GraphicsManagerSFML::getInstance()
-{
-	if (_instance == nullptr)
-	{
-		_instance = new GraphicsManagerSFML();
-	}
-	return _instance;
 }
 
 template<typename T>
@@ -102,6 +90,7 @@ const sf::Texture* GraphicsManagerSFML::getTextureFromFilename(const std::string
 	if (textures[filename] == nullptr)
 	{
 		textures[filename] = new sf::Texture();
+		// FIXME: use some log like feature.
 		std::cout << "Tying to open: " << filename << std::endl;
 		try {
 			std::cout << "Trying..." << std::endl;
