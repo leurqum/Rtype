@@ -37,14 +37,15 @@ bool Drawable::animate(int idAnimation)
 }
 void Drawable::update(float elapsedTime)
 {
-	static float timeBeforeNextFrame = 0; // we put 0 here to avoid redundant same values. (using a define/const would be great.)
-	timeBeforeNextFrame -= elapsedTime;
-	if (timeBeforeNextFrame <= 0)
-	{
-		// update image considering current animation.
-		currentRect++;
-		if (currentRect == spriteSheet.animations.at(animationId).end())
-		currentRect = spriteSheet.animations.at(animationId).begin();
-		timeBeforeNextFrame = 250; // FIXME: arbitrary rate is 4 img per second, based on tests with FAKED time ! 
-	}
+  static float timeBeforeNextFrame = 0; // we put 0 here to avoid redundant same values. (using a define/const would be great.)
+  timeBeforeNextFrame -= elapsedTime;
+  if (timeBeforeNextFrame <= 0)
+    {
+      std::cout << "NEXT FRAME !" << std::endl;
+      // update image considering current animation.
+      currentRect++;
+      if (currentRect == spriteSheet.animations.at(animationId).end())
+	currentRect = spriteSheet.animations.at(animationId).begin();
+      timeBeforeNextFrame = 250; // FIXME: arbitrary rate is 4 img per second, based on tests with FAKED time ! 
+    }
 }

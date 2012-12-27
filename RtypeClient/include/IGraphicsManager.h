@@ -4,7 +4,7 @@
 #include <map>
 
 #include "IDrawable.h"
-#include "../../Protocol.h"
+#include "../../protocol.h"
 
 class IGraphicsManager
 {

@@ -38,7 +38,6 @@ void GraphicsManagerSFML::draw()
 	{
 		sf::Sprite s(*getTextureFromFilename(dpair.second->getSpriteSheetFilename()),
 			GraphicsManagerSFML::rectangleToSFMLRect( dpair.second->getRectSpriteSheet()));
-		std::cout << dpair.second->getPosition().x << std::endl;
 		s.setPosition(dpair.second->getPosition().x, dpair.second->getPosition().y);
 		window.draw(s);
 	}
