@@ -62,7 +62,7 @@ IDrawable* GraphicsManagerSFML::updateDrawableFrom( const Protocol::drawable& d 
     }
   else
     {
-  // TODO: use adapted spritesheet depending on type
+      // TODO: use adapted spritesheet depending on type
       Drawable* ret = new Drawable(*spriteSheets.front());
       
       ret->setPosition(d.xPosition, d.yPosition);
