@@ -5,6 +5,7 @@ Drawable::Drawable()
   : animationId(0), updater(nullptr)
 {
   currentRect = nullptr;
+  spriteSheet = nullptr; // fuck this shit, never forget to initiate the fkin variables..
 }
 
 
@@ -46,22 +47,19 @@ void Drawable::update(float elapsedTime)
     {
       // TODO: seek spritesheet ?
       if (spriteSheet == nullptr)
-	spriteSheet = SceneManager::getInstance()->getGraphicsManager()->getSpriteSheetFor(updater->type);
+	spriteSheet = SpriteSheetFactory::getInstance()->getSpriteSheet(0); // FIXME: 0 means type
       // TODO: animate properly depending on whatever.
-      // NOTE: in case of ship, i
       this->animate(1);
-
       if (currentRect == nullptr)
 	currentRect = new std::list< Rectangle<int> >::const_iterator(spriteSheet->getAnimations().at(animationId).begin());
       this->setPosition(updater->xPosition, updater->yPosition);
-
       delete updater;
       updater = nullptr;
     }
   timeBeforeNextFrame -= elapsedTime;
   if (timeBeforeNextFrame <= 0)
     {
-      std::cout << "NEXT FRAME !" << std::endl;
+      // std::cout << "NEXT FRAME !" << std::endl;
       // update image considering current animation.
       (*currentRect)++;
       if (*currentRect == spriteSheet->getAnimations().at(animationId).end())

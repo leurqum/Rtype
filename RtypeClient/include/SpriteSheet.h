@@ -11,7 +11,7 @@ class SpriteSheet
  public:
   SpriteSheet(void);
   ~SpriteSheet(void);
-
+  
   void setFilename(const std::string&);
   const std::string& getFilename() const;
   

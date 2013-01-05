@@ -18,5 +18,5 @@ class IGraphicsManager
   virtual void update(float) = 0;
   virtual IDrawable* updateDrawableFrom(IDrawable* old, const Protocol::drawable& d) = 0;
   virtual void deleteDrawable(const IDrawable*) = 0;
-  virtual const SpriteSheet* getSpriteSheetFor(int drawableType) const = 0;
+  /* virtual const SpriteSheet* getSpriteSheetFor(int drawableType) const = 0; */
 };

@@ -5,6 +5,8 @@
 #include "IGraphicsManager.h"
 #include "Drawable.h"
 #include "SpriteSheet.h"
+#include "SpriteSheetFactory.h"
+
 
 class Drawable;
 
@@ -21,7 +23,6 @@ public IGraphicsManager
   virtual void update(float);
   virtual IDrawable* updateDrawableFrom(IDrawable* old, const Protocol::drawable& d );
   virtual void deleteDrawable(const IDrawable*);
-  virtual const SpriteSheet* getSpriteSheetFor(int drawableType) const;
   
 
   template<typename T>
@@ -33,8 +34,6 @@ public IGraphicsManager
   sf::RenderWindow window;
   std::list<Drawable*> drawables; // list of created drawables
 
-  // This class creates and deletes these (factory)
   std::map<std::string, sf::Texture*> textures;
-  std::list<SpriteSheet*> spriteSheets;
 };
 

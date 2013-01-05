@@ -17,7 +17,7 @@ int main()
       // FIXME: use real milliseconds..
       if (timer.getElapsedTime().asMilliseconds() > 166) // around 60 updates and draw per second
 	{
-	  std::cout << "update" << std::endl;
+	  // std::cout << "update" << std::endl;
 	  sm->update(timer.getElapsedTime().asMilliseconds());
 	  timer.restart();
 	  sm->getGraphicsManager()->clear();

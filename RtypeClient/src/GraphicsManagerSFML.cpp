@@ -2,33 +2,6 @@
 
 GraphicsManagerSFML::GraphicsManagerSFML(void) : window(sf::VideoMode(800, 600, 32), "what ?")
 {
-  // TODO: do more SpriteSheets
-  spriteSheets.push_back(new SpriteSheet());
-  spriteSheets.front()->setFilename("sprites/r-typesheet42.gif");
-
-  std::map<int, std::list<Rectangle<int> > > animList;
-  std::list<Rectangle<int> > singleAnim;
-  singleAnim.push_back(Rectangle<int>(33, 17));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 0)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 0)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 0)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(132, 0)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 0))); // FIXME: would be more optimized to avoid hard coded loops (like set an option to roll back :D )
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 0)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 0)));
-  animList[0] = singleAnim;
-
-  singleAnim.clear();
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(0, 17)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 17)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 17)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 17)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(132, 17)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 17)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 17)));
-  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 17)));
-  animList[1] = singleAnim;
-  spriteSheets.front()->setAnimations(animList);
 }
 
 
@@ -67,7 +40,7 @@ void GraphicsManagerSFML::display()
 
 void GraphicsManagerSFML::update(float milliseconds)
 {
-  // TODO: set the drawables to a non updated state. -> then we'll have to delete them if they havn't been updated.
+  // TODO: set the drawables to a non updated state. -> then we'll have to delete them if they havn't been updated. (do this in drawable->update(miliseconds); )
 }
 
 IDrawable* GraphicsManagerSFML::updateDrawableFrom(IDrawable* old, const Protocol::drawable& d )
@@ -82,10 +55,6 @@ IDrawable* GraphicsManagerSFML::updateDrawableFrom(IDrawable* old, const Protoco
   else
     {
 
-      // TODO: use adapted spritesheet depending on type
-      // Drawable* ret = new Drawable(*spriteSheets.front());
-      
-      // ret->setPosition(d.xPosition, d.yPosition);
       Drawable* ret = new Drawable();
       ret->setUpdate(d);
 
@@ -98,15 +67,6 @@ IDrawable* GraphicsManagerSFML::updateDrawableFrom(IDrawable* old, const Protoco
 void GraphicsManagerSFML::deleteDrawable(const IDrawable*)
 {
 
-}
-
-const SpriteSheet* GraphicsManagerSFML::getSpriteSheetFor(int drawableType) const
-{
-  if (drawableType == Protocol::SHIP)
-    {
-      return spriteSheets.front(); // FIXME: that won't stay the front() forever...
-    }
-  return nullptr; // unknown / not implemented type.
 }
 
 template<typename T>

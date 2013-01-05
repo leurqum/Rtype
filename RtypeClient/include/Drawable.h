@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "IDrawable.h"
 #include "SpriteSheet.h"
+#include "SpriteSheetFactory.h"
 
 #include "../../protocol.h"
 
