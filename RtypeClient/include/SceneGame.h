@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IScene.h"
+#include "IDrawable.h"
 #include "SceneManager.h"
 #include "../../protocol.h"
 
@@ -17,6 +18,6 @@ public:
 	void setToBackground();
 	void setToForeground();
 private:
-	IDrawable* ship;
+	IDrawable* ship[4];
 };
 

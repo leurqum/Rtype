@@ -20,7 +20,9 @@ int main()
 	  std::cout << "update" << std::endl;
 	  sm->update(timer.getElapsedTime().asMilliseconds());
 	  timer.restart();
+	  sm->getGraphicsManager()->clear();
 	  sm->draw();
+	  sm->getGraphicsManager()->display();
 	}
     }
   return 0;
