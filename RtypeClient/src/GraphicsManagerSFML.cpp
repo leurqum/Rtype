@@ -4,19 +4,31 @@ GraphicsManagerSFML::GraphicsManagerSFML(void) : window(sf::VideoMode(800, 600, 
 {
   // TODO: do more SpriteSheets
   spriteSheets.push_back(new SpriteSheet());
-  spriteSheets.front()->filename = "sprites/r-typesheet42.gif";
+  spriteSheets.front()->setFilename("sprites/r-typesheet42.gif");
 
   std::map<int, std::list<Rectangle<int> > > animList;
-  std::list<Rectangle<int> > firstAnim;
-  firstAnim.push_back(Rectangle<int>(33, 17));
-  firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 0)));
-  firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 0)));
-  firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 0)));
-  firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(132, 0)));
-  firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 0)));
-  firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 0)));
-  firstAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 0)));
-  spriteSheets.front()->animations[0] = firstAnim;
+  std::list<Rectangle<int> > singleAnim;
+  singleAnim.push_back(Rectangle<int>(33, 17));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 0)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 0)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 0)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(132, 0)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 0))); // FIXME: would be more optimized to avoid hard coded loops (like set an option to roll back :D )
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 0)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 0)));
+  animList[0] = singleAnim;
+
+  singleAnim.clear();
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(0, 17)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 17)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 17)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 17)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(132, 17)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(99, 17)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(66, 17)));
+  singleAnim.push_back(Rectangle<int>(33, 17, Vector2<int>(33, 17)));
+  animList[1] = singleAnim;
+  spriteSheets.front()->setAnimations(animList);
 }
 
 
@@ -37,9 +49,13 @@ void GraphicsManagerSFML::clear()
 void GraphicsManagerSFML::draw(IDrawable* d)
 {
   // FIXME: store the texture with filename as id.
-  sf::Sprite s(*getTextureFromFilename(d->getSpriteSheetFilename()),
+  const SpriteSheet* ss = d->getSpriteSheet();
+  if (ss == nullptr)
+    return ;
+  
+  sf::Sprite s(*getTextureFromFilename(ss->getFilename()),
 	       GraphicsManagerSFML::rectangleToSFMLRect( d->getRectSpriteSheet()));
-  s.setPosition(d->getPosition().x, d->getPosition().y);
+s.setPosition(d->getPosition().x, d->getPosition().y);
   window.draw(s);
 }
 
@@ -54,26 +70,43 @@ void GraphicsManagerSFML::update(float milliseconds)
   // TODO: set the drawables to a non updated state. -> then we'll have to delete them if they havn't been updated.
 }
 
-IDrawable* GraphicsManagerSFML::updateDrawableFrom( const Protocol::drawable& d )
+IDrawable* GraphicsManagerSFML::updateDrawableFrom(IDrawable* old, const Protocol::drawable& d )
 {
-  if (drawables[d.id] != nullptr)
+  if (old != nullptr)
     {
-      drawables[d.id]->setPosition(d.xPosition, d.yPosition);
+      // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
+      // NOTE: we assume the programmer only uses one GraphicsManager, then he should only create IDrawable from this function, then all are Drawable: we can cast it like dirty pigs :D )
+      ((Drawable*)old)->setUpdate(d);
+      return old;
     }
   else
     {
+
       // TODO: use adapted spritesheet depending on type
-      Drawable* ret = new Drawable(*spriteSheets.front());
+      // Drawable* ret = new Drawable(*spriteSheets.front());
       
-      ret->setPosition(d.xPosition, d.yPosition);
-      drawables[d.id] = ret;
+      // ret->setPosition(d.xPosition, d.yPosition);
+      Drawable* ret = new Drawable();
+      ret->setUpdate(d);
+
+      drawables.push_back(ret);
+      return ret;
     }
-  return drawables[d.id];
+  return nullptr; // bah.
 }
 
 void GraphicsManagerSFML::deleteDrawable(const IDrawable*)
 {
 
+}
+
+const SpriteSheet* GraphicsManagerSFML::getSpriteSheetFor(int drawableType) const
+{
+  if (drawableType == Protocol::SHIP)
+    {
+      return spriteSheets.front(); // FIXME: that won't stay the front() forever...
+    }
+  return nullptr; // unknown / not implemented type.
 }
 
 template<typename T>

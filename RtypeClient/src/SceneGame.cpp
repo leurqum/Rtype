@@ -14,7 +14,7 @@ SceneGame::~SceneGame(void)
 
 IScene* SceneGame::update(float elapsedTime)
 {
-  // TODO: update background scenes ?
+  // TODO: (not here but in SceneHoverWhatever) update background scenes ?
 	
   // TODO: update the scene depending on network data received.
   Protocol::drawable d;
@@ -31,7 +31,7 @@ IScene* SceneGame::update(float elapsedTime)
     incr = 1;
   d.yPosition = 123;
 
-  ship[0] = SceneManager::getInstance()->getGraphicsManager()->updateDrawableFrom(d);
+  ship[0] = SceneManager::getInstance()->getGraphicsManager()->updateDrawableFrom(ship[0], d);
 
   // TODO: insert input managing code here.
 

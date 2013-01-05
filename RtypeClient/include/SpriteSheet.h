@@ -8,10 +8,17 @@
 
 class SpriteSheet
 {
-public:
-	std::string filename;
-	std::map<int, std::list<Rectangle<int> > > animations;
+ public:
+  SpriteSheet(void);
+  ~SpriteSheet(void);
 
-	SpriteSheet(void);
-	~SpriteSheet(void);
+  void setFilename(const std::string&);
+  const std::string& getFilename() const;
+  
+  void setAnimations(const std::map<int, std::list<Rectangle<int> > >&);  
+  const std::map<int, std::list<Rectangle<int> > >& getAnimations() const;
+ private:
+  std::string filename;
+  std::map<int, std::list<Rectangle<int> > > animations;
+
 };

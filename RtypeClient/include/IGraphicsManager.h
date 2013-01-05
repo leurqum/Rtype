@@ -5,6 +5,8 @@
 
 #include "IDrawable.h"
 #include "../../protocol.h"
+#include "SpriteSheet.h"
+
 
 class IGraphicsManager
 {
@@ -14,6 +16,7 @@ class IGraphicsManager
   virtual void draw(IDrawable*) = 0;
   virtual void display() = 0;
   virtual void update(float) = 0;
-  virtual IDrawable* updateDrawableFrom( const Protocol::drawable& d) = 0;
+  virtual IDrawable* updateDrawableFrom(IDrawable* old, const Protocol::drawable& d) = 0;
   virtual void deleteDrawable(const IDrawable*) = 0;
+  virtual const SpriteSheet* getSpriteSheetFor(int drawableType) const = 0;
 };
