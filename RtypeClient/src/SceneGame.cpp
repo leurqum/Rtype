@@ -20,14 +20,14 @@ IScene* SceneGame::update(float elapsedTime)
   Protocol::drawable d;
   d.id = 0;
   d.type = Protocol::SHIP;
-  static int x = 0;
+  static int x = 490;
   static int incr = 1;
 
   d.xPosition = x;
   x += incr;
-  if (x > 10)
+  if (x > 500)
     incr = -1;
-  if (x <= 0)
+  if (x <= 490)
     incr = 1;
   d.yPosition = 123;
 

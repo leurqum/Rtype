@@ -32,6 +32,7 @@ public IGraphicsManager
   const sf::Texture* getTextureFromFilename(const std::string& filename);
  private:
   sf::RenderWindow window;
+  sf::View view;
   std::list<Drawable*> drawables; // list of created drawables
 
   std::map<std::string, sf::Texture*> textures;

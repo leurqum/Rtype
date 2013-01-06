@@ -12,6 +12,8 @@
 
 #include "Rectangle.h"
 
+// TODO: rename in "RemoteDrawable" or smth like that.
+
 class Drawable :
 	public IDrawable
 {

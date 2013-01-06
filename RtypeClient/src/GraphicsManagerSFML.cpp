@@ -2,6 +2,7 @@
 
 GraphicsManagerSFML::GraphicsManagerSFML(void) : window(sf::VideoMode(800, 600, 32), "what ?")
 {
+  reset();
 }
 
 
@@ -11,7 +12,14 @@ GraphicsManagerSFML::~GraphicsManagerSFML(void)
 
 void GraphicsManagerSFML::reset()
 {
-
+  // Initialize the view to a rectangle located at (100, 100) and with a size of 400x200
+  view.reset(sf::FloatRect(0, 0, 800, 600));
+  // Rotate it by 45 degrees
+  // view.rotate(45);
+  // Apply it
+  window.setView(view);
+  // TODO: the view has to follow the game
+  // BONUS: we could play with the view (shake) if we take dmg :D
 }
 
 void GraphicsManagerSFML::clear()
@@ -21,7 +29,6 @@ void GraphicsManagerSFML::clear()
 
 void GraphicsManagerSFML::draw(IDrawable* d)
 {
-  // FIXME: store the texture with filename as id.
   const SpriteSheet* ss = d->getSpriteSheet();
   if (ss == nullptr)
     return ;
@@ -91,15 +98,15 @@ const sf::Texture* GraphicsManagerSFML::getTextureFromFilename(const std::string
     {
       textures[filename] = new sf::Texture();
       // FIXME: use some log like feature.
-      std::cout << "Tying to open: " << filename << std::endl;
+      // std::cout << "Tying to open: " << filename << std::endl;
       try {
-	std::cout << "Trying..." << std::endl;
+	// std::cout << "Trying..." << std::endl;
 	std::cout << textures[filename]->loadFromFile(filename) << std::endl;
-	std::cout << "done..." << std::endl;
+	// std::cout << "done..." << std::endl;
       }
       catch(std::exception e)
 	{
-	  std::cout << "holy shit couldn't open: " << filename << std::endl;
+	  std::cerr << "holy shit couldn't open: " << filename << std::endl;
 	}
     }
   return textures[filename];
