@@ -6,8 +6,11 @@ include_directories ("include/")
 
 set(EXECUTABLE_OUTPUT_PATH bin)
 
-add_definitions(-std=c++11) 
-add_definitions(-Wall -Wextra -g) 
+# Set default compile flags for GCC
+if(CMAKE_COMPILER_IS_GNUCXX)
+    message(STATUS "GCC detected, adding compile flags")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic -Wall -Wextra")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 file (
      GLOB_RECURSE
