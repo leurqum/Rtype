@@ -1,7 +1,8 @@
 #pragma once
 
 #include "IScene.h"
-#include "IDrawable.h"
+
+#include "DrawableRemote.h"
 #include "SceneManager.h"
 #include "../../protocol.h"
 
@@ -18,6 +19,6 @@ public:
 	void setToBackground();
 	void setToForeground();
 private:
-	IDrawable* ship[4];
+	DrawableRemote* ship[4]; // these are drawables updatable from a protocol::drawable.
 };
 

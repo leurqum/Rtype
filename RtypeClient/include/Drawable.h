@@ -3,7 +3,7 @@
 #include <list>
 #include <map>
 
-#include "SceneManager.h"
+
 #include "IDrawable.h"
 #include "SpriteSheet.h"
 #include "SpriteSheetFactory.h"
@@ -17,25 +17,22 @@
 class Drawable :
 	public IDrawable
 {
-private:
+protected:
 	SpriteSheet::Iterator* rectIterator;
 	Vector2<float> position;
-
 	const SpriteSheet* spriteSheet;
-	Protocol::drawable* updater;
+
 public:
 
 	Drawable();
 	~Drawable(void);
 
 	Vector2<float> getPosition() const;
-	void setPosition(float x, float y);
-	const SpriteSheet* getSpriteSheet() const;
-	Rectangle<int> getRectSpriteSheet() const;
-	bool animate(int idAnimation);
-	void update(float elapsedTime);
-
-	// The next update will take d as parameter, and we assume it has been received just after last update. (actually, there's a fair chance that we got it some time later, but with the network delay, if we simulate its movement, it would improve the instantaneity, but decrease rightfulness / we might see some jumping assets on extreme ping (high or low))
-	void setUpdate(const Protocol::drawable& d);
+	virtual void setPosition(float x, float y);
+	virtual const SpriteSheet* getSpriteSheet() const;
+	virtual void setSpriteSheet(const SpriteSheet*);
+	virtual Rectangle<int> getRectSpriteSheet() const;
+	virtual bool animate(int idAnimation);
+	virtual void update(float elapsedTime);
 };
 

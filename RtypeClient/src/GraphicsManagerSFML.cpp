@@ -50,19 +50,18 @@ void GraphicsManagerSFML::update(float milliseconds)
   // TODO: set the drawables to a non updated state. -> then we'll have to delete them if they havn't been updated. (do this in drawable->update(miliseconds); )
 }
 
-IDrawable* GraphicsManagerSFML::updateDrawableFrom(IDrawable* old, const Protocol::drawable& d )
+DrawableRemote* GraphicsManagerSFML::updateDrawableFrom(DrawableRemote* old, const Protocol::drawable& d )
 {
   if (old != nullptr)
     {
       // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
-      // NOTE: we assume the programmer only uses one GraphicsManager, then he should only create IDrawable from this function, then all are Drawable: we can cast it like dirty pigs :D )
-      ((Drawable*)old)->setUpdate(d);
+      old->setUpdate(d);
       return old;
     }
   else
     {
 
-      Drawable* ret = new Drawable();
+      DrawableRemote* ret = new DrawableRemote();
       ret->setUpdate(d);
 
       drawables.push_back(ret);

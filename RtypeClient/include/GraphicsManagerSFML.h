@@ -21,7 +21,7 @@ public IGraphicsManager
   virtual void draw(IDrawable*);
   virtual void display();
   virtual void update(float);
-  virtual IDrawable* updateDrawableFrom(IDrawable* old, const Protocol::drawable& d );
+  virtual DrawableRemote* updateDrawableFrom(DrawableRemote* old, const Protocol::drawable& d );
   virtual void deleteDrawable(const IDrawable*);
   
 
