@@ -2,9 +2,9 @@
 
 
 Drawable::Drawable()
-  : animationId(0), updater(nullptr)
+  : updater(nullptr)
 {
-  currentRect = nullptr;
+  rectIterator = nullptr;
   spriteSheet = nullptr; // fuck this shit, never forget to initiate the fkin variables..
 }
 
@@ -28,13 +28,15 @@ const SpriteSheet* Drawable::getSpriteSheet() const
 {
   return this->spriteSheet;
 }
-const Rectangle<int>& Drawable::getRectSpriteSheet() const
+
+Rectangle<int> Drawable::getRectSpriteSheet() const
 {
-  return *(*currentRect);
+  return rectIterator->getValue();
 }
 bool Drawable::animate(int idAnimation)
 {
-  animationId = idAnimation; // FIXME: check if the idAnimation is supported by current SpriteSheet
+  // FIXME: check if it's not already doing this animation.
+  rectIterator->setAnimation(idAnimation);
   return true;
 }
 
@@ -45,28 +47,27 @@ void Drawable::update(float elapsedTime)
   // TODO: some Drawable might be interested in deleting themselves if they havn't been updated.
   if (updater != nullptr)
     {
-      // TODO: seek spritesheet ?
       if (spriteSheet == nullptr)
 	spriteSheet = SpriteSheetFactory::getInstance()->getSpriteSheet(0); // FIXME: 0 means type
-      // TODO: animate properly depending on whatever.
-      this->animate(1);
-      if (currentRect == nullptr)
-	currentRect = new std::list< Rectangle<int> >::const_iterator(spriteSheet->getAnimations().at(animationId).begin());
+      if (rectIterator == nullptr)
+	{
+	  rectIterator = new SpriteSheet::Iterator(*spriteSheet);
+	  
+	  // TODO: animate properly depending on whatever.
+	  this->animate(1);
+	}
       this->setPosition(updater->xPosition, updater->yPosition);
+
       delete updater;
       updater = nullptr;
     }
   timeBeforeNextFrame -= elapsedTime;
   if (timeBeforeNextFrame <= 0)
     {
-      // std::cout << "NEXT FRAME !" << std::endl;
-      // update image considering current animation.
-      (*currentRect)++;
-      if (*currentRect == spriteSheet->getAnimations().at(animationId).end())
-	{
-	  *currentRect = spriteSheet->getAnimations().at(animationId).begin();
-	}
-      timeBeforeNextFrame = 250; // FIXME: arbitrary rate is 4 img per second, based on tests with FAKED time ! 
+      std::cout << "NEXT FRAME !" << std::endl;
+      rectIterator->increase(/* elapsedTime ? */);
+      std::cout << "ok" << std::endl;
+      timeBeforeNextFrame = 250; // FIXME: maybe this should be handled by spritesheet ? (i.e line before)
     }
 }
 

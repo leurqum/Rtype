@@ -7,7 +7,7 @@ include_directories ("include/")
 set(EXECUTABLE_OUTPUT_PATH bin)
 
 add_definitions(-std=c++11) 
-add_definitions(-Wall -Wextra) 
+add_definitions(-Wall -Wextra -g) 
 
 file (
      GLOB_RECURSE

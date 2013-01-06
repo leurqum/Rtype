@@ -18,8 +18,7 @@ class Drawable :
 	public IDrawable
 {
 private:
-	int animationId;
-	std::list< Rectangle<int> >::const_iterator* currentRect;
+	SpriteSheet::Iterator* rectIterator;
 	Vector2<float> position;
 
 	const SpriteSheet* spriteSheet;
@@ -32,7 +31,7 @@ public:
 	Vector2<float> getPosition() const;
 	void setPosition(float x, float y);
 	const SpriteSheet* getSpriteSheet() const;
-	const Rectangle<int>& getRectSpriteSheet() const;
+	Rectangle<int> getRectSpriteSheet() const;
 	bool animate(int idAnimation);
 	void update(float elapsedTime);
 
