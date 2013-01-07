@@ -75,6 +75,7 @@ void	SpriteSheet::Iterator::increase()
 void SpriteSheet::Iterator::setAnimation(int animId)
 {
   animationId = animId;
+
   index_interpolation = 0;
   delete nextRect;
   nextRect = new std::list< Rectangle<int> >::const_iterator(ss.getAnimations().at(animationId).begin());
@@ -84,7 +85,7 @@ void SpriteSheet::Iterator::setAnimation(int animId)
 void SpriteSheet::Iterator::increase_iterator()
 {
   index_interpolation = 0;
-
+  std::cout << "increase iterator" << std::endl;
   if (ss.getAnimations().at(animationId).size() == 1)
     {
       *nextRect = ss.getAnimations().at(animationId).begin();

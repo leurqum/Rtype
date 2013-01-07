@@ -31,6 +31,8 @@ const SpriteSheet* Drawable::getSpriteSheet() const
 void Drawable::setSpriteSheet(const SpriteSheet* s)
 {
   this->spriteSheet = s;
+  delete rectIterator;
+  rectIterator = new SpriteSheet::Iterator(*spriteSheet);
 }
 
 Rectangle<int> Drawable::getRectSpriteSheet() const
@@ -40,20 +42,20 @@ Rectangle<int> Drawable::getRectSpriteSheet() const
 bool Drawable::animate(int idAnimation)
 {
   // FIXME: check if it's not already doing this animation.
+	std::cout << "will increase iterator" << std::endl;
   rectIterator->setAnimation(idAnimation);
   return true;
 }
 
 void Drawable::update(float elapsedTime)
 {
-  static float timeBeforeNextFrame = 0; // we put 0 here to avoid redundant same values. (using a define/const would be great.)
+  static float totalTime = 0; // we put 0 here to avoid redundant same values. (using a define/const would be great.)
 
-  timeBeforeNextFrame -= elapsedTime;
-  if (timeBeforeNextFrame <= 0)
+  totalTime += elapsedTime;
+  while ( totalTime > 250)// FIXME: maybe this should be handled by spritesheet ?
     {
       std::cout << "NEXT FRAME !" << std::endl;
       rectIterator->increase(/* elapsedTime ? */);
-      std::cout << "ok" << std::endl;
-      timeBeforeNextFrame = 250; // FIXME: maybe this should be handled by spritesheet ? (i.e line before)
+      totalTime -= 250;
     }
 }

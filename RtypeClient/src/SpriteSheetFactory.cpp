@@ -18,15 +18,38 @@ SpriteSheetFactory::SpriteSheetFactory()
   animList[1] = singleAnim;
   spriteSheets[0]->setAnimations(animList);
   spriteSheets[0]->setInterpolation(4);
-  spriteSheets[0]->setSmoothLoop(false);
+  spriteSheets[0]->setSmoothLoop(true);
 
   //
 
-  // Background ingame spritesheet
-  // spriteSheets[1] = new SpriteSheet();
+  // Background fixed image
+  animList.clear();
+  singleAnim.clear();
 
+  spriteSheets[1] = new SpriteSheet();
+  spriteSheets[1]->setFilename("sprites/farback.gif");
+  singleAnim.push_back(Rectangle<int>(1599, 599));
+  animList[0] = singleAnim;
+  spriteSheets[1]->setAnimations(animList);
+  spriteSheets[1]->setInterpolation(1);
+  spriteSheets[1]->setSmoothLoop(false);
   //
 
+  // Background scrolling image
+  animList.clear();
+  singleAnim.clear();
+
+  spriteSheets[2] = new SpriteSheet();
+  spriteSheets[2]->setFilename("sprites/starfield.png");
+  singleAnim.push_back(Rectangle<int>(799, 599, Vector2<int>(-799, 0)));
+  singleAnim.push_back(Rectangle<int>(799, 599, Vector2<int>(799, 0)));
+  animList[0] = singleAnim;
+  spriteSheets[2]->setAnimations(animList);
+  spriteSheets[2]->setInterpolation(400);
+  spriteSheets[2]->setSmoothLoop(false);
+
+
+  //
   
 }
 

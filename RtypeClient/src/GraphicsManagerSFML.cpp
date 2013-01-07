@@ -29,13 +29,15 @@ void GraphicsManagerSFML::clear()
 
 void GraphicsManagerSFML::draw(IDrawable* d)
 {
+  std::cout << "getting spritesheet..." << std::endl;
   const SpriteSheet* ss = d->getSpriteSheet();
   if (ss == nullptr)
     return ;
-  
+  std::cout << "creating sprite..." << std::endl;
   sf::Sprite s(*getTextureFromFilename(ss->getFilename()),
 	       GraphicsManagerSFML::rectangleToSFMLRect( d->getRectSpriteSheet()));
-s.setPosition(d->getPosition().x, d->getPosition().y);
+  std::cout << "sprite created" << std::endl;
+  s.setPosition(d->getPosition().x, d->getPosition().y);
   window.draw(s);
 }
 
@@ -93,20 +95,24 @@ const sf::Window& GraphicsManagerSFML::getWindow() const
 
 const sf::Texture* GraphicsManagerSFML::getTextureFromFilename(const std::string& filename)
 {
+	std::cout << "getting texture: " << filename << std::endl;
   if (textures[filename] == nullptr)
     {
+	  std::cout << "It doesn't exist..." << std::endl;
       textures[filename] = new sf::Texture();
       // FIXME: use some log like feature.
-      // std::cout << "Tying to open: " << filename << std::endl;
+      std::cout << "Tying to open: " << filename << std::endl;
       try {
-	// std::cout << "Trying..." << std::endl;
+	std::cout << "Trying..." << std::endl;
 	std::cout << textures[filename]->loadFromFile(filename) << std::endl;
-	// std::cout << "done..." << std::endl;
+	std::cout << "done..." << std::endl;
       }
       catch(std::exception e)
 	{
-	  std::cerr << "holy shit couldn't open: " << filename << std::endl;
+	  std::cout << "holy shit couldn't open: " << filename << std::endl;
 	}
     }
+  else
+	  std::cout << "It exists already !" << std::endl;
   return textures[filename];
 }

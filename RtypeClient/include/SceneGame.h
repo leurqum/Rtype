@@ -2,6 +2,7 @@
 
 #include "IScene.h"
 
+#include "Drawable.h"
 #include "DrawableRemote.h"
 #include "SceneManager.h"
 #include "../../protocol.h"
@@ -20,5 +21,9 @@ public:
 	void setToForeground();
 private:
 	DrawableRemote* ship[4]; // these are drawables updatable from a protocol::drawable.
+	// TODO: put all the backgrounds in a LayerDrawable (implement LayerDrawable too :D )
+	Drawable fixedBackground;
+	Drawable scrollingBackground;
+	Drawable scrollingBackground2;
 };
 
