@@ -4,6 +4,7 @@
 SpriteSheet::SpriteSheet(void)
 {
   nb_interp = 0;
+  smoothLoop = true;
 }
 
 SpriteSheet::~SpriteSheet(void)
@@ -36,6 +37,10 @@ void SpriteSheet::setInterpolation(int nb)
   nb_interp = nb;
 }
 
+void SpriteSheet::setSmoothLoop(bool smloop)
+{
+	smoothLoop = smloop;
+}
 
 SpriteSheet::Iterator::Iterator(const SpriteSheet& s) : ss(s), current(nullptr), nextRect(nullptr)
 {
@@ -91,5 +96,7 @@ void SpriteSheet::Iterator::increase_iterator()
   if (*nextRect == ss.getAnimations().at(animationId).end())
     {
       *nextRect = ss.getAnimations().at(animationId).begin();
+	  if (!ss.smoothLoop)
+		  increase_iterator(); // NOTE: this would not be infinite recursive because of the if before.
     }
 }

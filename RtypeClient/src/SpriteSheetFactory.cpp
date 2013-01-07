@@ -2,6 +2,7 @@
 
 SpriteSheetFactory::SpriteSheetFactory()
 {
+  // SHIPS spritesheet
   spriteSheets[0] = new SpriteSheet();
   spriteSheets[0]->setFilename("sprites/r-typesheet42.gif");
 
@@ -17,6 +18,15 @@ SpriteSheetFactory::SpriteSheetFactory()
   animList[1] = singleAnim;
   spriteSheets[0]->setAnimations(animList);
   spriteSheets[0]->setInterpolation(4);
+  spriteSheets[0]->setSmoothLoop(false);
+
+  //
+
+  // Background ingame spritesheet
+  // spriteSheets[1] = new SpriteSheet();
+
+  //
+
   
 }
 

@@ -18,6 +18,7 @@ class SpriteSheet
   void setAnimations(const std::map<int, std::list<Rectangle<int> > >&);  
   const std::map<int, std::list<Rectangle<int> > >& getAnimations() const;
   void setInterpolation(int nb_interpolations); // INFO: 0 means instant change between rectangle of animations. (default is 0)
+  void setSmoothLoop(bool smloop); // INFO: this will determine if we interpolate between last and first frame of animation. (default = true)
   class Iterator
   {
   public:
@@ -39,6 +40,7 @@ class SpriteSheet
 
   // private: // FIXME: this should be private/protected, but Iterator should be friend with it.
   int nb_interp;
+  bool smoothLoop;
   std::string filename;
   std::map<int, std::list<Rectangle<int> > > animations;
 
