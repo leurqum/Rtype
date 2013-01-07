@@ -3,13 +3,15 @@
 #include "GraphicsManagerSFML.h"
 #include "SceneManager.h"
 #include "SceneGame.h"
+#include "SceneHoverMenu.h"
+#include "SceneBackground.h"
 
 int main()
 {
   SceneManager* sm = SceneManager::getInstance();
   sf::Clock timer;
-
-  sm->changeScene(new SceneGame());
+  SceneBackground* sb = new SceneBackground();
+  sm->changeScene(new SceneHoverMenu(*sb));
 
   bool isRunning = true;
   while (isRunning)

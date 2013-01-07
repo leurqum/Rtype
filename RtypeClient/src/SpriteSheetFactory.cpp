@@ -48,6 +48,20 @@ SpriteSheetFactory::SpriteSheetFactory()
   spriteSheets[2]->setInterpolation(400);
   spriteSheets[2]->setSmoothLoop(false);
 
+  //
+
+  // UI buttons
+  animList.clear();
+  singleAnim.clear();
+
+  spriteSheets[3] = new SpriteSheet();
+  spriteSheets[3]->setFilename("sprites/button_default.png");
+  singleAnim.push_back(Rectangle<int>(141, 27, Vector2<int>(0, 27)));
+  animList[0] = singleAnim;
+  // TODO: add [selected] "animation" (it's just an image, but c'm'on, better than nothing)
+  spriteSheets[3]->setAnimations(animList);
+  spriteSheets[3]->setInterpolation(400);
+  spriteSheets[3]->setSmoothLoop(false);
 
   //
   
