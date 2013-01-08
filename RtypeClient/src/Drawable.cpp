@@ -41,9 +41,8 @@ Rectangle<int> Drawable::getRectSpriteSheet() const
 }
 bool Drawable::animate(int idAnimation)
 {
-  // FIXME: check if it's not already doing this animation.
-	//std::cout << "will increase iterator" << std::endl;
-  rectIterator->setAnimation(idAnimation);
+  if (rectIterator->getAnimationId() != idAnimation)
+    rectIterator->setAnimation(idAnimation);
   return true;
 }
 

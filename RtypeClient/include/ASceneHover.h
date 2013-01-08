@@ -11,7 +11,7 @@ public:
 	IScene* getParentScene();
 	virtual IScene* update(float time);
 	virtual void draw();
-private:
+protected:
 	IScene& decoratedScene;
 };
 

@@ -36,7 +36,7 @@ const std::map<int, std::list<Rectangle<int> > >& SpriteSheet::getAnimations() c
 
 void SpriteSheet::setInterpolation(int nb)
 {
-  nb_interp = nb;
+  nb_interp = nb + 1;
 }
 
 void SpriteSheet::setSmoothFrames(bool b)
@@ -104,6 +104,7 @@ void	SpriteSheet::Iterator::increase(float time)
   elapsedTime += time;
   while (elapsedTime > ss.time_between_frames)
     {
+		std::cout << "spriteupdate: " << elapsedTime << std::endl;
 	  index_interpolation++;
 	  if (index_interpolation >= ss.nb_interp)
 		  increase_iterator();
@@ -123,21 +124,30 @@ void SpriteSheet::Iterator::setAnimation(int animId)
   increase_iterator();
 }
 
+int SpriteSheet::Iterator::getAnimationId() const
+{
+	return animationId;
+}
+
 void SpriteSheet::Iterator::increase_iterator()
 {
   index_interpolation = 0;
   std::cout << "increase iterator" << std::endl;
-  if (ss.getAnimations().at(animationId).size() == 1)
+    if (ss.getAnimations().at(animationId).size() == 1)
     {
       *nextRect = ss.getAnimations().at(animationId).begin();
       current = &(*(*nextRect));
       return ;
     }
+	
+	if (ss.nb_interp == 1 && !ss.smoothFrames && *nextRect == ss.getAnimations().at(animationId).end())
+  {
+      *nextRect = ss.getAnimations().at(animationId).begin();
+ }
 
   current = &(*((*nextRect)++));
-  if (*nextRect == ss.getAnimations().at(animationId).end())
+  if (*nextRect == ss.getAnimations().at(animationId).end() && (ss.nb_interp != 1 || ss.smoothFrames))
     {
-	index_interpolation = 0;
       *nextRect = ss.getAnimations().at(animationId).begin();
 	  if (!ss.smoothLoop)
 		  increase_iterator(); // NOTE: this would not be infinite recursive because of the if before.

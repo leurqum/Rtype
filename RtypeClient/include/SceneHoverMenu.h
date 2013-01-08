@@ -2,6 +2,7 @@
 
 #include "ASceneHover.h"
 #include "SceneManager.h"
+#include "SceneGame.h"
 
 class SceneHoverMenu :
 	public ASceneHover
@@ -18,5 +19,7 @@ public:
 	virtual void setToForeground();
 private:
 	Drawable playButton;
+	Drawable searchGameButton;
+	Drawable selectionArrow;
 };
 

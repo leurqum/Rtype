@@ -31,13 +31,10 @@ class SpriteSheet
     // FIXME: we might want to increase(float elapsedMilliseconds) so the SpriteSheet manages entirely all its flow.
     void increase(float miliseconds); // TODO: operator++ would be more iterator-like
 
-	// NOTE: these 2 are pretty special, it's like manually handled animation
-	// TODO: implement these
-	// void increase_index(int nb_index = 1);
-	// void increase_animation(float nb_anim = 1);
     void increase_iterator();
 
 	void setAnimation(int animationId); // operator=(int) ? not sure...
+	int getAnimationId() const;
   private:
     const SpriteSheet& ss;
     int animationId;

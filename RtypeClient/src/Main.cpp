@@ -19,17 +19,18 @@ int main()
   bool isRunning = true;
   while (isRunning)
     {
-      // FIXME: use real milliseconds..
-      if (timer.getElapsedTime().asMilliseconds() > 166) // around 60 updates and draw per second
+#define LOOP_UPDATE_DRAW 16
+		// FIXME: use real milliseconds..
+		if (timer.getElapsedTime().asMilliseconds() > LOOP_UPDATE_DRAW) // around 60 updates and draw per second
 	{
-	  // std::cout << "update" << std::endl;
+	  std::cout << "update: " << timer.getElapsedTime().asMilliseconds() << std::endl;
 	  sm->update(timer.getElapsedTime().asMilliseconds());
 	  timer.restart();
 	  sm->getGraphicsManager()->clear();
 	  sm->draw();
 	  sm->getGraphicsManager()->display();
 	}
-	  std::this_thread::sleep_for(std::chrono::milliseconds(166 - timer.getElapsedTime().asMilliseconds() - 1));
+	  std::this_thread::sleep_for(std::chrono::milliseconds(LOOP_UPDATE_DRAW - timer.getElapsedTime().asMilliseconds() - 1));
     }
   return 0;
 }
