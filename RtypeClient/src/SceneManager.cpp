@@ -2,7 +2,7 @@
 
 SceneManager::SceneManager() : current(nullptr), graphicManager(new GraphicsManagerSFML()) // FIXME: ugly hard coded ref to SFML
 {
-
+	inputManager = new InputManagerSFML();
 }
 
 
@@ -21,6 +21,7 @@ SceneManager* SceneManager::getInstance()
 
 void SceneManager::update(float milliseconds)
 {
+	inputManager->update();
   // NOTE: this assignation allows the scene to manage its own decorators.
   current = current->update(milliseconds);
 }
@@ -50,4 +51,9 @@ IScene* SceneManager::getCurrentScene()
 IGraphicsManager* SceneManager::getGraphicsManager()
 {
   return graphicManager;
+}
+
+IInputManagerSFML* SceneManager::getInputManager()
+{
+	return inputManager;
 }

@@ -13,4 +13,5 @@ class IDrawable
   virtual Rectangle<int> getRectSpriteSheet() const = 0;
   virtual bool animate(int idAnimation) = 0;
   virtual void update(float elapsedTime) = 0;
+  virtual void _manual_next_frame() = 0;
 };
