@@ -31,8 +31,7 @@ const SpriteSheet* Drawable::getSpriteSheet() const
 void Drawable::setSpriteSheet(const SpriteSheet* s)
 {
   this->spriteSheet = s;
-  delete rectIterator;
-  rectIterator = new SpriteSheet::Iterator(*spriteSheet);
+  rectIterator = nullptr;
 }
 
 Rectangle<int> Drawable::getRectSpriteSheet() const
@@ -41,8 +40,14 @@ Rectangle<int> Drawable::getRectSpriteSheet() const
 }
 bool Drawable::animate(int idAnimation)
 {
-  if (rectIterator->getAnimationId() != idAnimation)
-    rectIterator->setAnimation(idAnimation);
+  
+  if (rectIterator == nullptr || &rectIterator->a != spriteSheet->getAnimations().at(idAnimation))
+    {
+      std::cout << "animating [" << spriteSheet->filename << "]: " << idAnimation << std::endl;
+
+      delete rectIterator;
+      rectIterator = new Animation::Iterator(*spriteSheet->getAnimations().at(idAnimation));
+    }
   return true;
 }
 

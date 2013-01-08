@@ -33,8 +33,9 @@ IScene* SceneHoverMenu::update(float elapsedTime)
 
   const Vector2<bool>& downKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Down));
   if (downKey.x && !downKey.y)
+    {
     selectionArrow.setPosition(selectionArrow.getPosition().x, selectionArrow.getPosition().y + 40);
-
+    }
   const Vector2<bool>& returnKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Return));
   if (!returnKey.x && returnKey.y)
 	  playButton.animate(1);

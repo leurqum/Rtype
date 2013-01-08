@@ -3,6 +3,7 @@
 #include <map>
 
 #include "SpriteSheet.h"
+#include "Animation.h"
 
 // TODO: use friend attribute for SpriteSheet constructor so we are to use the factory.
 

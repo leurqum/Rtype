@@ -29,11 +29,11 @@ IScene* SceneGame::update(float elapsedTime)
   static int incr = 5;
 
   d.xPosition = x;
-   x += incr;
-   if (x > 500)
-     incr = -5;
-   if (x <= 400)
-     incr = 5;
+   // x += incr;
+   // if (x > 500)
+   //   incr = -5;
+   // if (x <= 400)
+   //   incr = 5;
   d.yPosition = 123;
 
   ship[0] = SceneManager::getInstance()->getGraphicsManager()->updateDrawableFrom(ship[0], d);

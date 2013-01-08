@@ -7,6 +7,7 @@
 #include "IDrawable.h"
 #include "SpriteSheet.h"
 #include "SpriteSheetFactory.h"
+#include "Animation.h"
 
 #include "../../protocol.h"
 
@@ -18,7 +19,7 @@ class Drawable :
 	public IDrawable
 {
 protected:
-	SpriteSheet::Iterator* rectIterator;
+	Animation::Iterator* rectIterator;
 	Vector2<float> position;
 	const SpriteSheet* spriteSheet;
 
