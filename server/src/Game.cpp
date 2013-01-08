@@ -13,15 +13,15 @@ void Game::loop()
   while (1)
     {
       for (unsigned int i = 0; i < _cmd->_cmds.size(); i++)
-	(this->*_fcts[_cmd->_cmds[i].second])(_cmd->_cmds[i].second);
+	(this->*_fcts[_cmd->_cmds[i].first])(_cmd->_cmds[i].second);
       _cmd->removeCommands();
     }
 }
 
-AIUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Game *game)
+IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Game *game)
 {
   IWeapon *w = new BasicWeapon();
-  AIUnit *u = new AIUnit(speed, w, id, coll, health, strength, isDestroyable);
+  IAUnit *u = new IAUnit(speed, w, id, coll, health, strength, isDestroyable);
 
   iaList.push_back(u);
   return (u);
@@ -100,9 +100,9 @@ HumainUnit *Game::getUnitHuman(int id)const
   return NULL;
 }
 
-AIUnit *Game::getUnitAI(int id)const
+IAUnit *Game::getUnitAI(int id)const
 {
-    for (std::list<AIUnit*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
+    for (std::list<IAUnit*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
     {
       if ((*it)->getId() == id)
 	return (*it);
@@ -221,7 +221,7 @@ void Game::eraseHumain(int id)
 
 void Game::eraseIa(int id)
 {
-  for (std::list<AIUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     {
       if ((*it)->getId() == id)
 	{
@@ -259,6 +259,137 @@ void Game::eraseBonus(int id)
       else
 	it++;
     }
+}
+
+bool Game::isFriendlyBullet(Bullet *b)
+{
+  if (getUnitHuman(b->getUnit()) != NULL)
+    return (true);
+  return (false);
+}
+
+bool Game::collisionHumainWithBullet(HumainUnit *u)
+{
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    {
+      if (isFriendlyBullet(*it) == true)
+	return (false);
+      float y = u->getPostionY();
+      float x = u->getPostionX();
+      float obsY = (*it)->getPostionY();
+      float obsX = (*it)->getPostionX();
+      if ((y + u->getHeight() > obsY
+	   && y < obsY + (*it)->getHeight()) &&
+	  (x + u->getWidth() > obsX &&
+	   x < obsX + (*it)->getWidth()))
+	{
+	  u->setHealth(u->getHealth() - 1);
+	  eraseBullet((*it)->getId());
+	  return (true);
+	}
+    }
+  return (false);	
+}
+
+bool Game::collisionIaWithBullet(IAUnit *u)
+{
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    {
+      if (isFriendlyBullet(*it) != true)
+	return (false);
+      float y = u->getPostionY();
+      float x = u->getPostionX();
+      float obsY = (*it)->getPostionY();
+      float obsX = (*it)->getPostionX();
+      if ((y + u->getHeight() > obsY
+	   && y < obsY + (*it)->getHeight()) &&
+	  (x + u->getWidth() > obsX &&
+	   x < obsX + (*it)->getWidth()))
+	{
+	  eraseBullet((*it)->getId());
+	  eraseIa(u->getId());
+	  return (true);
+	}
+    }
+  return (false);	
+}
+
+bool Game::collisionWithEnemie(HumainUnit *u)
+{
+  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+    {
+      float y = u->getPostionY();
+      float x = u->getPostionX();
+      float iaY = (*it)->getPostionY();
+      float iaX = (*it)->getPostionX();
+      if ((y + u->getHeight() > iaY
+	   && y < iaY + (*it)->getHeight()) &&
+	  (x + u->getWidth() > iaX &&
+	   x < iaX + (*it)->getWidth()))
+	{
+	  u->setHealth(0);
+	  return (true);
+	}
+    }
+  return (false);
+}
+
+bool Game::collisionUWithObs(Unit *u)
+{
+  for (std::list<MovingObstacle*>::iterator it = obsList.begin(); it != obsList.end(); it++)
+    {
+      float y = u->getPostionY();
+      float x = u->getPostionX();
+      float mObsY = (*it)->getPostionY();
+      float mObsX = (*it)->getPostionX();
+      if ((y + u->getHeight() > mObsY
+	   && y < mObsY + (*it)->getHeight()) &&
+	  (x + u->getWidth() > mObsX &&
+	   x < mObsX + (*it)->getWidth()))
+	return (true);
+    }
+  return (false);
+}
+
+bool Game::collisionBWithObs(Bullet *b)
+{
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    {
+      float y = b->getPostionY();
+      float x = b->getPostionX();
+      float mObsY = (*it)->getPostionY();
+      float mObsX = (*it)->getPostionX();
+      if ((y + b->getHeight() > mObsY
+	   && y < mObsY + (*it)->getHeight()) &&
+	  (x + b->getWidth() > mObsX &&
+	   x < mObsX + (*it)->getWidth()))
+	{
+	  eraseBullet(b->getUnit());
+	  return (true);
+	}
+    }
+  return (false);
+}
+
+bool Game::collisionWithBonus(HumainUnit *u)
+{
+  for (std::list<LifePowerUp*>::iterator it = bonusList.begin(); it != bonusList.end(); it++)
+    {
+      float y = u->getPostionY();
+      float x = u->getPostionX();
+      float bY = (*it)->getPostionY();
+      float bX = (*it)->getPostionX();
+      if ((y + u->getHeight() > bY
+	   && y < bY + (*it)->getHeight()) &&
+	  (x + u->getWidth() > bX &&
+	   x < bX + (*it)->getWidth()))
+	{
+	  (*it)->applyToUnit(u);
+	  eraseBonus((*it)->getId());
+	  return true;
+	}
+    }
+  return (false);
 }
 
 void Game::fire(int id)
