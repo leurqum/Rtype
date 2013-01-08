@@ -34,5 +34,8 @@ public:
 	virtual Rectangle<int> getRectSpriteSheet() const;
 	virtual bool animate(int idAnimation);
 	virtual void update(float elapsedTime);
+
+	// encapsulated Low level control on the drawable.
+	virtual void _manual_next_frame();
 };
 

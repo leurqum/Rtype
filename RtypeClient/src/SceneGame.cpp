@@ -19,7 +19,7 @@ IScene* SceneGame::update(float elapsedTime)
 	  // FIXME: I don't know if the following scenario would be safe...
     return ret; // some decorated scene have changed the scene :(
 
-  std::cout << "scenegame update" << std::endl;
+  //std::cout << "scenegame update" << std::endl;
   // TODO: (not here but in SceneHoverWhatever) update background scenes ?
   // TODO: update the scene depending on network data received.
   Protocol::drawable d;

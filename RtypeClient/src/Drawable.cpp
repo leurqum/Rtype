@@ -42,7 +42,7 @@ Rectangle<int> Drawable::getRectSpriteSheet() const
 bool Drawable::animate(int idAnimation)
 {
   // FIXME: check if it's not already doing this animation.
-	std::cout << "will increase iterator" << std::endl;
+	//std::cout << "will increase iterator" << std::endl;
   rectIterator->setAnimation(idAnimation);
   return true;
 }
@@ -51,11 +51,16 @@ void Drawable::update(float elapsedTime)
 {
   static float totalTime = 0; // we put 0 here to avoid redundant same values. (using a define/const would be great.)
 
-  totalTime += elapsedTime;
-  while ( totalTime > 250)// FIXME: maybe this should be handled by spritesheet ?
-    {
-      std::cout << "NEXT FRAME !" << std::endl;
-      rectIterator->increase(/* elapsedTime ? */);
-      totalTime -= 250;
-    }
+  //totalTime += elapsedTime;
+  //while ( totalTime > 250)// FIXME: maybe this should be handled by spritesheet ?
+  //  {
+      //std::cout << "NEXT FRAME !" << std::endl;
+      rectIterator->increase(elapsedTime);
+      //totalTime -= 250;
+    //}
+}
+
+void Drawable::_manual_next_frame()
+{
+	rectIterator->increase_iterator();
 }

@@ -2,13 +2,13 @@
 
 SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) : ASceneHover(decoratedScene)
 {
-  std::cout << "scenegame construct" << std::endl;
+  //std::cout << "scenegame construct" << std::endl;
   playButton.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(3));
-  std::cout << "scenegame multiple construct" << std::endl;
+  //std::cout << "scenegame multiple construct" << std::endl;
   playButton.setPosition(330, 160);
-  std::cout << "scenegame after setposition" << std::endl;
+  //std::cout << "scenegame after setposition" << std::endl;
   playButton.animate(0);
-  std::cout << "scenegame END construct" << std::endl;
+  //std::cout << "scenegame END construct" << std::endl;
 }
 
 

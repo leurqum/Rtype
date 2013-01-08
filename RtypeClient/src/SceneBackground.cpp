@@ -3,29 +3,29 @@
 
 SceneBackground::SceneBackground(void)
 {
-  std::cout << "scenegame construct" << std::endl;
+  //std::cout << "scenegame construct" << std::endl;
   fixedBackground.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(1));
-  std::cout << "scenegame multiple construct" << std::endl;
+  //std::cout << "scenegame multiple construct" << std::endl;
   fixedBackground.setPosition(0, 0);
-  std::cout << "scenegame after setposition" << std::endl;
+  //std::cout << "scenegame after setposition" << std::endl;
   fixedBackground.animate(0);
-  std::cout << "scenegame END construct" << std::endl;
+  //std::cout << "scenegame END construct" << std::endl;
 
   scrollingBackground.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(2));
-  std::cout << "scenegame multiple construct" << std::endl;
+  //std::cout << "scenegame multiple construct" << std::endl;
   scrollingBackground.setPosition(0, 0);
-  std::cout << "scenegame after setposition" << std::endl;
+  //std::cout << "scenegame after setposition" << std::endl;
   scrollingBackground.animate(0);
-  // FIXME: this large faked update is resource consuming, we just want to start at half the interpolation...
-  scrollingBackground.update(50000);
-  std::cout << "scenegame END construct" << std::endl;
+
+  scrollingBackground._manual_next_frame();
+  //std::cout << "scenegame END construct" << std::endl;
 
   scrollingBackground2.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(2));
-  std::cout << "scenegame multiple construct" << std::endl;
+  //std::cout << "scenegame multiple construct" << std::endl;
   scrollingBackground2.setPosition(0, 0);
-  std::cout << "scenegame after setposition" << std::endl;
+  //std::cout << "scenegame after setposition" << std::endl;
   scrollingBackground2.animate(0);
-  std::cout << "scenegame END construct" << std::endl;
+  //std::cout << "scenegame END construct" << std::endl;
 }
 
 

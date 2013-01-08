@@ -18,6 +18,7 @@ SpriteSheetFactory::SpriteSheetFactory()
   animList[1] = singleAnim;
   spriteSheets[0]->setAnimations(animList);
   spriteSheets[0]->setInterpolation(4);
+  spriteSheets[0]->setTimeBetweenAnimationFrame(250);
   spriteSheets[0]->setSmoothLoop(true);
 
   //
@@ -32,6 +33,7 @@ SpriteSheetFactory::SpriteSheetFactory()
   animList[0] = singleAnim;
   spriteSheets[1]->setAnimations(animList);
   spriteSheets[1]->setInterpolation(1);
+  spriteSheets[1]->setTimeBetweenAnimationFrame(250);
   spriteSheets[1]->setSmoothLoop(false);
   //
 
@@ -42,11 +44,14 @@ SpriteSheetFactory::SpriteSheetFactory()
   spriteSheets[2] = new SpriteSheet();
   spriteSheets[2]->setFilename("sprites/starfield.png");
   singleAnim.push_back(Rectangle<int>(799, 599, Vector2<int>(-799, 0)));
+  singleAnim.push_back(Rectangle<int>(799, 599, Vector2<int>(0, 0)));
   singleAnim.push_back(Rectangle<int>(799, 599, Vector2<int>(799, 0)));
   animList[0] = singleAnim;
   spriteSheets[2]->setAnimations(animList);
-  spriteSheets[2]->setInterpolation(400);
+  spriteSheets[2]->setInterpolation(0);
+  spriteSheets[2]->setTimeBetweenAnimationFrame(8000);
   spriteSheets[2]->setSmoothLoop(false);
+  spriteSheets[2]->setSmoothFrames(true);
 
   //
 
@@ -60,7 +65,8 @@ SpriteSheetFactory::SpriteSheetFactory()
   animList[0] = singleAnim;
   // TODO: add [selected] "animation" (it's just an image, but c'm'on, better than nothing)
   spriteSheets[3]->setAnimations(animList);
-  spriteSheets[3]->setInterpolation(400);
+  spriteSheets[3]->setInterpolation(1);
+  spriteSheets[3]->setTimeBetweenAnimationFrame(250);
   spriteSheets[3]->setSmoothLoop(false);
 
   //

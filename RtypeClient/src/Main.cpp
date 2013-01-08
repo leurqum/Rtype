@@ -5,12 +5,15 @@
 #include "SceneGame.h"
 #include "SceneHoverMenu.h"
 #include "SceneBackground.h"
+#include <thread>
 
 int main()
 {
   SceneManager* sm = SceneManager::getInstance();
   sf::Clock timer;
+  // INFO: this is the base scene background, you can then decorate it with the appropriate scene. (or change it entirely of course)
   SceneBackground* sb = new SceneBackground();
+
   sm->changeScene(new SceneHoverMenu(*sb));
 
   bool isRunning = true;
@@ -26,6 +29,7 @@ int main()
 	  sm->draw();
 	  sm->getGraphicsManager()->display();
 	}
+	  std::this_thread::sleep_for(std::chrono::milliseconds(166 - timer.getElapsedTime().asMilliseconds() - 1));
     }
   return 0;
 }
