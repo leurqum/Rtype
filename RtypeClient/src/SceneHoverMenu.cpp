@@ -2,19 +2,22 @@
 
 SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) : ASceneHover(decoratedScene)
 {
+
   playButton.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(3));
   playButton.setPosition(330, 160);
   playButton.animate(0);
 
-  searchGameButton.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(3));
-  searchGameButton.setPosition(330, 200);
-  searchGameButton.animate(0);
+  exitButton.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(3));
+  exitButton.setPosition(330, 200);
+  exitButton.animate(0);
 
   selectionArrow.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(4));
   selectionArrow.setPosition(310, 160);
   selectionArrow.animate(0);
 
 
+  allButtons.addDrawable(&playButton);
+  allButtons.addDrawable(&exitButton);
 }
 
 
@@ -40,8 +43,7 @@ IScene* SceneHoverMenu::update(float elapsedTime)
 	return new SceneGame(this->decoratedScene);
 
 
-  playButton.update(elapsedTime);
-  searchGameButton.update(elapsedTime);
+  allButtons.updateAll(elapsedTime);
   selectionArrow.update(elapsedTime);
 
   return this;
@@ -49,10 +51,9 @@ IScene* SceneHoverMenu::update(float elapsedTime)
 
 void SceneHoverMenu::draw()
 {
-	ASceneHover::draw();
+  ASceneHover::draw();
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
-  gm->draw(&playButton);
-  gm->draw(&searchGameButton);
+  allButtons.drawTo(gm);
   gm->draw(&selectionArrow);
 }
 

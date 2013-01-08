@@ -57,6 +57,7 @@ void SpriteSheet::setSmoothLoop(bool smloop)
 SpriteSheet::Iterator::Iterator(const SpriteSheet& s) : ss(s), current(nullptr), nextRect(nullptr)
 {
 	elapsedTime = 0;
+	animationId = -1;
 }
 
 #include <iostream>
@@ -65,8 +66,9 @@ Rectangle<int> SpriteSheet::Iterator::getValue() const
 {
   Rectangle<int> ret = *current;
 	  // INNER NOTE: revenir au truc d'avant, mais rajouter ce qui suit (github)
-  if (ss.nb_interp != 0)
+  if (ss.nb_interp != 0 && (*nextRect) != ss.getAnimations().at(animationId).end())
     {
+      std::cout << (*nextRect)->position.x << std::endl;
 
       ret.position.x += ((*nextRect)->position.x - ret.position.x) / (float)ss.nb_interp * index_interpolation;
       ret.position.y += ((*nextRect)->position.y - ret.position.y) / (float)ss.nb_interp * index_interpolation;

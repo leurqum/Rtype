@@ -18,7 +18,7 @@ public IGraphicsManager
   GraphicsManagerSFML(void);
   virtual void reset();
   virtual void clear();
-  virtual void draw(IDrawable*);
+  virtual void draw(IDrawable*, Vector2<float>);
   virtual void display();
   virtual void update(float);
   virtual DrawableRemote* updateDrawableFrom(DrawableRemote* old, const Protocol::drawable& d );

@@ -27,7 +27,7 @@ void GraphicsManagerSFML::clear()
   window.clear(sf::Color());
 }
 
-void GraphicsManagerSFML::draw(IDrawable* d)
+void GraphicsManagerSFML::draw(IDrawable* d, Vector2<float> t)
 {
   //std::cout << "getting spritesheet..." << std::endl;
   const SpriteSheet* ss = d->getSpriteSheet();
@@ -37,7 +37,7 @@ void GraphicsManagerSFML::draw(IDrawable* d)
   sf::Sprite s(*getTextureFromFilename(ss->getFilename()),
 	       GraphicsManagerSFML::rectangleToSFMLRect( d->getRectSpriteSheet()));
   //std::cout << "sprite created" << std::endl;
-  s.setPosition(d->getPosition().x, d->getPosition().y);
+  s.setPosition(d->getPosition().x + t.x, d->getPosition().y + t.y);
   window.draw(s);
 }
 
