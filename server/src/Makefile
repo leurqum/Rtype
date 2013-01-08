@@ -5,11 +5,11 @@
 ## Login   <leurqu_m@epitech.net>
 ## 
 ## Started on  Tue Jan  1 17:03:48 2013 mathieu leurquin
-## Last update Sun Jan  6 13:40:25 2013 mathieu leurquin
+## Last update Tue Jan  8 12:41:54 2013 mathieu leurquin
 ##
 
 
-SRC_SR	=	AIUnit.cpp 				\
+SRC_SR	=	IAUnit.cpp 				\
 		HumainUnit.cpp				\
 		BasicWeapon.cpp				\
 		LifePowerUp.cpp				\

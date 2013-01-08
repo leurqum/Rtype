@@ -3,7 +3,7 @@
 
 #include <list>
 #include <map>
-#include "AIUnit.hpp"
+#include "IAUnit.hpp"
 #include "HumainUnit.hpp"
 #include "Player.hpp"
 #include "MovingObstacle.hpp"
@@ -19,7 +19,7 @@ public:
     std::map<int, void (Game::*)(int id)> _fcts;
 private:
   CommandManager *_cmd;
-  std::list<AIUnit*>		iaList;
+  std::list<IAUnit*>		iaList;
   std::list<HumainUnit*>	humanList;
   std::list<Player*>		playerList;
   std::list<Bullet*>		bulletList;
@@ -28,7 +28,8 @@ private:
 public:
   Game();
   void loop();
-  AIUnit* createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Game *game);
+
+  IAUnit* createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Game *game);
   HumainUnit* createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Game *game, Player *p);
   MovingObstacle* createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable, Game *game);
   Player* createPlayer(int id, std::string name, int life);
@@ -37,13 +38,14 @@ public:
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitByPlayer(Player *p)const;
   HumainUnit *getUnitHuman(int id)const;
-  AIUnit *getUnitAI(int id)const;
+  IAUnit *getUnitAI(int id)const;
   Unit *getUnit(int id)const;
   MovingObstacle *getObs(int id)const;
   LifePowerUp *getLifePowerUp(int id)const;
   Player *getPlayer(int id)const;
   void addPlayer(std::string);
   int getNbPlayer()const;
+
   void eraseBullet(int id);
   void eraseBulletsPlayer(int idPlayer);
   void erasePlayer(int id);
@@ -51,6 +53,15 @@ public:
   void eraseIa(int id);
   void eraseObs(int id);
   void eraseBonus(int id);
+  
+  bool isFriendlyBullet(Bullet *b);
+  bool collisionIaWithBullet(IAUnit *u);
+  bool collisionHumainWithBullet(HumainUnit *u);
+  bool collisionWithEnemie(HumainUnit *u);
+  bool collisionUWithObs(Unit *u);
+  bool collisionBWithObs(Bullet *b);
+  bool collisionWithBonus(HumainUnit *u);
+
   void fire(int id);
   void move(int id);
 };

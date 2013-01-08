@@ -18,9 +18,9 @@ public:
   virtual void setCollisionFilter(int filter);
   virtual void move();
   void setPosition(std::pair<float, float>position);
-  float getHeight()const;
+  virtual float getHeight()const;
   void setHeight(float height);
-  float getWidth()const;
+  virtual float getWidth()const;
   void setWidth(float width);
   
 };

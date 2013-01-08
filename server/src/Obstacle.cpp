@@ -50,3 +50,23 @@ void Obstacle::setDestroyable(bool isDestroyable)
 {
   _isDestroyable = isDestroyable;
 }
+
+float Obstacle::getPostionX()const
+{
+  return (_rectangle->getPosition().first);
+}
+
+float Obstacle::getPostionY()const
+{
+  return (_rectangle->getPosition().first);
+}
+
+float Obstacle::getHeight()const
+{
+  return (_rectangle->getHeight());
+}
+
+float Obstacle::getWidth()const
+{
+  return (_rectangle->getWidth());
+}    
