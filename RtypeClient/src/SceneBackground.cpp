@@ -1,14 +1,15 @@
 #include "SceneBackground.h"
 
 
-SceneBackground::SceneBackground(void)
+SceneBackground::SceneBackground(void) : fixedBackground(SpriteSheetFactory::getInstance()->getSpriteSheet(1)->getFilename(), Rectangle<int>(1599, 599))
 {
   //std::cout << "scenegame construct" << std::endl;
-  fixedBackground.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(1));
+  
+  // fixedBackground.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(1));
   //std::cout << "scenegame multiple construct" << std::endl;
-  fixedBackground.setPosition(0, 0);
+  // fixedBackground.setPosition(0, 0);
   //std::cout << "scenegame after setposition" << std::endl;
-  fixedBackground.animate(0);
+  // fixedBackground.animate(0);
   //std::cout << "scenegame END construct" << std::endl;
 
   scrollingBackground.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(2));

@@ -20,9 +20,6 @@ public IGraphicsManager
   virtual void clear();
   virtual void draw(IDrawable*, Vector2<float>);
   virtual void display();
-  virtual void update(float);
-  virtual DrawableRemote* updateDrawableFrom(DrawableRemote* old, const Protocol::drawable& d );
-  virtual void deleteDrawable(const IDrawable*);
   
 
   template<typename T>
@@ -33,7 +30,6 @@ public IGraphicsManager
  private:
   sf::RenderWindow window;
   sf::View view;
-  std::list<Drawable*> drawables; // list of created drawables
 
   std::map<std::string, sf::Texture*> textures;
 };

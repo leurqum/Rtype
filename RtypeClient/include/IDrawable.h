@@ -17,15 +17,19 @@ class IDrawable
   virtual const std::string& getSpriteSheet() const = 0;
   virtual Rectangle<int> getRectSpriteSheet() const = 0;
 
+
+
+  // These are not exactly to draw, but to manage the drawable.
+
   virtual void drawTo(IGraphicsManager*) const = 0;
 
+  virtual void update(float elapsedTime) = 0;
 
   // these are useless to draw smth :
 
-  virtual bool animate(int idAnimation) = 0;
-  //virtual void queueModifier(Animation a);
-  virtual void update(float elapsedTime) = 0;
-  virtual void _manual_next_frame() = 0;
+  /* virtual bool animate(int idAnimation) = 0; */
+  /* //virtual void queueModifier(Animation a); */
+  /* virtual void _manual_next_frame() = 0; */
 };
 
 #include "IGraphicsManager.h"

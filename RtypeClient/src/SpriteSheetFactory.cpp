@@ -30,12 +30,6 @@ SpriteSheetFactory::SpriteSheetFactory()
 
   spriteSheets[1] = new SpriteSheet();
   spriteSheets[1]->setFilename("sprites/farback.gif");
-  singleAnim.push_back(Rectangle<int>(1599, 599));
-  animList[0] = new Animation(singleAnim, 250, false, 0, false);
-  spriteSheets[1]->setAnimations(animList);
-  // spriteSheets[1]->setInterpolation(0);
-  // spriteSheets[1]->setTimeBetweenAnimationFrame(250);
-  // spriteSheets[1]->setSmoothLoop(false);
   //
 
   // Background scrolling image

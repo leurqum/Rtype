@@ -2,6 +2,7 @@
 #include "IScene.h"
 #include "SceneManager.h"
 #include "Drawable.h"
+#include "SimpleDrawable.h"
 
 class SceneBackground :
 	public IScene
@@ -17,7 +18,7 @@ public:
 	void setToForeground();
 private:
 	// TODO: put all the backgrounds in a LayerDrawable (implement LayerDrawable too :D )
-	Drawable fixedBackground;
+	SimpleDrawable fixedBackground;
 	Drawable scrollingBackground;
 	Drawable scrollingBackground2;
 };
