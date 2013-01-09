@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 10:17:25 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 15:21:59 2013 marche_m (Maxime Marchès)
 //
 
 #include "USocket.hpp"
@@ -63,20 +63,41 @@ bool	USocket::connectFromAcceptedFd(void * fd)
   return true;
 }
 
-int		USocket::recv()
+int		USocket::recv(UNUSED void * header, UNUSED void * data)
 {
-  char toto[4242];
-  memset(toto, 0, 4242);
-  int ret = read(this->_connectSocket, toto, 4242);
+  int	* headerTmp = new int[2];
+  char	* dataTmp = 0;
+  int	ret;
+
+  header = new int[2];
+  ret = read(this->_connectSocket, headerTmp, (2 * sizeof(int)));
   if (ret <= 0)
     return ret;
-  std::cout << toto << std::endl;
+  dataTmp = new char[headerTmp[1]];
+  memset(dataTmp, 0, headerTmp[1]);
+  ret = read(this->_connectSocket, dataTmp, headerTmp[1]);
+  if (ret <= 0)
+    return ret;
+  header = headerTmp;
+  data = dataTmp;
   return 1;
+  // char toto[4242];
+  // memset(toto, 0, 4242);
+  // int ret = read(this->_connectSocket, toto, 4242);
+  // if (ret <= 0)
+  //   return ret;
+  // std::cout << toto << std::endl;
+  // return 1;
 }
 
 int		USocket::sendv(std::string const & data)
 {
   return write(this->_connectSocket, data.c_str(), data.size());
+}
+
+int		USocket::sendv(int size, void * data)
+{
+  return write(this->_connectSocket, data, size);
 }
 
 USocket::~USocket()
