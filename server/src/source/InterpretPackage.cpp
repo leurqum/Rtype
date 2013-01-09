@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 16:32:43 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 18:18:53 2013 marche_m (Maxime Marchès)
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -24,9 +24,16 @@ InterpretPackage::InterpretPackage()
   _funcMap[Protocol::RESPONSE] = &InterpretPackage::execResponse;
 }
 
-void	InterpretPackage::exectuteCmd(void * header, void * data, ISocket * sock)
+void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
+  std::cout << "executeCmd" << std::endl;
+  int hdTmp[2];
 
+  memcpy(hdTmp, header, 2 * sizeof(int));
+  std::cout << "id:" << hdTmp[0] << std::endl;
+  std::cout << "size:" << hdTmp[1] << std::endl;
+  void (InterpretPackage::*pMethod)(void *, ISocket *) = (this->_funcMap[((Protocol::type_cmd)hdTmp[0])]);
+  (this->*pMethod)(data, sock);
 }
 
 void	InterpretPackage::execRegister(void * data, ISocket * sock)
@@ -36,7 +43,12 @@ void	InterpretPackage::execRegister(void * data, ISocket * sock)
 
 void	InterpretPackage::execLogin(void * data, ISocket * sock)
 {
-
+  std::cout << "execLogin" << std::endl;
+  Protocol::login * dataTmp = new Protocol::login();
+  memset(dataTmp, 0, sizeof(*dataTmp));
+  memcpy(dataTmp, data, sizeof(*dataTmp));
+  std::cout << dataTmp->login << std::endl;
+  std::cout << dataTmp->passwd << std::endl;
 }
 
 void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
