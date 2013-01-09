@@ -39,7 +39,7 @@ bool Drawable::animate(int idAnimation)
 
 void Drawable::update(float elapsedTime)
 {
-  DrawerModifiable::update(elapsedTime);
+  SimpleDrawable::update(elapsedTime);
 
   rectIterator->increase(elapsedTime);
 }

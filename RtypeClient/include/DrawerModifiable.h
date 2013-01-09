@@ -8,6 +8,7 @@ class DrawerModifiable : virtual public IDrawer
   
   std::list<Animation::Iterator> modifiers;
   Vector2<float> position;
+  Vector2<float> modifiedPosition;
  public:
   DrawerModifiable(const Vector2<float>& p = Vector2<float>());
   

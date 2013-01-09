@@ -27,5 +27,5 @@ void SimpleDrawable::drawTo(IGraphicsManager* gm) const
 
 void SimpleDrawable::update(float ms)
 {
-
+  DrawerModifiable::update(ms);
 }

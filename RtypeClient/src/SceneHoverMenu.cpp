@@ -12,6 +12,10 @@ SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
 
   selectionArrow.setPosition(Vector2<float>(310, 160));
 
+  std::list<Rectangle<int> > arrowAnimation;
+  arrowAnimation.push_back(Rectangle<int>(0, 0));
+  arrowAnimation.push_back(Rectangle<int>(0, 0, Vector2<int>(-10, 0)));
+  selectionArrow.addModifier(* (new Animation(arrowAnimation, 500, true, 0, true)));
 
   allButtons.addDrawable(&playButton);
   allButtons.addDrawable(&exitButton);
