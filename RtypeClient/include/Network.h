@@ -4,7 +4,7 @@
 #include "Drawable.h"
 #include "../protocol.h"
 
-#include <string>
+#include <string.h>
 #include <list>
 
 class Network
