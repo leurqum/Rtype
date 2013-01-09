@@ -27,8 +27,8 @@ Protocol::reponse_type				Network::Register(std::string name, std::string pwd) c
 	header.size = sizeof(Protocol::create_account);
 
 	Protocol::create_account	reg;
-	strcpy(reg.login, name.c_str());
-	strcpy(reg.passwd, pwd.c_str());
+	memcpy(reg.login, name.c_str(), 50);
+	memcpy(reg.passwd, pwd.c_str(), 50);
 
 	Protocol::response			rep;
 	rep.response = Protocol::OK;
@@ -47,8 +47,8 @@ Protocol::reponse_type				Network::Login(std::string name, std::string pwd) cons
 	header.size = sizeof(Protocol::login);
 
 	Protocol::login				login;
-	strcpy(login.login, name.c_str());
-	strcpy(login.passwd, pwd.c_str());
+	memcpy(login.login, name.c_str(), 50);
+	memcpy(login.passwd, pwd.c_str(), 50);
 
 	Protocol::response			rep;
 	rep.response = Protocol::OK;
@@ -67,7 +67,7 @@ Protocol::reponse_type				Network::Join(std::string name)
 	header.size = sizeof(Protocol::join_game);
 
 	Protocol::join_game				game;
-	strcpy(game.party_name, name.c_str());
+	memcpy(game.party_name, name.c_str(), 50);
 
 	Protocol::response			rep;
 	rep.response = Protocol::OK;
