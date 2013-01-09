@@ -4,10 +4,9 @@
 #include "Rectangle.h"
 #include "Vector2.h"
 #include "SpriteSheet.h"
+/* #include "IDrawer.h" */
 
-class IGraphicsManager;
-
-class IDrawable
+class IDrawable // : public IDrawer
 {
  public:
   // FIXME: no ref ?
@@ -19,11 +18,6 @@ class IDrawable
 
 
 
-  // These are not exactly to draw, but to manage the drawable.
-
-  virtual void drawTo(IGraphicsManager*) const = 0;
-
-  virtual void update(float elapsedTime) = 0;
 
   // these are useless to draw smth :
 
@@ -31,5 +25,3 @@ class IDrawable
   /* //virtual void queueModifier(Animation a); */
   /* virtual void _manual_next_frame() = 0; */
 };
-
-#include "IGraphicsManager.h"

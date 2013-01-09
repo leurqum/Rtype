@@ -1,23 +1,23 @@
 #pragma once 
 
 #include <list>
-#include "IGraphicsManager.h"
 #include "IDrawable.h"
+#include "IDrawer.h"
 #include "Vector2.h"
 
-class LayerDrawable
+class LayerDrawable : public IDrawer
 {
  public:
-  void addDrawable(IDrawable* d);
-  void removeDrawable(IDrawable* d);
+  void addDrawable(IDrawer* d);
+  void removeDrawable(IDrawer* d);
 
   void setTranslation(const Vector2<float>&);
   void translate(const Vector2<float>&);
 
   void drawTo(IGraphicsManager*) const;
-  void updateAll(float elapsedTime);
+  void update(float elapsedTime);
 
  private:
-  std::list<IDrawable*> drawables;
+  std::list<IDrawer*> drawers;
   Vector2<float> translation;
 };

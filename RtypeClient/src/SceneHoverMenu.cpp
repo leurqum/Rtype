@@ -44,7 +44,7 @@ IScene* SceneHoverMenu::update(float elapsedTime)
 	return new SceneGame(this->decoratedScene);
 
 
-  allButtons.updateAll(elapsedTime);
+  allButtons.update(elapsedTime);
   selectionArrow.update(elapsedTime);
 
   return this;

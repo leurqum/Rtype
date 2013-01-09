@@ -12,11 +12,12 @@
 #include "../../protocol.h"
 
 #include "Rectangle.h"
+#include "IDrawer.h"
 
 // TODO: rename in "RemoteDrawable" or smth like that.
 
 class Drawable :
-	public IDrawable
+public IDrawable, public IDrawer
 {
 protected:
 	Animation::Iterator* rectIterator;

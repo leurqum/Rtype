@@ -1,11 +1,11 @@
 #include "LayerDrawable.h"
 
-void LayerDrawable::addDrawable(IDrawable* add)
+void LayerDrawable::addDrawable(IDrawer* add)
 {
-  drawables.push_back(add);
+  drawers.push_back(add);
 }
 
-void LayerDrawable::removeDrawable(IDrawable* del)
+void LayerDrawable::removeDrawable(IDrawer* del)
 {
   // TODO: delete the drawable
 }
@@ -23,16 +23,16 @@ void LayerDrawable::translate(const Vector2<float>& t)
 
 void LayerDrawable::drawTo(IGraphicsManager* gm) const
 {
-  for (IDrawable* d : drawables)
+  for (IDrawer* d : drawers)
     {
       // TODO: use d->drawTo(gm), and pass translation then.
-      gm->draw(d, translation);
+      d->drawTo(gm); // FIXME: apply translation
     }
 }
 
-void LayerDrawable::updateAll(float t)
+void LayerDrawable::update(float t)
 {
-  for (IDrawable* d : drawables)
+  for (IDrawer* d : drawers)
     {
       d->update(t);
     }

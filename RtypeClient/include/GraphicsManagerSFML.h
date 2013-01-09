@@ -3,12 +3,9 @@
 #include <SFML/Graphics.hpp>
 
 #include "IGraphicsManager.h"
-#include "Drawable.h"
 #include "SpriteSheet.h"
 #include "SpriteSheetFactory.h"
-
-
-class Drawable;
+#include "IDrawable.h"
 
 class GraphicsManagerSFML :
 public IGraphicsManager
@@ -33,4 +30,3 @@ public IGraphicsManager
 
   std::map<std::string, sf::Texture*> textures;
 };
-

@@ -3,10 +3,12 @@
 #include <string>
 
 #include "IDrawable.h"
+#include "IDrawer.h"
 #include "Rectangle.h"
 #include "Vector2.h"
 
-class SimpleDrawable : public IDrawable
+
+class SimpleDrawable : public IDrawable, public IDrawer
 {
  public:
   SimpleDrawable(const std::string& spriteSheet, const Rectangle<int>&, const Vector2<float>& p = Vector2<float>());
