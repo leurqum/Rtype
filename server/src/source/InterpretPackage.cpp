@@ -5,10 +5,10 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 12:40:07 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 16:32:43 2013 marche_m (Maxime Marchès)
 //
 
-#include "InterpretPackage.hpp"
+#include "../include/InterpretPackage.hpp"
 
 InterpretPackage::InterpretPackage()
 {

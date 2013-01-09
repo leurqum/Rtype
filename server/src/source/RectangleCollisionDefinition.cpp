@@ -1,4 +1,4 @@
-#include "RectangleCollisionDefinition.hpp"
+#include "../include/RectangleCollisionDefinition.hpp"
 
 RectangleCollisionDefinition::RectangleCollisionDefinition(std::pair<float, float>position, int height, int width)
 {

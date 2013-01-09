@@ -1,4 +1,4 @@
-#include "Obstacle.hpp"
+#include "../include/Obstacle.hpp"
 
 Obstacle::Obstacle(int id, ICollisionDefinition *rec, int strength, bool isDestroyable)
 {

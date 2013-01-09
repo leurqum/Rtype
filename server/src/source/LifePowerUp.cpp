@@ -1,4 +1,4 @@
-#include "LifePowerUp.hpp"
+#include "../include/LifePowerUp.hpp"
 
 LifePowerUp::~LifePowerUp(void)
 {

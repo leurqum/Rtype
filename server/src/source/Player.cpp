@@ -1,4 +1,4 @@
-#include "Player.hpp"
+#include "../include/Player.hpp"
 
 Player::~Player(void)
 {
