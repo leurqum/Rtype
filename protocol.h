@@ -98,7 +98,7 @@ enum reponse_type
 
 typedef struct
 {
-  int	response;
+  reponse_type	response;
 }	response;
 
 

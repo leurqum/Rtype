@@ -25,7 +25,7 @@ public:
 	void								Fire() const;
 
 private:
-	// TODO: ajouter class Isocket une fois qu'elle seras au bonne endroit
+	// TODO: ajouter class Isocket une fois qu'elle seras au bon endroit
 	
 };
 
