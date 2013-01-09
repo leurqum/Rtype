@@ -1,4 +1,4 @@
-#include "MovingObstacle.hpp"
+#include "../include/MovingObstacle.hpp"
 
 MovingObstacle::~MovingObstacle(void)
 {

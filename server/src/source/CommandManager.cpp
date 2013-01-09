@@ -1,4 +1,4 @@
-#include "CommandManager.hpp"
+#include "../include/CommandManager.hpp"
 
 void CommandManager::addCommandToQueue(int id, int cmd)
 {

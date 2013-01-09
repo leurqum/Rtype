@@ -1,4 +1,4 @@
-#include "BasicWeapon.hpp"
+#include "../include/BasicWeapon.hpp"
 
 void BasicWeapon::fire(Bullet *b)
 {

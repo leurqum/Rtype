@@ -1,4 +1,4 @@
-#include "AIUnit.hpp"
+#include "../include/AIUnit.hpp"
 
 AIUnit::~AIUnit(void)
 {
