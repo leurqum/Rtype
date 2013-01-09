@@ -5,23 +5,23 @@
 ## Login   <leurqu_m@epitech.net>
 ## 
 ## Started on  Tue Jan  1 17:03:48 2013 mathieu leurquin
-## Last update Wed Jan  9 12:45:42 2013 marche_m (Maxime Marchès)
+## Last update Wed Jan  9 18:36:54 2013 marche_m (Maxime Marchès)
 ##
 
 
-SRC_SR		=	./src/IAUnit.cpp 				\
-			./src/HumainUnit.cpp				\
-			./src/BasicWeapon.cpp				\
-			./src/LifePowerUp.cpp				\
-			./src/MovingObstacle.cpp			\
-			./src/Obstacle.cpp				\
-			./src/Player.cpp				\
-			./src/RectangleCollisionDefinition.cpp		\
-			./src/Unit.cpp					\
-			./src/Game.cpp					\
-			./src/Bullet.cpp				\
-			./src/CommandManager.cpp			\
-			./src/InterpretPackage.cpp
+SRC_SR		=	./src/source/IAUnit.cpp 				\
+			./src/source/HumainUnit.cpp				\
+			./src/source/BasicWeapon.cpp				\
+			./src/source/LifePowerUp.cpp				\
+			./src/source/MovingObstacle.cpp			\
+			./src/source/Obstacle.cpp				\
+			./src/source/Player.cpp				\
+			./src/source/RectangleCollisionDefinition.cpp		\
+			./src/source/Unit.cpp					\
+			./src/source/Game.cpp					\
+			./src/source/Bullet.cpp				\
+			./src/source/CommandManager.cpp			\
+			./src/source/InterpretPackage.cpp
 
 SRC_SOCK 	=	./Abs_Socket/UServerSocket.cpp			\
 			./Abs_Socket/USocket.cpp			\
@@ -29,6 +29,7 @@ SRC_SOCK 	=	./Abs_Socket/UServerSocket.cpp			\
 
 SRC_THREAD 	=	./Abs_Thread_mutex/UMutex.cpp			\
 			./Abs_Thread_mutex/UThread.cpp
+
 
 NAME_SR		=	server
 
@@ -45,10 +46,12 @@ CC	=	g++
 
 LIB	=	-lpthread
 
+
 all		:	$(NAME_SR)
 
 $(NAME_SR)	:	$(OBJ_SR) $(OBJ_SOCK) $(OBJ_THREAD)
 			$(CC) $(OBJ_SR) $(OBJ_SOCK) $(OBJ_THREAD) -o $(NAME_SR) $(LIB)
+			$(CC) ./clientTest.cpp ./Abs_Socket/USocket.cpp -o clientTest
 
 clean		:
 			rm -f $(OBJ_SR) $(OBJ_SOCK) $(OBJ_THREAD)

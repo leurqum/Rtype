@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:16:53 2012 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 15:20:13 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 17:48:23 2013 marche_m (Maxime Marchès)
 */
 
 #ifndef __USOCKET__
@@ -47,7 +47,7 @@ public:
 
   bool		connectToServer(std::string const & host, std::string const & port);
   bool		connectFromAcceptedFd(void * fd);
-  int		recv(void * header, void * data);
+  int		recv(void ** header, void ** data);
   int		sendv(std::string const & data);
   int		sendv(int size, void * data);
 

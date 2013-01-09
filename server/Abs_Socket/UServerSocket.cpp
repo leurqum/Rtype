@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 10:17:12 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 17:51:32 2013 marche_m (Maxime Marchès)
 //
 
 #include "UServerSocket.hpp"
@@ -34,7 +34,6 @@ int		UServerSocket::selectSockets()
     {
       if (maxFd < *it)
 	maxFd = *it;
-      std::cout << "client" << std::endl;
       FD_SET((*it), &_readFd);
     }
   if ((nbSocksReady = select(maxFd + 1, &_readFd, NULL, NULL, 0)) == -1)
@@ -42,25 +41,34 @@ int		UServerSocket::selectSockets()
       std::cerr << "Server select() error: " << std::endl;
       return -1;
     }
-  std::cout << "select:" << nbSocksReady << std::endl;
   return nbSocksReady;
 }
 
 void	UServerSocket::callBack(std::list<int>::iterator & it)
 {
-  std::cout << "New commad !" << std::endl;
+  std::cout << "start callBack" << std::endl;
   // s_protocol * package = new s_protocol;
 
   ISocket * tmp = _clientsSocksMap[*it];
-  if (!tmp->recv())
+  void	* data = 0;
+  void	* header = 0;
+
+  if (!tmp->recv(&header, &data))
     {
-      //Client disconnected
-      it = _clientsList.erase(it); // pb ici
+      std::cout << "client disconnected" << std::endl;
+      it = _clientsList.erase(it);
       _clientsSocksMap.erase(((USocket*)(tmp))->getSocket());
       delete tmp;
       it--;
+      std::cout << "end callBack" << std::endl;
       return ;
     }
+  this->_interPckg->executeCmd(header, data, tmp);
+  if (data)
+    delete data;
+  if (header)
+    delete header;
+  std::cout << "end callBack" << std::endl;
   // std::cout << "------------ readCmd ------------" << std::endl;
   // std::cout << "Commande ID: " << package->cmdId << std::endl;
   // std::cout << "Size parameter: " << package->size << std::endl;
@@ -127,7 +135,7 @@ bool	UServerSocket::init(std::string const & listenHost, std::string const & lis
   this->_servAddr.sin_addr.s_addr = INADDR_ANY;
   this->_servAddr.sin_port = htons(port);
 
-  this->_listenSocket = socket(AF_INET, SOCK_STREAM, 0);
+  this->_listenSocket = socket(AF_INET, SOCK_STREAM, this->_udp);
   if (this->_listenSocket <= 0)
     {
       std::cerr << "socket failed with error" << std::endl;
@@ -158,6 +166,7 @@ UServerSocket::~UServerSocket()
 
 UServerSocket::UServerSocket()
 {
+  this->_interPckg = new InterpretPackage();
   this->_listenSocket = 0;
   this->_udp = IPPROTO_TCP;
 }
