@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 10:01:15 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 10:05:16 2013 marche_m (Maxime Marchès)
 //
 
 #include "UServerSocket.hpp"
@@ -45,7 +45,7 @@ int		UServerSocket::selectSockets()
   return nbSocksReady;
 }
 
-void	UServerSocket::interpretCmd(std::list<int>::iterator & it)
+void	UServerSocket::callBack(std::list<int>::iterator & it)
 {
   std::cout << "New commad !" << std::endl;
   // s_protocol * package = new s_protocol;
@@ -94,7 +94,7 @@ void	UServerSocket::launch()
 	    if ((*it) == _listenSocket)
 	      this->addNewPeer(&(*it));
 	    else
-	      this->interpretCmd(it);
+	      this->callBack(it);
 	  }
     }
 }

@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:46 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 10:00:21 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 10:04:21 2013 marche_m (Maxime Marchès)
 //
 
 #ifndef __U_SERVER_SOCKET__
@@ -33,7 +33,7 @@ private:
   void		addNewPeer(void * peer);
   int		getSocket() { return _listenSocket; }
   int		selectSockets();
-  void		interpretCmd(std::list<int>::iterator & it);
+  void		callBack(std::list<int>::iterator & it);
 
   struct sockaddr_in		_servAddr;
   int				_listenSocket;
