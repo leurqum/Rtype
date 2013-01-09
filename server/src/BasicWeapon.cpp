@@ -2,4 +2,5 @@
 
 void BasicWeapon::fire(Bullet *b)
 {
+  (void)b;
 }

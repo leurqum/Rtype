@@ -14,6 +14,7 @@ bool RectangleCollisionDefinition::isCollidingWith()
 
 void RectangleCollisionDefinition::setCollisionFilter(int filter)
 {
+  (void)filter;
 }
 
 std::pair<float, float> RectangleCollisionDefinition::getPosition()const

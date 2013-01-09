@@ -8,17 +8,9 @@ Obstacle::Obstacle(int id, ICollisionDefinition *rec, int strength, bool isDestr
   _isDestroyable = isDestroyable; 
 }
 
-float Obstacle::collision(Obstacle *o)
-{
-  return 0;
-}
-float Obstacle::internalCollision(Obstacle *o)
-{
-  return 0;
-}
-
 void Obstacle::update(Obstacle *o)
 {
+  (void)o;
 }
 
 int Obstacle::getId()const
