@@ -11,6 +11,7 @@ Network::~Network(void)
 {
 }
 
+
 std::list<Drawable>					Network::GetLastWorld() const
 {
 	std::list<Drawable> World;
@@ -20,6 +21,26 @@ std::list<Drawable>					Network::GetLastWorld() const
 
 	
 Protocol::reponse_type				Network::Register(std::string name, std::string pwd) const
+{
+	Protocol::package			header;
+	header.id = Protocol::REGISTER;
+	header.size = sizeof(Protocol::create_account);
+
+	Protocol::create_account	reg;
+	strcpy(reg.login, name.c_str());
+	strcpy(reg.passwd, pwd.c_str());
+
+	Protocol::response			rep;
+	rep.response = Protocol::OK;
+
+	// send header + reg
+
+	// get reponse
+
+	return rep.response;
+}
+
+Protocol::reponse_type				Network::Login(std::string name, std::string pwd) const
 {
 	Protocol::package			header;
 	header.id = Protocol::LOGIN;
@@ -32,23 +53,48 @@ Protocol::reponse_type				Network::Register(std::string name, std::string pwd) c
 	Protocol::response			rep;
 	rep.response = Protocol::OK;
 
-	// send header
-	// send login
+	// send header + login
+
 	// get reponse
 
 	return rep.response;
 }
 
-Protocol::reponse_type				Network::Login(std::string name, std::string pwd) const
+Protocol::reponse_type				Network::Join(std::string name)
 {
-}
+	Protocol::package			header;
+	header.id = Protocol::JOIN_GAME;
+	header.size = sizeof(Protocol::join_game);
 
-Protocol::reponse_type				Network::Join()
-{
+	Protocol::join_game				game;
+	strcpy(game.party_name, name.c_str());
+
+	Protocol::response			rep;
+	rep.response = Protocol::OK;
+
+	// send header + party_name
+
+	// get reponse
+
+	return rep.response;
 }
 
 std::list<Protocol::party>			Network::GetGameList() const
 {
+	Protocol::package			header;
+	header.id = Protocol::GET_GAME_LIST;
+	header.size = 0;
+
+	Protocol::response			rep;
+	rep.response = Protocol::OK;
+
+	std::list<Protocol::party> partys;
+
+	// send header
+
+	// get reponse
+
+	return partys;
 }
 
 void								Network::Move(Protocol::move) const

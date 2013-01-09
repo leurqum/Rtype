@@ -19,7 +19,7 @@ public:
 	//tcp communication
 	Protocol::reponse_type				Register(std::string name, std::string pwd) const;
 	Protocol::reponse_type				Login(std::string name, std::string pwd) const;
-	Protocol::reponse_type				Join();
+	Protocol::reponse_type				Join(std::string name);
 	std::list<Protocol::party>			GetGameList() const;
 	void								Move(Protocol::move) const;
 	void								Fire() const;
