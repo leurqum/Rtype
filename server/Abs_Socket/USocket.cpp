@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 09:56:23 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 10:17:25 2013 marche_m (Maxime Marchès)
 //
 
 #include "USocket.hpp"
@@ -76,7 +76,7 @@ int		USocket::recv()
 
 int		USocket::sendv(std::string const & data)
 {
-  write(this->_connectSocket, data.c_str(), data.size());
+  return write(this->_connectSocket, data.c_str(), data.size());
 }
 
 USocket::~USocket()

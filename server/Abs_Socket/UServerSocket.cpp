@@ -5,13 +5,14 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 10:05:16 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 10:17:12 2013 marche_m (Maxime Marchès)
 //
 
 #include "UServerSocket.hpp"
 
 void	UServerSocket::addNewPeer(void * peer)
 {
+  peer = peer;
   std::cout << "new Client !" << std::endl;
   ISocket * acc = this->myaccept();
   this->_clientsList.push_back(((USocket *)(acc))->getSocket());
