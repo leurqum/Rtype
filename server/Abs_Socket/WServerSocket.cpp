@@ -1,5 +1,5 @@
-#include "WSocket.h"
-#include "WServerSocket.h"
+#include "WSocket.hpp"
+#include "WServerSocket.hpp"
 
 int CALLBACK conditionAcceptFunc(
     LPWSABUF lpCallerId,

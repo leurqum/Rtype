@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sat Dec 29 11:16:53 2012 marche_m (Maxime Marchès)
-** Last update Mon Jan  7 16:33:45 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 09:55:42 2013 marche_m (Maxime Marchès)
 */
 
 #ifndef __USOCKET__
@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <list>
 
-#include "ISocket.h"
+#include "ISocket.hpp"
 
 #define INVALID_SOCKET 0
 
@@ -50,6 +50,7 @@ public:
   int		sendv(std::string const & data);
 
   int		getSocket() const { return _connectSocket; }
+  void		setUDP(bool val);
 private:
   struct hostent		* _server;
 
@@ -58,6 +59,7 @@ private:
   struct sockaddr_in		_hints;
   int				_connectSocket;
   bool				_close;
+  int				_udp;
 };
 
 

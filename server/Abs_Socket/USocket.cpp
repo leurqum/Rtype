@@ -5,15 +5,24 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Mon Jan  7 16:37:20 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 09:56:23 2013 marche_m (Maxime Marchès)
 //
 
-#include "USocket.h"
+#include "USocket.hpp"
 
 USocket::USocket()
 {
   _connectSocket = INVALID_SOCKET;
   _close = true;
+  _udp = IPPROTO_TCP;
+}
+
+void	USocket::setUDP(bool val)
+{
+  if (val == true)
+    _udp = IPPROTO_UDP;
+  else
+    _udp = IPPROTO_TCP;
 }
 
 bool	USocket::connectToServer(std::string const & host, std::string const & port)
@@ -21,7 +30,7 @@ bool	USocket::connectToServer(std::string const & host, std::string const & port
   this->_host = host;
   this->_port = port;
 
-  this->_connectSocket = socket(AF_INET, SOCK_STREAM, 0);
+  this->_connectSocket = socket(AF_INET, SOCK_STREAM, _udp);
   if (this->_connectSocket < 0)
     {
       std::cerr << "error: socket" << std::endl;

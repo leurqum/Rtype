@@ -17,9 +17,9 @@
 // Need to link with Ws2_32.lib
 #pragma comment(lib, "ws2_32.lib")
 
-#include "IServerSocket.h"
+#include "IServerSocket.hpp"
 #include "protocol.h"
-#include "UsersManager.h"
+#include "UsersManager.hpp"
 
 class WServerSocket : public IServerSocket
 {

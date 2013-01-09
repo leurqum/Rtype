@@ -1,4 +1,4 @@
-#include "WSocket.h"
+#include "WSocket.hpp"
 
 std::wstring StringToWString(const std::string& s)
 {

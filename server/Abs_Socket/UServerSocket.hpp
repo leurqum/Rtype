@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:46 2013 marche_m (Maxime Marchès)
-// Last update Mon Jan  7 16:20:01 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 10:00:21 2013 marche_m (Maxime Marchès)
 //
 
 #ifndef __U_SERVER_SOCKET__
@@ -16,8 +16,8 @@
 #include <sys/select.h>
 #include <map>
 
-#include "IServerSocket.h"
-#include "USocket.h"
+#include "IServerSocket.hpp"
+#include "USocket.hpp"
 
 class UServerSocket : public IServerSocket
 {
@@ -27,6 +27,7 @@ public:
   bool		init(std::string const & listenHost, std::string const & listenPort);
   ISocket	* myaccept();
   void		launch();
+  void		setUDP(bool val);
 
 private:
   void		addNewPeer(void * peer);
@@ -39,6 +40,7 @@ private:
   std::list<int>		_clientsList;
   std::map<int, ISocket *>	_clientsSocksMap;
   fd_set			_readFd;
+  bool				_udp;
 };
 
 

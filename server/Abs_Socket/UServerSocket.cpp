@@ -5,10 +5,10 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Mon Jan  7 16:30:25 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 10:01:15 2013 marche_m (Maxime Marchès)
 //
 
-#include "UServerSocket.h"
+#include "UServerSocket.hpp"
 
 void	UServerSocket::addNewPeer(void * peer)
 {
@@ -16,6 +16,11 @@ void	UServerSocket::addNewPeer(void * peer)
   ISocket * acc = this->myaccept();
   this->_clientsList.push_back(((USocket *)(acc))->getSocket());
   this->_clientsSocksMap[((USocket *)(acc))->getSocket()] = acc;
+}
+
+void		UServerSocket::setUDP(bool val)
+{
+  (val == true) ? (_udp = IPPROTO_UDP) : (_udp = IPPROTO_TCP);
 }
 
 int		UServerSocket::selectSockets()
@@ -153,5 +158,5 @@ UServerSocket::~UServerSocket()
 UServerSocket::UServerSocket()
 {
   this->_listenSocket = 0;
+  this->_udp = IPPROTO_TCP;
 }
-
