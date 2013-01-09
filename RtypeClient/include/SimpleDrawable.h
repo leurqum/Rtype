@@ -3,18 +3,16 @@
 #include <string>
 
 #include "IDrawable.h"
-#include "IDrawer.h"
+#include "DrawerModifiable.h"
 #include "Rectangle.h"
 #include "Vector2.h"
 
 
-class SimpleDrawable : public IDrawable, virtual public IDrawer
+class SimpleDrawable : public IDrawable, virtual public DrawerModifiable
 {
  public:
   SimpleDrawable(const std::string& spriteSheet, const Vector2<float>& p = Vector2<float>());
   SimpleDrawable(const std::string& spriteSheet, const Rectangle<int>&, const Vector2<float>& p = Vector2<float>());
-  virtual Vector2<float> getPosition() const;
-  virtual void setPosition(const Vector2<float>&);
   
   virtual const std::string& getSpriteSheet() const;
   virtual const Rectangle<int>* getRectSpriteSheet() const;

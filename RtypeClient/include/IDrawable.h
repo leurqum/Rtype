@@ -10,7 +10,7 @@ class IDrawable // : public IDrawer
 {
  public:
   // FIXME: no ref ?
-  virtual Vector2<float> getPosition() const = 0;
+  // virtual Vector2<float> getPosition() const = 0;
   // Add rotation, etc.
 
   virtual const std::string& getSpriteSheet() const = 0;

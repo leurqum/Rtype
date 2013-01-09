@@ -6,6 +6,7 @@
 #include "SpriteSheet.h"
 #include "SpriteSheetFactory.h"
 #include "IDrawable.h"
+#include "IDrawer.h"
 
 class GraphicsManagerSFML :
 public IGraphicsManager
@@ -15,7 +16,7 @@ public IGraphicsManager
   GraphicsManagerSFML(void);
   virtual void reset();
   virtual void clear();
-  virtual void draw(IDrawable*, Vector2<float>);
+  virtual void draw(IDrawable*, const IDrawer*);
   virtual void display();
   
 
