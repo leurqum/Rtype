@@ -6,11 +6,11 @@ SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
   exitButton(*SpriteSheetFactory::getInstance()->getSpriteSheet(3)),
   selectionArrow(*SpriteSheetFactory::getInstance()->getSpriteSheet(4))
 {
-  playButton.setPosition(330, 160);
+  playButton.setPosition(Vector2<float>(330, 160));
 
-  exitButton.setPosition(330, 200);
+  exitButton.setPosition(Vector2<float>(330, 200));
 
-  selectionArrow.setPosition(310, 160);
+  selectionArrow.setPosition(Vector2<float>(310, 160));
 
 
   allButtons.addDrawable(&playButton);
@@ -39,7 +39,10 @@ IScene* SceneHoverMenu::update(float elapsedTime)
       ++selectionPosition;
       if (selectionPosition >= nbButtons)
 	selectionPosition = 0;
-      selectionArrow.setPosition(firstSelection.x + selectionPosition * gapButtons.x, firstSelection.y + selectionPosition * gapButtons.y);
+      selectionArrow.
+	setPosition(
+		    Vector2<float>(firstSelection.x + selectionPosition * gapButtons.x,
+				   firstSelection.y + selectionPosition * gapButtons.y));
     }
   const Vector2<bool>& returnKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Return));
   if (!returnKey.x && returnKey.y)
@@ -66,7 +69,7 @@ void SceneHoverMenu::draw()
   ASceneHover::draw();
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
   allButtons.drawTo(gm);
-  gm->draw(&selectionArrow);
+  selectionArrow.drawTo(gm);
 }
 
 void SceneHoverMenu::load()

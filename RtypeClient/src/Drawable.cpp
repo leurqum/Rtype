@@ -12,17 +12,6 @@ Drawable::~Drawable(void)
 {
 }
 
-Vector2<float> Drawable::getPosition() const
-{
-  return this->position;
-}
-
-void Drawable::setPosition(float x, float y)
-{
-  this->position.x = x;
-  this->position.y = y;
-}
-
 const std::string& Drawable::getSpriteSheet() const
 {
   return this->spriteSheet->getFilename();
@@ -34,12 +23,6 @@ const Rectangle<int>* Drawable::getRectSpriteSheet() const
   // so we can modify it with the modifiers (bah that sentence..)
   return new Rectangle<int>(rectIterator->getValue());
 }
-
-void	Drawable::drawTo(IGraphicsManager* gm) const
-{
-  gm->draw((IDrawable*)this);
-}
-
 
 bool Drawable::animate(int idAnimation)
 {
@@ -53,22 +36,15 @@ bool Drawable::animate(int idAnimation)
   return true;
 }
 
-void Drawable::addModifier(const Animation& a)
-{
-  modifiers.push_back(Animation::Iterator(a));
-}
 
 void Drawable::update(float elapsedTime)
 {
+  DrawerModifiable::update(elapsedTime);
+
   rectIterator->increase(elapsedTime);
-  // TODO: update modifiers
-  for (Animation::Iterator& i : modifiers)
-    {
-      i.increase(elapsedTime);
-    }
 }
 
 void Drawable::_manual_next_frame()
 {
-	rectIterator->increase_iterator();
+  rectIterator->increase_iterator();
 }

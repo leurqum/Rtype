@@ -48,10 +48,10 @@ IScene* SceneBackground::update(float elapsedTime)
 void SceneBackground::draw()
 {
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
-  gm->draw(&fixedBackground);
+  gm->draw(&fixedBackground, &fixedBackground);
   std::cout << "drawing" << std::endl;
-  gm->draw(&scrollingBackground);
-  gm->draw(&scrollingBackground2);
+  gm->draw(&scrollingBackground, &scrollingBackground);
+  gm->draw(&scrollingBackground2, &scrollingBackground2);
 }
 
 void SceneBackground::load()

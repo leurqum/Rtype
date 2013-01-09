@@ -72,13 +72,13 @@ void SceneGame::draw()
   //gm->draw(&scrollingBackground2);
   // FIXME: use a list ?
   if (ship[0] != nullptr)
-    gm->draw(ship[0]);
+    ship[0]->drawTo(gm);
   if (ship[1] != nullptr)
-    gm->draw(ship[1]);
+    ship[0]->drawTo(gm);
   if (ship[2] != nullptr)
-    gm->draw(ship[2]);
+    ship[0]->drawTo(gm);
   if (ship[3] != nullptr)
-    gm->draw(ship[3]);
+    ship[0]->drawTo(gm);
 }
 
 void SceneGame::load()

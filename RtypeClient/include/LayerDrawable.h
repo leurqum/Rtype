@@ -1,11 +1,10 @@
 #pragma once 
 
 #include <list>
-#include "IDrawable.h"
-#include "IDrawer.h"
+#include "DrawerModifiable.h"
 #include "Vector2.h"
 
-class LayerDrawable : public IDrawer
+class LayerDrawable : public DrawerModifiable
 {
  public:
   void addDrawable(IDrawer* d);
