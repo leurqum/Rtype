@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
-// Last update Sun Dec 16 16:32:45 2012 marche_m (Maxime Marchès)
+** Last update Wed Jan  9 12:48:04 2013 mathieu leurquin
 */
 
 #ifndef __PROTOCOOL__
@@ -45,6 +45,7 @@ typedef	struct
   int	nb_monstre;
   int	nb_obstacle;
   int	nb_ship;
+  int	nb_bullet;
 }	 monde_param;
 
 enum type_drawable
@@ -52,7 +53,7 @@ enum type_drawable
 	SHIP,
 	MONSTER, // several monsters ?
 	OBSTACLE, // several obstacles ?
-	BULLET // no nb_bullet in monde_param, is it considered as obstacle ?
+	BULLET
 };
 
 typedef	struct
