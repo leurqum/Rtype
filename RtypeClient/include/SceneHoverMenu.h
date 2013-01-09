@@ -24,5 +24,9 @@ private:
 	Drawable playButton;
 	Drawable exitButton;
 	Drawable selectionArrow;
+	int selectionPosition;
+	int nbButtons;
+	Vector2<float> firstSelection;
+	Vector2<float> gapButtons;
 };
 

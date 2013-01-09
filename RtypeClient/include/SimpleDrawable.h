@@ -8,15 +8,16 @@
 #include "Vector2.h"
 
 
-class SimpleDrawable : public IDrawable, public IDrawer
+class SimpleDrawable : public IDrawable, virtual public IDrawer
 {
  public:
+  SimpleDrawable(const std::string& spriteSheet, const Vector2<float>& p = Vector2<float>());
   SimpleDrawable(const std::string& spriteSheet, const Rectangle<int>&, const Vector2<float>& p = Vector2<float>());
   virtual Vector2<float> getPosition() const;
   virtual void setPosition(const Vector2<float>&);
   
   virtual const std::string& getSpriteSheet() const;
-  virtual Rectangle<int> getRectSpriteSheet() const;
+  virtual const Rectangle<int>* getRectSpriteSheet() const;
 
 
   virtual void drawTo(IGraphicsManager*) const;
@@ -24,6 +25,6 @@ class SimpleDrawable : public IDrawable, public IDrawer
 
  protected:
   const std::string& spriteSheet;
-  Rectangle<int> rectSpriteSheet;
+  Rectangle<int>* rectSpriteSheet;
   Vector2<float> position;
 };

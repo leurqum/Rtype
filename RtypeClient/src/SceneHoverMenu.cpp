@@ -1,23 +1,25 @@
 #include "SceneHoverMenu.h"
 
-SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) : ASceneHover(decoratedScene)
+SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
+  ASceneHover(decoratedScene),
+  playButton(*SpriteSheetFactory::getInstance()->getSpriteSheet(3)),
+  exitButton(*SpriteSheetFactory::getInstance()->getSpriteSheet(3)),
+  selectionArrow(*SpriteSheetFactory::getInstance()->getSpriteSheet(4))
 {
-
-  playButton.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(3));
   playButton.setPosition(330, 160);
-  playButton.animate(0);
 
-  exitButton.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(3));
   exitButton.setPosition(330, 200);
-  exitButton.animate(0);
 
-  selectionArrow.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(4));
   selectionArrow.setPosition(310, 160);
-  selectionArrow.animate(0);
 
 
   allButtons.addDrawable(&playButton);
   allButtons.addDrawable(&exitButton);
+
+  firstSelection = Vector2<float>(310, 160);
+  gapButtons = Vector2<float>(0, 40);
+  selectionPosition = 0;
+  nbButtons = 2;
 }
 
 
@@ -34,14 +36,23 @@ IScene* SceneHoverMenu::update(float elapsedTime)
   const Vector2<bool>& downKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Down));
   if (downKey.x && !downKey.y)
     {
-    selectionArrow.setPosition(selectionArrow.getPosition().x, selectionArrow.getPosition().y + 40);
+      ++selectionPosition;
+      if (selectionPosition >= nbButtons)
+	selectionPosition = 0;
+      selectionArrow.setPosition(firstSelection.x + selectionPosition * gapButtons.x, firstSelection.y + selectionPosition * gapButtons.y);
     }
   const Vector2<bool>& returnKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Return));
   if (!returnKey.x && returnKey.y)
-	  playButton.animate(1);
+    {
+      // TODO: make this more dynamic (an idea would be to create a LayoutDrawerMenu, with the arrow and stuff).
+      if (selectionPosition == 0)
+	playButton.animate(1);
+      else
+	exitButton.animate(1);
+    }
   else if (returnKey.x && !returnKey.y)
-	// INFO: Validation of current selected button
-	return new SceneGame(this->decoratedScene);
+    // INFO: Validation of current selected button
+    return new SceneGame(this->decoratedScene);
 
 
   allButtons.update(elapsedTime);

@@ -14,7 +14,7 @@ class IDrawable // : public IDrawer
   // Add rotation, etc.
 
   virtual const std::string& getSpriteSheet() const = 0;
-  virtual Rectangle<int> getRectSpriteSheet() const = 0;
+  virtual const Rectangle<int>* getRectSpriteSheet() const = 0;
 
 
 

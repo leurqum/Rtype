@@ -1,7 +1,13 @@
 #include "SimpleDrawable.h"
 
-SimpleDrawable::SimpleDrawable(const std::string& ssFilename, const Rectangle<int>& r, const Vector2<float>& p) : spriteSheet(ssFilename), rectSpriteSheet(r), position(p)
+SimpleDrawable::SimpleDrawable(const std::string& ssFilename, const Vector2<float>& p) : spriteSheet(ssFilename), rectSpriteSheet(nullptr), position(p)
 {
+  
+}
+
+SimpleDrawable::SimpleDrawable(const std::string& ssFilename, const Rectangle<int>& r, const Vector2<float>& p) : spriteSheet(ssFilename), rectSpriteSheet(new Rectangle<int>(r)), position(p)
+{
+
 }
 
 Vector2<float> SimpleDrawable::getPosition() const
@@ -19,7 +25,7 @@ const std::string& SimpleDrawable::getSpriteSheet() const
   return spriteSheet;
 }
 
-Rectangle<int> SimpleDrawable::getRectSpriteSheet() const
+const Rectangle<int>* SimpleDrawable::getRectSpriteSheet() const
 {
   return rectSpriteSheet;
 }

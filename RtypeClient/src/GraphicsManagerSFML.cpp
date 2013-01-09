@@ -34,7 +34,7 @@ void GraphicsManagerSFML::draw(IDrawable* d, Vector2<float> t)
 
   //std::cout << "creating sprite..." << std::endl;
   sf::Sprite s(*getTextureFromFilename(ss),
-	       GraphicsManagerSFML::rectangleToSFMLRect( d->getRectSpriteSheet()));
+	       GraphicsManagerSFML::rectangleToSFMLRect( *d->getRectSpriteSheet()));
   //std::cout << "sprite created" << std::endl;
   s.setPosition(d->getPosition().x + t.x, d->getPosition().y + t.y);
   window.draw(s);

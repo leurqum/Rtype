@@ -1,7 +1,10 @@
 #include "DrawableRemote.h"
 
-DrawableRemote::DrawableRemote() : updater(nullptr)
+DrawableRemote::DrawableRemote() :
+  Drawable(*SpriteSheetFactory::getInstance()->getSpriteSheet(0)),
+  updater(nullptr)
 {
+  this->animate(1);
 
 }
 
@@ -9,14 +12,8 @@ void DrawableRemote::update(float elapsedTime)
 {
   if (updater != nullptr)
     {
-      if (spriteSheet == nullptr)
-		{
-		setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(0)); // FIXME: 0 means type
-	  // TODO: animate properly depending on whatever from the updater
-	  this->animate(1);
-	  }
-	  this->setPosition(updater->xPosition, updater->yPosition);
-
+      this->setPosition(updater->xPosition, updater->yPosition);
+      // TODO: animate depending on the updater.
       delete updater;
       updater = nullptr;
     }

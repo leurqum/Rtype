@@ -1,10 +1,10 @@
 #include "Drawable.h"
 
 
-Drawable::Drawable()
+Drawable::Drawable(const SpriteSheet& ss) : SimpleDrawable(ss.getFilename()), spriteSheet(&ss)
 {
   rectIterator = nullptr;
-  spriteSheet = nullptr; // fuck this shit, never forget to initiate the fkin variables..
+  animate(0);
 }
 
 
@@ -28,16 +28,11 @@ const std::string& Drawable::getSpriteSheet() const
   return this->spriteSheet->getFilename();
 }
 
-void Drawable::setSpriteSheet(const SpriteSheet* s)
-{
-  this->spriteSheet = s;
-  rectIterator = nullptr;
-}
-
-Rectangle<int> Drawable::getRectSpriteSheet() const
+const Rectangle<int>* Drawable::getRectSpriteSheet() const
 {
   // FIXME: store the value when updating so we can return a reference instead of copying.
-  return rectIterator->getValue();
+  // so we can modify it with the modifiers (bah that sentence..)
+  return new Rectangle<int>(rectIterator->getValue());
 }
 
 void	Drawable::drawTo(IGraphicsManager* gm) const
@@ -48,10 +43,9 @@ void	Drawable::drawTo(IGraphicsManager* gm) const
 
 bool Drawable::animate(int idAnimation)
 {
-  
   if (rectIterator == nullptr || &rectIterator->a != spriteSheet->getAnimations().at(idAnimation))
     {
-      std::cout << "animating [" << spriteSheet->filename << "]: " << idAnimation << std::endl;
+      std::cout << "animating [" << getSpriteSheet() << "]: " << idAnimation << std::endl;
 
       delete rectIterator;
       rectIterator = new Animation::Iterator(*spriteSheet->getAnimations().at(idAnimation));
@@ -59,17 +53,19 @@ bool Drawable::animate(int idAnimation)
   return true;
 }
 
+void Drawable::addModifier(const Animation& a)
+{
+  modifiers.push_back(Animation::Iterator(a));
+}
+
 void Drawable::update(float elapsedTime)
 {
-  static float totalTime = 0; // we put 0 here to avoid redundant same values. (using a define/const would be great.)
-
-  //totalTime += elapsedTime;
-  //while ( totalTime > 250)// FIXME: maybe this should be handled by spritesheet ?
-  //  {
-      //std::cout << "NEXT FRAME !" << std::endl;
-      rectIterator->increase(elapsedTime);
-      //totalTime -= 250;
-    //}
+  rectIterator->increase(elapsedTime);
+  // TODO: update modifiers
+  for (Animation::Iterator& i : modifiers)
+    {
+      i.increase(elapsedTime);
+    }
 }
 
 void Drawable::_manual_next_frame()
