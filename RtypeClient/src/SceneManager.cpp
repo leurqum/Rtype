@@ -21,7 +21,7 @@ SceneManager* SceneManager::getInstance()
 
 void SceneManager::update(float milliseconds)
 {
-	inputManager->update();
+  inputManager->update();
   // NOTE: this assignation allows the scene to manage its own decorators.
   current = current->update(milliseconds);
 }

@@ -25,6 +25,7 @@ void LayerDrawable::drawTo(IGraphicsManager* gm) const
 {
   for (IDrawable* d : drawables)
     {
+      // TODO: use d->drawTo(gm), and pass translation then.
       gm->draw(d, translation);
     }
 }

@@ -47,7 +47,7 @@ SpriteSheetFactory::SpriteSheetFactory()
   singleAnim.push_back(Rectangle<int>(799, 599, Vector2<int>(-799, 0)));
   singleAnim.push_back(Rectangle<int>(799, 599, Vector2<int>(0, 0)));
   singleAnim.push_back(Rectangle<int>(799, 599, Vector2<int>(799, 0)));
-  animList[0] = new Animation(singleAnim, 8000, false, 0, true);
+  animList[0] = new Animation(singleAnim, 100000, false, 0, true);
   spriteSheets[2]->setAnimations(animList);
   // spriteSheets[2]->setInterpolation(0);
   // spriteSheets[2]->setTimeBetweenAnimationFrame(8000);

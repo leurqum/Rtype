@@ -1,6 +1,8 @@
 #pragma once
 
+
 #include "Drawable.h"
+#include "../../protocol.h"
 
 class DrawableRemote : public Drawable
 {

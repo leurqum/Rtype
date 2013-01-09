@@ -4,7 +4,6 @@
 #include <map>
 
 #include "IDrawable.h"
-#include "DrawableRemote.h"
 #include "../../protocol.h"
 #include "SpriteSheet.h"
 #include "Vector2.h"
@@ -16,9 +15,4 @@ class IGraphicsManager
   virtual void clear() = 0;
   virtual void draw(IDrawable*, Vector2<float> translation = Vector2<float>()) = 0;
   virtual void display() = 0;
-  virtual void update(float) = 0;
-  
-  virtual DrawableRemote* updateDrawableFrom(DrawableRemote* old, const Protocol::drawable& d) = 0;
-  virtual void deleteDrawable(const IDrawable*) = 0;
-  /* virtual const SpriteSheet* getSpriteSheetFor(int drawableType) const = 0; */
 };

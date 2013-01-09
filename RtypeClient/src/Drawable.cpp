@@ -23,9 +23,9 @@ void Drawable::setPosition(float x, float y)
   this->position.y = y;
 }
 
-const SpriteSheet* Drawable::getSpriteSheet() const
+const std::string& Drawable::getSpriteSheet() const
 {
-  return this->spriteSheet;
+  return this->spriteSheet->getFilename();
 }
 
 void Drawable::setSpriteSheet(const SpriteSheet* s)
@@ -36,8 +36,16 @@ void Drawable::setSpriteSheet(const SpriteSheet* s)
 
 Rectangle<int> Drawable::getRectSpriteSheet() const
 {
+  // FIXME: store the value when updating so we can return a reference instead of copying.
   return rectIterator->getValue();
 }
+
+void	Drawable::drawTo(IGraphicsManager* gm) const
+{
+  gm->draw((IDrawable*)this);
+}
+
+
 bool Drawable::animate(int idAnimation)
 {
   

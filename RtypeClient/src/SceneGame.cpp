@@ -36,7 +36,20 @@ IScene* SceneGame::update(float elapsedTime)
    //   incr = 5;
   d.yPosition = 123;
 
-  ship[0] = SceneManager::getInstance()->getGraphicsManager()->updateDrawableFrom(ship[0], d);
+
+  if (ship[0] != nullptr)
+    {
+      // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
+      ship[0]->setUpdate(d);
+    }
+  else
+    {
+
+      DrawableRemote* ret = new DrawableRemote();
+      ret->setUpdate(d);
+
+      ship[0] = ret;
+    }
 
   // TODO: insert input managing code here.
 

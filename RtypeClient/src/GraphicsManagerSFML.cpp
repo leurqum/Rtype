@@ -30,11 +30,10 @@ void GraphicsManagerSFML::clear()
 void GraphicsManagerSFML::draw(IDrawable* d, Vector2<float> t)
 {
   //std::cout << "getting spritesheet..." << std::endl;
-  const SpriteSheet* ss = d->getSpriteSheet();
-  if (ss == nullptr)
-    return ;
+  const std::string& ss = d->getSpriteSheet();
+
   //std::cout << "creating sprite..." << std::endl;
-  sf::Sprite s(*getTextureFromFilename(ss->getFilename()),
+  sf::Sprite s(*getTextureFromFilename(ss),
 	       GraphicsManagerSFML::rectangleToSFMLRect( d->getRectSpriteSheet()));
   //std::cout << "sprite created" << std::endl;
   s.setPosition(d->getPosition().x + t.x, d->getPosition().y + t.y);
@@ -46,36 +45,25 @@ void GraphicsManagerSFML::display()
   window.display();
 }
 
+// DrawableRemote* GraphicsManagerSFML::updateDrawableFrom(DrawableRemote* old, const Protocol::drawable& d )
+// {
+//   if (old != nullptr)
+//     {
+//       // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
+//       old->setUpdate(d);
+//       return old;
+//     }
+//   else
+//     {
 
-void GraphicsManagerSFML::update(float milliseconds)
-{
-  // TODO: set the drawables to a non updated state. -> then we'll have to delete them if they havn't been updated. (do this in drawable->update(miliseconds); )
-}
+//       DrawableRemote* ret = new DrawableRemote();
+//       ret->setUpdate(d);
 
-DrawableRemote* GraphicsManagerSFML::updateDrawableFrom(DrawableRemote* old, const Protocol::drawable& d )
-{
-  if (old != nullptr)
-    {
-      // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
-      old->setUpdate(d);
-      return old;
-    }
-  else
-    {
-
-      DrawableRemote* ret = new DrawableRemote();
-      ret->setUpdate(d);
-
-      drawables.push_back(ret);
-      return ret;
-    }
-  return nullptr; // bah.
-}
-
-void GraphicsManagerSFML::deleteDrawable(const IDrawable*)
-{
-
-}
+//       drawables.push_back(ret);
+//       return ret;
+//     }
+//   return nullptr; // bah.
+// }
 
 template<typename T>
 const sf::Rect<T> GraphicsManagerSFML::rectangleToSFMLRect(const Rectangle<T>& r)
