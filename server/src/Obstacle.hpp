@@ -12,8 +12,6 @@ private:
   bool			_isDestroyable;
 public:
   Obstacle(int id, ICollisionDefinition *rec, int strength, bool isDestroyable);
-  float collision(Obstacle *o);
-  float internalCollision(Obstacle *o);
   void update(Obstacle *o);
   int getId()const;
   ICollisionDefinition* getDefinition()const;

@@ -22,7 +22,9 @@ IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefi
 {
   IWeapon *w = new BasicWeapon();
   IAUnit *u = new IAUnit(speed, w, id, coll, health, strength, isDestroyable);
-
+  
+  //WARING GAME
+  (void)game;
   iaList.push_back(u);
   return (u);
 }
@@ -33,7 +35,8 @@ HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int he
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
   HumainUnit *h = new HumainUnit(speed, p, w, id, coll, health, strength, isDestroyable);
-  
+  //WARING GAME
+  (void)game;
   humanList.push_back(h);
   return (h);
 }
@@ -41,7 +44,8 @@ HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int he
 MovingObstacle* Game::createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable, Game *game)
 {
   MovingObstacle* l = new MovingObstacle(speed, id, coll, strength, isDestroyable);
-
+  //WARING GAME
+  (void)game;
   obsList.push_back(l);
   return (l);
 }
@@ -57,6 +61,9 @@ Player* Game::createPlayer(int id, std::string name, int life)
 LifePowerUp* Game::createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, Game *game, int strength)
 {
   LifePowerUp* l = new LifePowerUp(nb_life, id, coll, strength, isDestroyable);
+
+  //WARING GAME
+  (void)game;
 
   bonusList.push_back(l);
   return (l);
