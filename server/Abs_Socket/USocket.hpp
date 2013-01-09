@@ -1,11 +1,11 @@
 /*
-** USocket.h for  in /home/marche_m/workspace/tek3/cpp/r-type/Rtype/server
-** 
-** Made by marche_m (Maxime Marchès)
-** Login   <marche_m@epitech.net>
-** 
-** Started on  Sat Dec 29 11:16:53 2012 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 09:55:42 2013 marche_m (Maxime Marchès)
+// USocket.h for  in /home/marche_m/workspace/tek3/cpp/r-type/Rtype/server
+// 
+// Made by marche_m (Maxime Marchès)
+// Login   <marche_m@epitech.net>
+// 
+// Started on  Sat Dec 29 11:16:53 2012 marche_m (Maxime Marchès)
+// Last update Wed Jan  9 15:20:13 2013 marche_m (Maxime Marchès)
 */
 
 #ifndef __USOCKET__
@@ -36,7 +36,8 @@
 
 #include "ISocket.hpp"
 
-#define INVALID_SOCKET 0
+# define INVALID_SOCKET 0
+# define UNUSED  __attribute__((__unused__))
 
 class	USocket : public ISocket
 {
@@ -46,8 +47,9 @@ public:
 
   bool		connectToServer(std::string const & host, std::string const & port);
   bool		connectFromAcceptedFd(void * fd);
-  int		recv();
+  int		recv(void * header, void * data);
   int		sendv(std::string const & data);
+  int		sendv(int size, void * data);
 
   int		getSocket() const { return _connectSocket; }
   void		setUDP(bool val);

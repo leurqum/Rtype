@@ -13,6 +13,7 @@ class ISocket
 
   //Initialise l’objet autour du socket passe en parametre
   virtual bool		connectFromAcceptedFd(void * fd) = 0;
-  virtual int		recv() = 0;
+  virtual int		recv(void * header, void * data) = 0;
   virtual int		sendv(std::string const & data) = 0;
+  virtual int		sendv(int size, void * data) = 0;
 };
