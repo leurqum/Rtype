@@ -12,8 +12,8 @@
 # define __INTERPRET_PACKAGE__
 
 #include <map>
-#include "./../../protocol.h"
-#include "./../Abs_Socket/ISocket.hpp"
+#include "./../../../protocol.h"
+#include "./../../Abs_Socket/ISocket.hpp"
 
 class InterpretPackage
 {
