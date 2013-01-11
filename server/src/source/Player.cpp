@@ -4,11 +4,13 @@ Player::~Player(void)
 {
 }
 
-Player::Player(int id, std::string name, int life)
+Player::Player(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_udp)
 {
   _id = id;
   _name = name;
   _life = life;
+  _socket_tcp= socket_tcp;
+  _socket_udp = socket_udp;
 }
 
 int Player::getId()const
@@ -29,4 +31,14 @@ int Player::getLife()const
 void Player::setLife(int life)
 {
   _life = life;
+}
+
+ISocket *Player::getSocketTcp()const
+{
+  return (_socket_tcp);
+}
+
+ISocket *Player::getSocketUdp()const
+{
+  return (_socket_udp);
 }

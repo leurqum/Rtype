@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:26 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 18:05:34 2013 marche_m (Maxime Marchès)
+// Last update Fri Jan 11 10:27:58 2013 mathieu leurquin
 //
 
 #ifndef __INTERPRET_PACKAGE__

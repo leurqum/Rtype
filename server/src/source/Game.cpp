@@ -50,9 +50,9 @@ MovingObstacle* Game::createLinearMovingObstacle(int id, std::pair<float, float>
   return (l);
 }
 
-Player* Game::createPlayer(int id, std::string name, int life)
+Player* Game::createPlayer(int id, std::string name, int life, ISocket *tcp, ISocket *udp)
 {
-  Player* p = new Player(id, name, life);
+  Player* p = new Player(id, name, life, tcp, udp);
 
   playerList.push_back(p);
   return (p);
@@ -158,9 +158,9 @@ Player *Game::getPlayer(int id)const
   return NULL;
 }
 
-void Game::addPlayer(std::string name)
+void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
 {
-  Player *p = createPlayer(playerList.size(), name, 3);
+  Player *p = createPlayer(playerList.size(), name, 3, tcp, udp);
 
   createHumainUnit(humanList.size(), std::pair<float, float>(1, 1), 3, 1, true, this, p);
 }
@@ -168,6 +168,31 @@ void Game::addPlayer(std::string name)
 int Game::getNbPlayer()const
 {
   return (humanList.size());
+}
+
+Player *Game::getPlayerBySockTcp(ISocket *sock)const
+{
+  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end(); it++)
+    {
+      if ((*it)->getSocketTcp() == sock)
+	return (*it);
+    }
+  return (NULL);
+}
+
+Player *Game::getPlayerBySockUdp(ISocket *sock)const
+{
+  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end(); it++)
+    {
+      if ((*it)->getSocketUdp() == sock)
+	return (*it);
+    }
+  return (NULL);
+}
+
+int Game::getId()const
+{
+  return (id);
 }
 
 void Game::eraseBullet(int id)
@@ -281,10 +306,10 @@ bool Game::collisionHumainWithBullet(HumainUnit *u)
     {
       if (isFriendlyBullet(*it) == true)
 	return (false);
-      float y = u->getPostionY();
-      float x = u->getPostionX();
-      float obsY = (*it)->getPostionY();
-      float obsX = (*it)->getPostionX();
+      float y = u->getPositionY();
+      float x = u->getPositionX();
+      float obsY = (*it)->getPositionY();
+      float obsX = (*it)->getPositionX();
       if ((y + u->getHeight() > obsY
 	   && y < obsY + (*it)->getHeight()) &&
 	  (x + u->getWidth() > obsX &&
@@ -304,10 +329,10 @@ bool Game::collisionIaWithBullet(IAUnit *u)
     {
       if (isFriendlyBullet(*it) != true)
 	return (false);
-      float y = u->getPostionY();
-      float x = u->getPostionX();
-      float obsY = (*it)->getPostionY();
-      float obsX = (*it)->getPostionX();
+      float y = u->getPositionY();
+      float x = u->getPositionX();
+      float obsY = (*it)->getPositionY();
+      float obsX = (*it)->getPositionX();
       if ((y + u->getHeight() > obsY
 	   && y < obsY + (*it)->getHeight()) &&
 	  (x + u->getWidth() > obsX &&
@@ -325,10 +350,10 @@ bool Game::collisionWithEnemie(HumainUnit *u)
 {
   for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     {
-      float y = u->getPostionY();
-      float x = u->getPostionX();
-      float iaY = (*it)->getPostionY();
-      float iaX = (*it)->getPostionX();
+      float y = u->getPositionY();
+      float x = u->getPositionX();
+      float iaY = (*it)->getPositionY();
+      float iaX = (*it)->getPositionX();
       if ((y + u->getHeight() > iaY
 	   && y < iaY + (*it)->getHeight()) &&
 	  (x + u->getWidth() > iaX &&
@@ -345,10 +370,10 @@ bool Game::collisionUWithObs(Unit *u)
 {
   for (std::list<MovingObstacle*>::iterator it = obsList.begin(); it != obsList.end(); it++)
     {
-      float y = u->getPostionY();
-      float x = u->getPostionX();
-      float mObsY = (*it)->getPostionY();
-      float mObsX = (*it)->getPostionX();
+      float y = u->getPositionY();
+      float x = u->getPositionX();
+      float mObsY = (*it)->getPositionY();
+      float mObsX = (*it)->getPositionX();
       if ((y + u->getHeight() > mObsY
 	   && y < mObsY + (*it)->getHeight()) &&
 	  (x + u->getWidth() > mObsX &&
@@ -362,10 +387,10 @@ bool Game::collisionBWithObs(Bullet *b)
 {
   for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
     {
-      float y = b->getPostionY();
-      float x = b->getPostionX();
-      float mObsY = (*it)->getPostionY();
-      float mObsX = (*it)->getPostionX();
+      float y = b->getPositionY();
+      float x = b->getPositionX();
+      float mObsY = (*it)->getPositionY();
+      float mObsX = (*it)->getPositionX();
       if ((y + b->getHeight() > mObsY
 	   && y < mObsY + (*it)->getHeight()) &&
 	  (x + b->getWidth() > mObsX &&
@@ -382,10 +407,10 @@ bool Game::collisionWithBonus(HumainUnit *u)
 {
   for (std::list<LifePowerUp*>::iterator it = bonusList.begin(); it != bonusList.end(); it++)
     {
-      float y = u->getPostionY();
-      float x = u->getPostionX();
-      float bY = (*it)->getPostionY();
-      float bX = (*it)->getPostionX();
+      float y = u->getPositionY();
+      float x = u->getPositionX();
+      float bY = (*it)->getPositionY();
+      float bX = (*it)->getPositionX();
       if ((y + u->getHeight() > bY
 	   && y < bY + (*it)->getHeight()) &&
 	  (x + u->getWidth() > bX &&
@@ -421,4 +446,90 @@ void Game::move(int id)
     return;
 
   u->getDefinition()->move();
+}
+
+int Game::getSizeGame()const
+{
+  return (iaList.size() + humanList.size() + bulletList.size() + obsList.size() + bonusList.size());
+}
+
+void *Game::formatGameSend()
+{
+  Protocol::package *pac = new Protocol::package();
+  void *res;
+  int position = 0;
+
+  memset(pac, 0, sizeof(Protocol::package*));
+  pac->id = Protocol::SEND_WORLD;
+  pac->size = sizeof(Protocol::package*) + (sizeof(Protocol::monde_param*) * this->getSizeGame());
+ 
+  memset(res, 0, pac->size);
+  memcpy(res, pac, sizeof(Protocol::package*));
+  position += sizeof(Protocol::package*);
+  
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    {
+      Protocol::drawable * d = new Protocol::drawable(); 
+      
+      memset(d, 0, sizeof(Protocol::drawable *));
+      d->id = (*it)->getId();
+      d->type = Protocol::BULLET;
+      d->xPosition = (*it)->getPositionX();
+      d->xPosition = (*it)->getPositionY();       
+      memcpy(&res + position, d, sizeof(Protocol::drawable*));
+      position += sizeof(Protocol::drawable*);
+    }
+
+  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+    {
+      Protocol::drawable * d = new Protocol::drawable(); 
+      
+      memset(d, 0, sizeof(Protocol::drawable *));
+      d->id = (*it)->getId();
+      d->type = Protocol::MONSTER;
+      d->xPosition = (*it)->getPositionX();
+      d->xPosition = (*it)->getPositionY();       
+      memcpy(&res + position, d, sizeof(Protocol::drawable*));
+      position += sizeof(Protocol::drawable*);
+    }
+
+for (std::list<HumainUnit*>::const_iterator it = humanList.begin(); it != humanList.end(); it++)
+    {
+      Protocol::drawable * d = new Protocol::drawable(); 
+      
+      memset(d, 0, sizeof(Protocol::drawable *));
+      d->id = (*it)->getId();
+      d->type = Protocol::SHIP;
+      d->xPosition = (*it)->getPositionX();
+      d->xPosition = (*it)->getPositionY();       
+      memcpy(&res + position, d, sizeof(Protocol::drawable*));
+      position += sizeof(Protocol::drawable*);
+    }
+
+for (std::list<MovingObstacle*>::const_iterator it = obsList.begin(); it != obsList.end(); it++)
+    {
+      Protocol::drawable * d = new Protocol::drawable(); 
+      
+      memset(d, 0, sizeof(Protocol::drawable *));
+      d->id = (*it)->getId();
+      d->type = Protocol::OBSTACLE;
+      d->xPosition = (*it)->getPositionX();
+      d->xPosition = (*it)->getPositionY();       
+      memcpy(&res + position, d, sizeof(Protocol::drawable*));
+      position += sizeof(Protocol::drawable*);
+    }
+ 
+ for (std::list<LifePowerUp*>::const_iterator it = bonusList.begin(); it != bonusList.end(); it++)
+    {
+      Protocol::drawable * d = new Protocol::drawable(); 
+      
+      memset(d, 0, sizeof(Protocol::drawable *));
+      d->id = (*it)->getId();
+      d->type = Protocol::BONUS;
+      d->xPosition = (*it)->getPositionX();
+      d->xPosition = (*it)->getPositionY();       
+      memcpy(&res + position, d, sizeof(Protocol::drawable*));
+      position += sizeof(Protocol::drawable*);
+    } 
+ return (res);
 }

@@ -43,12 +43,12 @@ void Obstacle::setDestroyable(bool isDestroyable)
   _isDestroyable = isDestroyable;
 }
 
-float Obstacle::getPostionX()const
+float Obstacle::getPositionX()const
 {
   return (_rectangle->getPosition().first);
 }
 
-float Obstacle::getPostionY()const
+float Obstacle::getPositionY()const
 {
   return (_rectangle->getPosition().first);
 }

@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 18:18:53 2013 marche_m (Maxime Marchès)
+// Last update Fri Jan 11 10:31:56 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -73,7 +73,8 @@ void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
 
 void	InterpretPackage::execSendWorld(void * data, ISocket * sock)
 {
-
+    std::cout << "exexSendWorld" << std::endl;
+    
 }
 
 void	InterpretPackage::execMove(void * data, ISocket * sock)
@@ -83,12 +84,10 @@ void	InterpretPackage::execMove(void * data, ISocket * sock)
 
 void	InterpretPackage::execFire(void * data, ISocket * sock)
 {
-
+  
 }
 
 void	InterpretPackage::execResponse(void * data, ISocket * sock)
 {
 
 }
-
-

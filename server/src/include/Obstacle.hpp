@@ -19,8 +19,8 @@ public:
   void setStrength(int strength);
   bool isDestroyable()const;
   void setDestroyable(bool isDestroyable);
-  float getPostionX()const;
-  float getPostionY()const;
+  float getPositionX()const;
+  float getPositionY()const;
   float getHeight()const;
   float getWidth()const;
 };

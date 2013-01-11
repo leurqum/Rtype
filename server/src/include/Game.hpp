@@ -11,13 +11,17 @@
 #include "BasicWeapon.hpp"
 #include "Bullet.hpp"
 #include "RectangleCollisionDefinition.hpp"
-
+#include "./../../Abs_Socket/ISocket.hpp"
+#include "./../../../protocol.h"
+#include <iostream>
+#include <string.h>
 class CommandManager;
 class Game
 {
 public:
     std::map<int, void (Game::*)(int id)> _fcts;
 private:
+  int id;
   CommandManager *_cmd;
   std::list<IAUnit*>		iaList;
   std::list<HumainUnit*>	humanList;
@@ -32,7 +36,7 @@ public:
   IAUnit* createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Game *game);
   HumainUnit* createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Game *game, Player *p);
   MovingObstacle* createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable, Game *game);
-  Player* createPlayer(int id, std::string name, int life);
+  Player* createPlayer(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_udp);
   LifePowerUp* createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, Game *game, int strength);
   Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable);
   Bullet *getBullet(int id)const;
@@ -43,9 +47,11 @@ public:
   MovingObstacle *getObs(int id)const;
   LifePowerUp *getLifePowerUp(int id)const;
   Player *getPlayer(int id)const;
-  void addPlayer(std::string);
+  void addPlayer(std::string, ISocket *, ISocket *);
   int getNbPlayer()const;
-
+  Player *getPlayerBySockTcp(ISocket *socket_tcp)const;
+  Player *getPlayerBySockUdp(ISocket *socket_udp)const;
+  int getId()const;
   void eraseBullet(int id);
   void eraseBulletsPlayer(int idPlayer);
   void erasePlayer(int id);
@@ -64,6 +70,9 @@ public:
 
   void fire(int id);
   void move(int id);
+
+  int getSizeGame()const;
+  void *formatGameSend();
 };
 
 #endif //__GAME__
