@@ -4,15 +4,19 @@
 #include "Player.hpp"
 #include "Game.hpp"
 
+class UServerSocket;
 class Server
 {
 private:
-  std::list<Player *> playerListWaiting;
-  std::list<Game *> gameList;
+  std::list<Player *>	playerListWaiting;
+  std::list<Game *>	gameList;
+  UServerSocket *	server_socket;
 public:
+  Server();
   Player *getPlayerWaiting(int id)const;
   Game *getGame(int id)const;
-  
+  std::list<Game*> &getGameList();
+
   void erasePlayerWaiting(int id);
   void eraseGame(int id);
   
@@ -21,3 +25,5 @@ public:
 };
 
 #endif
+
+#include "../../Abs_Socket/UServerSocket.hpp"

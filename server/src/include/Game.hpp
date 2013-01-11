@@ -15,6 +15,7 @@
 #include "./../../../protocol.h"
 #include <iostream>
 #include <string.h>
+
 class CommandManager;
 class Game
 {

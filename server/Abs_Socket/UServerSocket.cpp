@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 17:51:32 2013 marche_m (Maxime Marchès)
+// Last update Fri Jan 11 19:19:35 2013 mathieu leurquin
 //
 
 #include "UServerSocket.hpp"
@@ -164,9 +164,9 @@ UServerSocket::~UServerSocket()
   close(this->_listenSocket);
 }
 
-UServerSocket::UServerSocket()
+UServerSocket::UServerSocket(Server *s)
 {
-  this->_interPckg = new InterpretPackage();
+  _interPckg = new InterpretPackage(s);
   this->_listenSocket = 0;
   this->_udp = IPPROTO_TCP;
 }

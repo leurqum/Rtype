@@ -5,12 +5,12 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Fri Jan 11 10:31:56 2013 mathieu leurquin
+// Last update Fri Jan 11 18:54:32 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
 
-InterpretPackage::InterpretPackage()
+InterpretPackage::InterpretPackage(Server *s)
 {
   _funcMap[Protocol::REGISTER] = &InterpretPackage::execRegister;
   _funcMap[Protocol::LOGIN] = &InterpretPackage::execLogin;
@@ -22,6 +22,7 @@ InterpretPackage::InterpretPackage()
   _funcMap[Protocol::MOVE] = &InterpretPackage::execMove;
   _funcMap[Protocol::FIRE] = &InterpretPackage::execFire;
   _funcMap[Protocol::RESPONSE] = &InterpretPackage::execResponse;
+  _server = s;
 }
 
 void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
@@ -53,7 +54,7 @@ void	InterpretPackage::execLogin(void * data, ISocket * sock)
 
 void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
 {
-
+  
 }
 
 void	InterpretPackage::execGameList(void * data, ISocket * sock)
@@ -73,17 +74,37 @@ void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
 
 void	InterpretPackage::execSendWorld(void * data, ISocket * sock)
 {
-    std::cout << "exexSendWorld" << std::endl;
-    
+  std::cout << "exexSendWorld" << std::endl;
+  std::list <Game*> listGameCpy = _server->getGameList();
+  for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
+    {
+      (*it)->formatGameSend();
+      //send
+    }
 }
 
 void	InterpretPackage::execMove(void * data, ISocket * sock)
 {
+  Player *p;
+  std::list <Game*> listGameCpy = _server->getGameList();
 
+  for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
+    {
+      if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
+	(*it)->move(p->getId());
+    }
 }
 
 void	InterpretPackage::execFire(void * data, ISocket * sock)
 {
+  Player *p;
+  std::list <Game*> listGameCpy = _server->getGameList();
+  
+  for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
+    {
+      if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
+	(*it)->move(p->getId());
+    }
   
 }
 

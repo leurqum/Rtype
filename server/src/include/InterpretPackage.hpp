@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:26 2013 marche_m (Maxime Marchès)
-// Last update Fri Jan 11 10:27:58 2013 mathieu leurquin
+// Last update Fri Jan 11 19:28:14 2013 mathieu leurquin
 //
 
 #ifndef __INTERPRET_PACKAGE__
@@ -17,12 +17,13 @@
 #include "./../../../protocol.h"
 #include "./../../Abs_Socket/ISocket.hpp"
 
+class Server;
 class InterpretPackage
 {
 public:
-  InterpretPackage();
+  InterpretPackage(Server *s);
   void executeCmd(void * header, void * data, ISocket * sock);	//Max
-
+  
 private:
   void execRegister(void * data, ISocket * sock);	//Max
   void execLogin(void * data, ISocket * sock);		//Max
@@ -36,6 +37,10 @@ private:
   void execResponse(void * data, ISocket * sock);	//Max
 
   std::map<Protocol::type_cmd, void (InterpretPackage::*)(void *, ISocket *)>	_funcMap;
+private:
+  Server *_server;
 };
 
 #endif
+
+#include "Server.hpp"

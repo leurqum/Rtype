@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:46 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 17:04:03 2013 marche_m (Maxime Marchès)
+// Last update Fri Jan 11 19:28:14 2013 mathieu leurquin
 //
 
 #ifndef __U_SERVER_SOCKET__
@@ -23,7 +23,7 @@
 class UServerSocket : public IServerSocket
 {
 public:
-  UServerSocket();
+  UServerSocket(Server *s);
   virtual	~UServerSocket();
   bool		init(std::string const & listenHost, std::string const & listenPort);
   ISocket	* myaccept();
@@ -42,8 +42,8 @@ private:
   std::map<int, ISocket *>	_clientsSocksMap;
   fd_set			_readFd;
   int				_udp;
-  InterpretPackage		* _interPckg;
+  InterpretPackage*		_interPckg;		
 };
 
-
 #endif
+

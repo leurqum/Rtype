@@ -5,10 +5,18 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Fri Jan 11 11:25:11 2013 mathieu leurquin
+// Last update Fri Jan 11 19:31:01 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
+
+Server::Server()
+{
+  server_socket = new UServerSocket(this);
+  //sock->setUDP(true); //Problem avec l'udp ...
+  if (server_socket->init("", "4242") == true)
+    server_socket->launch();
+}
 
 Player *Server::getPlayerWaiting(int id)const
 {
@@ -18,6 +26,11 @@ Player *Server::getPlayerWaiting(int id)const
 	return (*it);
     }
   return NULL;
+}
+
+std::list<Game*> &Server::getGameList()
+{
+  return (this->gameList);
 }
  
 Game *Server::getGame(int id)const
