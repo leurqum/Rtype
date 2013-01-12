@@ -5,7 +5,7 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Fri Jan 11 19:31:01 2013 mathieu leurquin
+// Last update Sat Jan 12 10:35:17 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
@@ -75,7 +75,7 @@ Player* Server::createPlayerWaiting(int id, std::string name, int life, ISocket 
 
 Game *Server::createGame(int id)
 {
-  Game *g = new Game();
+  Game *g = new Game(id);
 
   gameList.push_back(g);
   return (g);

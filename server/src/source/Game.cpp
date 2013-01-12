@@ -1,51 +1,60 @@
 #include "../include/Game.hpp"
 #include <string>
 
-Game::Game()
+Game::Game(int id)
 {
-  _fcts[0] = &Game::fire;
-  _fcts[1] = &Game::move;
-  _cmd = new CommandManager(this);
+  _id = id;
 }
 
 void Game::loop()
 {
   while (1)
     {
-      for (unsigned int i = 0; i < _cmd->_cmds.size(); i++)
-	(this->*_fcts[_cmd->_cmds[i].first])(_cmd->_cmds[i].second);
-      _cmd->removeCommands();
     }
 }
 
-IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Game *game)
+// void Game::update()
+// {
+  
+// }
+
+// void Game::collision()
+// {
+//   for (std::list<IAUnit*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
+//     { 
+//       collisionIaWithBullet((*it));
+//     }
+//   collisionHumainWithBullet(HumainUnit *u);
+//   collisionWithEnemie(HumainUnit *u);
+//   collisionUWithObs(Unit *u);
+//   collisionBWithObs(Bullet *b);
+//   collisionWithBonus(HumainUnit *u);
+// }
+
+IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable)
 {
   IWeapon *w = new BasicWeapon();
   IAUnit *u = new IAUnit(speed, w, id, coll, health, strength, isDestroyable);
   
-  //WARING GAME
-  (void)game;
   iaList.push_back(u);
   return (u);
 }
 
-HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Game *game, Player *p)
+HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Player *p)
 {
   IWeapon *w = new BasicWeapon();
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
   HumainUnit *h = new HumainUnit(speed, p, w, id, coll, health, strength, isDestroyable);
-  //WARING GAME
-  (void)game;
+
   humanList.push_back(h);
   return (h);
 }
 
-MovingObstacle* Game::createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable, Game *game)
+MovingObstacle* Game::createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable)
 {
   MovingObstacle* l = new MovingObstacle(speed, id, coll, strength, isDestroyable);
-  //WARING GAME
-  (void)game;
+ 
   obsList.push_back(l);
   return (l);
 }
@@ -58,12 +67,9 @@ Player* Game::createPlayer(int id, std::string name, int life, ISocket *tcp, ISo
   return (p);
 }
 
-LifePowerUp* Game::createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, Game *game, int strength)
+LifePowerUp* Game::createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength)
 {
   LifePowerUp* l = new LifePowerUp(nb_life, id, coll, strength, isDestroyable);
-
-  //WARING GAME
-  (void)game;
 
   bonusList.push_back(l);
   return (l);
@@ -162,7 +168,7 @@ void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
 {
   Player *p = createPlayer(playerList.size(), name, 3, tcp, udp);
 
-  createHumainUnit(humanList.size(), std::pair<float, float>(1, 1), 3, 1, true, this, p);
+  createHumainUnit(humanList.size(), std::pair<float, float>(1, 1), 3, 1, true, p);
 }
 
 int Game::getNbPlayer()const
@@ -192,7 +198,7 @@ Player *Game::getPlayerBySockUdp(ISocket *sock)const
 
 int Game::getId()const
 {
-  return (id);
+  return (_id);
 }
 
 void Game::eraseBullet(int id)

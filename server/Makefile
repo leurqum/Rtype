@@ -5,23 +5,23 @@
 ## Login   <leurqu_m@epitech.net>
 ## 
 ## Started on  Tue Jan  1 17:03:48 2013 mathieu leurquin
-## Last update Wed Jan  9 18:36:54 2013 marche_m (Maxime Marchès)
+## Last update Sat Jan 12 10:33:39 2013 mathieu leurquin
 ##
 
 
-SRC_SR		=	./src/source/IAUnit.cpp 				\
-			./src/source/HumainUnit.cpp				\
-			./src/source/BasicWeapon.cpp				\
-			./src/source/LifePowerUp.cpp				\
+SRC_SR		=	./src/source/IAUnit.cpp 			\
+			./src/source/HumainUnit.cpp			\
+			./src/source/BasicWeapon.cpp			\
+			./src/source/LifePowerUp.cpp			\
 			./src/source/MovingObstacle.cpp			\
-			./src/source/Obstacle.cpp				\
+			./src/source/Obstacle.cpp			\
 			./src/source/Player.cpp				\
-			./src/source/RectangleCollisionDefinition.cpp		\
-			./src/source/Unit.cpp					\
-			./src/source/Game.cpp					\
+			./src/source/RectangleCollisionDefinition.cpp	\
+			./src/source/Unit.cpp				\
+			./src/source/Game.cpp				\
 			./src/source/Bullet.cpp				\
-			./src/source/CommandManager.cpp			\
-			./src/source/InterpretPackage.cpp
+			./src/source/Server.cpp				\
+			./src/source/InterpretPackage.cpp		\
 
 SRC_SOCK 	=	./Abs_Socket/UServerSocket.cpp			\
 			./Abs_Socket/USocket.cpp			\
