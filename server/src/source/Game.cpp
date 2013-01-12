@@ -18,6 +18,7 @@ void Game::loop()
       collision();
       update(time);
       time = 10 * (double)(clock() - init) / (double)CLOCKS_PER_SEC;
+      std::cout<<time<<std::endl;
       usleep(100);
     }
   
