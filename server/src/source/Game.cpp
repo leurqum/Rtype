@@ -510,6 +510,7 @@ int Game::getSizeGame()const
 void Game::createRandomObs(double time)
 {
 	std::pair<float, float> newSpeed(1,1);
+	// j ai mis -1 en en attendant
 	float x = -1;
 	float y;
 	srand(time);
@@ -521,7 +522,7 @@ void Game::createRandomObs(double time)
 	if (Des == 0)
 		Destroy = false;
 
-	if (time > 10)
+	if (time >= 10 && time <= 50)
 	{
 		if ((int)time % 5 == 0)
 		{
@@ -529,7 +530,7 @@ void Game::createRandomObs(double time)
 			createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
 		}
 	}
-	else if (time > 50)
+	else if (time > 50 && time <= 90)
 	{
 		if ((int)time % 3 == 0)
 		{
@@ -549,6 +550,18 @@ void Game::createRandomObs(double time)
 
 void Game::createRandomBonus(double time)
 {
+	if ((int)time % 15 == 0)
+	{	
+		// j ai mis -1 en en attendant
+		float x = -1;
+		float y;
+		srand(time);
+		y = rand() % 30;
+		std::pair<float,float> pos(x, y);
+		int life = rand() % 3 + 1;
+		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
+		createBonus(life, this->bonusList.size(), Col, false, 0);
+	}
 }
 
 void Game::createRandomEnemie(double time)
