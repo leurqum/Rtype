@@ -15,9 +15,11 @@ public :
     _w = w;
     _health = health;
   }
+
   IWeapon *getWeapon();
   int getHealth()const;
   void setHealth(int health);
 };
 
 #endif
+

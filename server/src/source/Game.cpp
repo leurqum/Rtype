@@ -43,7 +43,7 @@ void Game::collision()
 IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable)
 {
   IWeapon *w = new BasicWeapon();
-  IAUnit *u = new IAUnit(speed, w, id, coll, health, strength, isDestroyable);
+  IAUnit *u = new IAUnit(speed, w, id, coll, health, strength, isDestroyable, this);
   
   iaList.push_back(u);
   return (u);
@@ -54,7 +54,7 @@ HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int he
   IWeapon *w = new BasicWeapon();
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
-  HumainUnit *h = new HumainUnit(speed, p, w, id, coll, health, strength, isDestroyable);
+  HumainUnit *h = new HumainUnit(speed, p, w, id, coll, health, strength, isDestroyable, this);
 
   humanList.push_back(h);
   return (h);

@@ -7,15 +7,15 @@
 #include "RectangleCollisionDefinition.hpp"
 #include "./../../Abs_Socket/ISocket.hpp"
 #include "./../../../protocol.h"
-#include "IAUnit.hpp"
-#include "HumainUnit.hpp"
 #include "MovingObstacle.hpp"
-#include "LifePowerUp.hpp"
 #include "BasicWeapon.hpp"
 #include "Bullet.hpp"
+#include "LifePowerUp.hpp"
 #include <iostream>
 #include <string.h>
 
+class IAUnit;
+class HumainUnit;
 class Game
 {
 private:
@@ -75,3 +75,5 @@ public:
 
 #endif //__GAME__
 
+#include "IAUnit.hpp"
+#include "HumainUnit.hpp"
