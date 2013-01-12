@@ -53,6 +53,11 @@ float Obstacle::getPositionY()const
   return (_rectangle->getPosition().first);
 }
 
+std::pair<float, float> Obstacle::getPosition()const
+{
+  return (_rectangle->getPosition());
+}
+
 float Obstacle::getHeight()const
 {
   return (_rectangle->getHeight());

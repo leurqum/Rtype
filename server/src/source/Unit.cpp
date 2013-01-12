@@ -1,8 +1,8 @@
 #include "../include/Unit.hpp"
 
-IWeapon *Unit::getWeapon()
+Unit::Unit(std::pair<float, float> speed, int id, ICollisionDefinition *rec, int health, int strength, bool isDestroyable) : MovingObstacle(speed, id, rec, strength, isDestroyable)
 {
-  return (_w);
+  _health = health;
 }
 
 void Unit::setHealth(int health)

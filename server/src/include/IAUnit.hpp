@@ -7,11 +7,15 @@
 class IAUnit : public Unit
 {
   Game *_game;
+  Protocol::type_enemie _type;
 public:
-  IAUnit(std::pair<float, float> speed, IWeapon *w, int id, ICollisionDefinition *rec, int health, int strength, bool isDestroyable, Game *game) : Unit(speed, w, id, rec, health, strength, isDestroyable){ _game = game;}
+  IAUnit(std::pair<float, float> speed, Protocol::type_enemie type, int id, ICollisionDefinition *rec, int health, int strength, bool isDestroyable, Game *game) : Unit(speed, id, rec, health, strength, isDestroyable){ _game = game; _type = type;}
   ~IAUnit(void);
   void takeDecision();
   void executeDecision();
+  void update(double time);
+  void create_ia(double time);
+  Protocol::type_enemie getType()const;
 };
 
 #endif

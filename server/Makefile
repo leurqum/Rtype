@@ -5,12 +5,13 @@
 ## Login   <leurqu_m@epitech.net>
 ## 
 ## Started on  Tue Jan  1 17:03:48 2013 mathieu leurquin
-## Last update Sat Jan 12 10:33:39 2013 mathieu leurquin
+## Last update Sat Jan 12 11:49:22 2013 mathieu leurquin
 ##
 
 
 SRC_SR		=	./src/source/IAUnit.cpp 			\
 			./src/source/HumainUnit.cpp			\
+			./src/source/Bullet.cpp				\
 			./src/source/BasicWeapon.cpp			\
 			./src/source/LifePowerUp.cpp			\
 			./src/source/MovingObstacle.cpp			\
@@ -19,7 +20,6 @@ SRC_SR		=	./src/source/IAUnit.cpp 			\
 			./src/source/RectangleCollisionDefinition.cpp	\
 			./src/source/Unit.cpp				\
 			./src/source/Game.cpp				\
-			./src/source/Bullet.cpp				\
 			./src/source/Server.cpp				\
 			./src/source/InterpretPackage.cpp		\
 

@@ -1,5 +1,6 @@
 #include "../include/Game.hpp"
 #include <string>
+#include <time.h>
 
 Game::Game(int id)
 {
@@ -8,14 +9,33 @@ Game::Game(int id)
 
 void Game::loop()
 {
+  clock_t init;
+  double time = 0;
+
+  init = clock();
   while (1)
     {
+      collision();
+      update(time);
+      time = 10 * (double)(clock() - init) / (double)CLOCKS_PER_SEC;
+      usleep(100);
     }
+  
 }
 
-void Game::update()
+void Game::update(double time)
 {
+  createRandomObs(time);
+  createRandomBonus(time);
+ 
+  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+    (*it)->update(time);
   
+  for (std::list<HumainUnit*>::iterator it = humanList.begin(); it != humanList.end(); it++)
+    (*it)->update(time);
+
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    (*it)->update(time);
 }
 
 void Game::collision()
@@ -29,21 +49,18 @@ void Game::collision()
   
   for (std::list<HumainUnit*>::iterator it = humanList.begin(); it != humanList.end(); it++)
     collisionWithEnemie((*it));
- 
-  //dans la fonction move
-  //collisionUWithObs(Unit *u);
+
   for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
     if (collisionBWithObs((*it)) == true)
       eraseBullet((*it)->getId());
-
+  
   for (std::list<HumainUnit*>::iterator it = humanList.begin(); it != humanList.end(); it++)
     collisionWithBonus((*it));
 }
 
-IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable)
+IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_enemie type)
 {
-  IWeapon *w = new BasicWeapon();
-  IAUnit *u = new IAUnit(speed, w, id, coll, health, strength, isDestroyable, this);
+  IAUnit *u = new IAUnit(speed, type, id, coll, health, strength, isDestroyable, this);
   
   iaList.push_back(u);
   return (u);
@@ -51,10 +68,9 @@ IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefi
 
 HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Player *p)
 {
-  IWeapon *w = new BasicWeapon();
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
-  HumainUnit *h = new HumainUnit(speed, p, w, id, coll, health, strength, isDestroyable, this);
+  HumainUnit *h = new HumainUnit(speed, p, id, coll, health, strength, isDestroyable, this);
 
   humanList.push_back(h);
   return (h);
@@ -84,9 +100,10 @@ LifePowerUp* Game::createBonus(int nb_life, int id, ICollisionDefinition *coll, 
   return (l);
 }
 
-Bullet *Game::createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable)
+Bullet *Game::createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_bullet type)
 {
-  Bullet *b = new Bullet(idUnit, speed, id, rec, strength, isDestroyable);
+  
+  Bullet *b = new Bullet(idUnit, speed, id, rec, strength, isDestroyable, type);
 
   bulletList.push_back(b);
   return (b);
@@ -448,9 +465,29 @@ void Game::fire(int id)
   
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
-  Bullet *b = createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1,true);
+ 
+  createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::LINEAR);
+}
+
+void Game::fire_ia(int id)
+{
+  IAUnit *u = getUnitAI(id);
   
-  u->getWeapon()->fire(b);
+  if (u == NULL)
+    return;
+  
+  ICollisionDefinition *coll;
+
+  if (u->getType() == Protocol::EASY)
+    {
+      coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
+      createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::LINEAR);
+    }    
+  else if (u->getType() == Protocol::HARD)
+    {
+      coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
+      createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::RAYON_LINEAR);
+    }
 }
 
 void Game::move(int id)
@@ -466,6 +503,14 @@ void Game::move(int id)
 int Game::getSizeGame()const
 {
   return (iaList.size() + humanList.size() + bulletList.size() + obsList.size() + bonusList.size());
+}
+
+void Game::createRandomObs(double time)
+{
+}
+
+void Game::createRandomBonus(double time)
+{
 }
 
 void *Game::formatGameSend()
@@ -484,28 +529,28 @@ void *Game::formatGameSend()
   
   for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
     {
-      Protocol::drawable * d = new Protocol::drawable(); 
+      Protocol::drawable_bullet * d = new Protocol::drawable_bullet(); 
       
-      memset(d, 0, sizeof(Protocol::drawable *));
+      memset(d, 0, sizeof(Protocol::drawable_bullet *));
       d->id = (*it)->getId();
-      d->type = Protocol::BULLET;
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();       
-      memcpy(&res + position, d, sizeof(Protocol::drawable*));
-      position += sizeof(Protocol::drawable*);
+      d->xPosition = (*it)->getPositionY();
+      d->bullet = (*it)->getType();
+      memcpy(&res + position, d, sizeof(Protocol::drawable_bullet*));
+      position += sizeof(Protocol::drawable_bullet*);
     }
 
   for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     {
-      Protocol::drawable * d = new Protocol::drawable(); 
+      Protocol::drawable_enemie * d = new Protocol::drawable_enemie(); 
       
-      memset(d, 0, sizeof(Protocol::drawable *));
+      memset(d, 0, sizeof(Protocol::drawable_enemie *));
       d->id = (*it)->getId();
-      d->type = Protocol::MONSTER;
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();       
-      memcpy(&res + position, d, sizeof(Protocol::drawable*));
-      position += sizeof(Protocol::drawable*);
+      d->xPosition = (*it)->getPositionY();
+      d->enemie = (*it)->getType();
+      memcpy(&res + position, d, sizeof(Protocol::drawable_enemie*));
+      position += sizeof(Protocol::drawable_enemie*);
     }
 
 for (std::list<HumainUnit*>::const_iterator it = humanList.begin(); it != humanList.end(); it++)

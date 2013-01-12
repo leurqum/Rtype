@@ -19,6 +19,7 @@ public:
   void setStrength(int strength);
   bool isDestroyable()const;
   void setDestroyable(bool isDestroyable);
+  std::pair<float, float> getPosition()const;
   float getPositionX()const;
   float getPositionY()const;
   float getHeight()const;

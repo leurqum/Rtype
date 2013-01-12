@@ -4,12 +4,11 @@
 #include <list>
 #include <map>
 #include "Player.hpp"
+#include "Bullet.hpp"
 #include "RectangleCollisionDefinition.hpp"
 #include "./../../Abs_Socket/ISocket.hpp"
 #include "./../../../protocol.h"
 #include "MovingObstacle.hpp"
-#include "BasicWeapon.hpp"
-#include "Bullet.hpp"
 #include "LifePowerUp.hpp"
 #include <iostream>
 #include <string.h>
@@ -29,14 +28,14 @@ private:
 public:
   Game(int id);
   void loop();
-  void update();
+  void update(double time);
   void collision();
-  IAUnit* createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable);
+  IAUnit* createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_enemie type);
   HumainUnit* createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Player *p);
   MovingObstacle* createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable);
   Player* createPlayer(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_udp);
   LifePowerUp* createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength);
-  Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable);
+  Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_bullet);
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitByPlayer(Player *p)const;
   HumainUnit *getUnitHuman(int id)const;
@@ -66,8 +65,13 @@ public:
   bool collisionBWithObs(Bullet *b);
   bool collisionWithBonus(HumainUnit *u);
 
+  void fire_ia(int id);
   void fire(int id);
   void move(int id);
+
+  void createRandomObs(double time);
+  void createRandomBonus(double time);
+
 
   int getSizeGame()const;
   void *formatGameSend();
