@@ -509,6 +509,42 @@ int Game::getSizeGame()const
 
 void Game::createRandomObs(double time)
 {
+	std::pair<float, float> newSpeed(1,1);
+	float x = -1;
+	float y;
+	srand(time);
+	y = rand() % 30;
+	std::pair<float,float> pos(x,y);
+	int strength = rand() % 3 + 1;
+	int Des = rand() % 2;
+	bool Destroy = true;
+	if (Des == 0)
+		Destroy = false;
+
+	if (time > 10)
+	{
+		if ((int)time % 5 == 0)
+		{
+			ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
+			createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
+		}
+	}
+	else if (time > 50)
+	{
+		if ((int)time % 3 == 0)
+		{
+			ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
+			createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
+		}
+	}
+	else if (time > 90)
+	{
+		if ((int)time % 2 == 0)
+		{
+			ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
+			createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
+		}
+	}
 }
 
 void Game::createRandomBonus(double time)

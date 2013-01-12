@@ -6,12 +6,13 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
 #include "RectangleCollisionDefinition.hpp"
-#include "./../../Abs_Socket/ISocket.hpp"
+#include "./../../Abs_Socket/WSocket.hpp"
 #include "./../../../protocol.h"
 #include "MovingObstacle.hpp"
 #include "LifePowerUp.hpp"
 #include <iostream>
 #include <string.h>
+#include <cstdlib>
 
 class IAUnit;
 class HumainUnit;

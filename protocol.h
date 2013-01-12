@@ -62,6 +62,16 @@ enum type_enemie
   BOSS
 };
 
+enum patern_enemie
+{
+	STATIC,
+	SOLO,
+	LINE,
+	LINEUP,
+	LINEDOWN
+
+};
+
 enum type_bullet
 {
   LINEAR, //bullet qui se deplace lineraiement
