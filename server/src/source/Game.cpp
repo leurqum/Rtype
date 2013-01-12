@@ -27,7 +27,8 @@ void Game::update(double time)
 {
   createRandomObs(time);
   createRandomBonus(time);
- 
+  createRandomEnemie(time);
+
   for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
   
@@ -510,6 +511,10 @@ void Game::createRandomObs(double time)
 }
 
 void Game::createRandomBonus(double time)
+{
+}
+
+void Game::createRandomEnemie(double time)
 {
 }
 

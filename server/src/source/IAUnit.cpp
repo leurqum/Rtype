@@ -11,12 +11,6 @@ Protocol::type_enemie IAUnit::getType()const
 
 void IAUnit::update(double time)
 {
-  create_ia(time);
-}
-
-void IAUnit::create_ia(double time)
-{
-  //create random monstre
 }
 
 void IAUnit::takeDecision()

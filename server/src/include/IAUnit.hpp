@@ -14,7 +14,6 @@ public:
   void takeDecision();
   void executeDecision();
   void update(double time);
-  void create_ia(double time);
   Protocol::type_enemie getType()const;
 };
 

@@ -71,6 +71,7 @@ public:
 
   void createRandomObs(double time);
   void createRandomBonus(double time);
+  void createRandomEnemie(double time);
 
 
   int getSizeGame()const;
