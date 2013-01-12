@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
-** Last update Wed Jan  9 12:48:04 2013 mathieu leurquin
+** Last update Fri Jan 11 17:44:34 2013 mathieu leurquin
 */
 
 #ifndef __PROTOCOOL__
@@ -50,10 +50,11 @@ typedef	struct
 
 enum type_drawable
 {
-	SHIP,
-	MONSTER, // several monsters ?
-	OBSTACLE, // several obstacles ?
-	BULLET
+  SHIP,
+  MONSTER, // several monsters ?
+  OBSTACLE, // several obstacles ?
+  BULLET,
+  BONUS
 };
 
 typedef	struct
@@ -64,12 +65,10 @@ typedef	struct
   float  yPosition;
 }	drawable;
 
-/* struct WTF
-typedef	struct
-{
-  int	id;
-}	player;
-*/
+/* typedef	struct */
+/* { */
+/*   int	id; */
+/* }	player; */
 
 //------------------------------------------------
 
@@ -90,7 +89,7 @@ typedef	struct
 
 enum reponse_type
 {
-	OK,
+	VALIDE,
 	INVALID_LOGIN,
 	INVALID_PASSWORD,
 	INVALID_GAME_NAME,
