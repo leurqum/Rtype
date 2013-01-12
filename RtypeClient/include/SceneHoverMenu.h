@@ -3,6 +3,7 @@
 #include "ASceneHover.h"
 #include "SceneManager.h"
 #include "SceneGame.h"
+#include "DrawerMenu.h"
 
 class SceneHoverMenu :
 	public ASceneHover
@@ -18,18 +19,19 @@ public:
 	virtual void setToBackground();
 	virtual void setToForeground();
 private:
-	DrawableGeneric playButton;
-	DrawerDrawable _playButton;
+	DrawerMenu menu;
+	/* DrawableGeneric playButton; */
+	/* DrawerDrawable _playButton; */
 
-	DrawableGeneric exitButton;
-	DrawerDrawable _exitButton;
+	/* DrawableGeneric exitButton; */
+	/* DrawerDrawable _exitButton; */
 
-	DrawableGeneric selectionArrow;
-	DrawerDrawable _selectionArrow;
+	/* DrawableGeneric selectionArrow; */
+	/* DrawerDrawable _selectionArrow; */
 
-	int selectionPosition;
-	int nbButtons;
-	Vector2<float> firstSelection;
-	Vector2<float> gapButtons;
+	/* int selectionPosition; */
+	/* int nbButtons; */
+	/* Vector2<float> firstSelection; */
+	/* Vector2<float> gapButtons; */
 };
 
