@@ -37,7 +37,7 @@ void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_dr
   sf::Sprite s(*getTextureFromFilename(ss),
 	       GraphicsManagerSFML::rectangleToSFMLRect(Rectangle<int>(v_drawable.dimension.x,
 								       v_drawable.dimension.y,
-								       v_drawable.position
+		 {v_drawable.position.x, v_drawable.position.y}
 								       )));
   // std::cout << "drawing sprite" << std::endl;
   // std::cout << "\tw:" << v_drawable.dimension.x << std::endl;

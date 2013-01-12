@@ -6,45 +6,107 @@
 #include "ValueDrawable.h"
 #include "IAnimation.h"
 
-class Animation : public IAnimation<ValueDrawable>
+template<typename T>
+class Animation : public IAnimation<T>
 {
 public:
-  class Iterator : public IAnimation<ValueDrawable>::IIterator
+  
+  class Iterator : public IAnimation<T>::IIterator
   {
   public:
-    Iterator(const Animation& s);
+    Iterator(const Animation<T>& animation) : a(animation), current(nullptr), nextRect(nullptr)
+    {
+      elapsedTime = 0;
+      index_interpolation = 0;
+      nextRect = new t_frameIterator(a.frames.begin());
+      increase_iterator();
+    }
 
-    // NOTE: we don't return a reference because the rectangle might be constructed in the function (in case of interpolation)
-    const ValueDrawable& getFrame() const; // TODO: operator* would be more iterator-like
+    virtual const ValueDrawable& getFrame() const override
+    {
+      return calculated;
+    }
+    
+    virtual void increase(float time) override
+    {
+      elapsedTime += time;
+      while (elapsedTime > a.time_between_frames)
+	{
+	  index_interpolation++;
+	  if (index_interpolation >= a.nb_interp)
+	    increase_iterator();
+	  elapsedTime -= a.time_between_frames;
+	}
+      update_calculated();
+    }
 
-    // FIXME: we might want to increase(float elapsedMilliseconds) so the SpriteSheet manages entirely all its flow.
-    void increase(float miliseconds); // TODO: operator+ would be more iterator-like
+    void increase_iterator()
+    {
+      index_interpolation = 0;
+      if (a.frames.size() == 1)
+	{
+	  *nextRect = a.frames.begin();
+	  current = &(*(*nextRect));
+	  return ;
+	}
+	
+      if (a.nb_interp == 1 && !a.smoothFrames && *nextRect == a.frames.end())
+	*nextRect = a.frames.begin();
+      current = &(*((*nextRect)++));
+      if (*nextRect == a.frames.end() && (a.nb_interp != 1 || a.smoothFrames))
+	{
+	  *nextRect = a.frames.begin();
+	  if (!a.smoothLoop)
+	    increase_iterator(); // NOTE: this would not be infinite recursive because of the if before.
+	}
+      update_calculated();
+    }
 
-    void increase_iterator();
-
-    // this is const, and it's pretty useful to access it, so public.
-    const Animation& a;
+    // this is const, and it's pretty useful to access it, so public. (useless actually)
+    const Animation<T>& a;
   private:
-    void update_calculated();
-    ValueDrawable const * current;
-    std::list< ValueDrawable >::const_iterator* nextRect;
-    ValueDrawable calculated;
+
+    void update_calculated()
+    {
+      calculated = *current;
+      if (a.nb_interp != 0 && (*nextRect) != a.frames.end())
+	calculated += (*(*nextRect) - calculated) / (float)a.nb_interp * index_interpolation;
+      if (a.smoothFrames)
+	calculated += (*(*nextRect) - calculated) * (elapsedTime / a.time_between_frames);
+    }
+
+    T const * current;
+    
+    typedef typename std::list< T >::const_iterator t_frameIterator;
+    t_frameIterator* nextRect;
+    T calculated;
 
     int index_interpolation;
     float elapsedTime;
   };
 
- virtual IIterator* getIterator() const override;
+ virtual typename IAnimation<T>::IIterator* getIterator() const override
+ {
+   return new Iterator(*this);
+ }
+
 
   //  const std::list<Rectangle<int> >& getFrames() const;
 
 
-  Animation(std::list<ValueDrawable > fs, float framingTime, bool sml = false, int nb_interpolation = 0, bool smoothF = false);
-
+ Animation(std::list<ValueDrawable > fs, float framingTime, bool sml = false, int nb_interpolation = 0, bool smoothF = false) :
+  frames(fs),
+  time_between_frames(framingTime),
+  smoothLoop(sml),
+  nb_interp(nb_interpolation + 1),
+  smoothFrames(smoothF)
+{
+  
+}
 
   // private: // FIXME: this should be private but friend with iterator
   // NOTE: might be public as long as it's constant.
-  const std::list<ValueDrawable > frames;
+  const std::list<T > frames;
 
 
   const float time_between_frames; // time between the start of a frame and the end of it.

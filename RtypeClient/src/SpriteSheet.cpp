@@ -24,12 +24,12 @@ const std::string& SpriteSheet::getFilename() const
   return filename;
 }
 
-void SpriteSheet::setAnimations(const std::map<int, Animation* >& a)
+void SpriteSheet::setAnimations(const std::map<int, Animation<ValueDrawable>* >& a)
 {
   animations = a;
 }
 
-const std::map<int, Animation* >& SpriteSheet::getAnimations() const
+const std::map<int, Animation<ValueDrawable>* >& SpriteSheet::getAnimations() const
 {
   return animations;
 }

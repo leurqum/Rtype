@@ -6,6 +6,7 @@
 
 #include "Rectangle.h"
 #include "Animation.h"
+#include "ValueDrawable.h"
 
 class SpriteSheet
 {
@@ -16,8 +17,8 @@ class SpriteSheet
   void setFilename(const std::string&);
   const std::string& getFilename() const;
   
-  void setAnimations(const std::map<int, Animation* >&);
-  const std::map<int, Animation* >& getAnimations() const;
+  void setAnimations(const std::map<int, Animation<ValueDrawable>* >&);
+  const std::map<int, Animation<ValueDrawable>* >& getAnimations() const;
   //  void setInterpolation(int); // INFO: 0 means instant change between rectangle of animations. (default is 0)
   // void setSmoothFrames(bool);
   // void setTimeBetweenAnimationFrame(float milliseconds);
@@ -51,6 +52,6 @@ class SpriteSheet
   float time_between_frames;
   bool smoothLoop;
   std::string filename;
-  std::map<int, Animation* > animations;
+  std::map<int, Animation<ValueDrawable>* > animations;
 
 };
