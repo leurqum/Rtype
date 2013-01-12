@@ -15,10 +15,10 @@ SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
 
   _selectionArrow.setInitialValue({{310, 160}, {1, 1}, 0});
 
-  // std::list<ValueDrawer > arrowAnimation;
-  // arrowAnimation.push_back({{0,0},{1,1}, 0});
-  // arrowAnimation.push_back({{-10, 0},{1,1},0});
-  // _selectionArrow.setAnimation(* (new Animation(arrowAnimation, 500, true, 0, true)));
+  std::list<ValueDrawer > arrowAnimation;
+  arrowAnimation.push_back({{0,0},{1,1}, 0});
+  arrowAnimation.push_back({{-10, 0},{1,1},0});
+  _selectionArrow.setAnimation((new Animation<ValueDrawer>(arrowAnimation, 500, true, 0, true)));
 
   // allButtons.addDrawable(&playButton);
   // allButtons.addDrawable(&exitButton);

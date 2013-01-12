@@ -5,27 +5,65 @@
 class ValueDrawer
 {
  public:
-  /* ValueDrawer& operator+(const ValueDrawer& incr) */
-  /*   { */
-  /*     this->position += incr.position; */
-  /*     this->scale += incr.scale; */
-  /*     this->rotation += incr.rotation; */
-  /*     return *this; */
-  /*   } */
-  ValueDrawer operator+(const ValueDrawer& a) const
-  {
-    ValueDrawer v = a;
-    v += a;
-    return v;
-  }
-  ValueDrawer& operator+=(const ValueDrawer& a)
-  {
-    this->position += a.position;
-    this->scale += a.scale;
-    this->rotation += a.rotation;
-    return *this;
-  }
   Vector2<float> position;
   Vector2<float> scale;
   float rotation;
+
+  // Operators:
+
+  ValueDrawer& operator+=(const ValueDrawer& incr)
+    {
+      this->position += incr.position;
+      this->scale += incr.scale;
+      this->rotation += incr.rotation;
+      return *this;
+    }
+  ValueDrawer operator+(const ValueDrawer& incr) const
+    {
+      ValueDrawer ret(*this);
+      ret += incr;
+      return ret;
+    }
+
+  ValueDrawer& operator-=(const ValueDrawer& incr)
+    {
+      this->position -= incr.position;
+      this->scale -= incr.scale;
+      this->rotation -= incr.rotation;
+      return *this;
+    }
+  ValueDrawer operator-(const ValueDrawer& incr) const
+  {
+    ValueDrawer ret(*this);
+    ret -= incr;
+    return ret;
+  }
+  
+  ValueDrawer& operator/=(float n)
+    {
+      this->position /= n;
+      this->scale /= n;
+      this->rotation /= n;
+      return *this;
+    }
+  ValueDrawer operator/(float n) const
+  {
+    ValueDrawer ret(*this);
+    ret /= n;
+    return ret;
+  }
+
+  ValueDrawer& operator*=(float n)
+    {
+      this->position *= n;
+      this->scale *= n;
+      this->rotation *= n;
+      return *this;
+    }
+  ValueDrawer operator*(float n) const
+  {
+    ValueDrawer ret(*this);
+    ret *= n;
+    return ret;
+  }
 };

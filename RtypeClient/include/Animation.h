@@ -22,7 +22,7 @@ public:
       increase_iterator();
     }
 
-    virtual const ValueDrawable& getFrame() const override
+    virtual const T& getFrame() const override
     {
       return calculated;
     }
@@ -94,7 +94,7 @@ public:
   //  const std::list<Rectangle<int> >& getFrames() const;
 
 
- Animation(std::list<ValueDrawable > fs, float framingTime, bool sml = false, int nb_interpolation = 0, bool smoothF = false) :
+ Animation(std::list<T > fs, float framingTime, bool sml = false, int nb_interpolation = 0, bool smoothF = false) :
   frames(fs),
   time_between_frames(framingTime),
   smoothLoop(sml),
