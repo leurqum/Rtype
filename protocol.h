@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
-** Last update Fri Jan 11 17:44:34 2013 mathieu leurquin
+** Last update Sat Jan 12 13:25:53 2013 mathieu leurquin
 */
 
 #ifndef __PROTOCOOL__
@@ -51,10 +51,21 @@ typedef	struct
 enum type_drawable
 {
   SHIP,
-  MONSTER, // several monsters ?
-  OBSTACLE, // several obstacles ?
-  BULLET,
+  OBSTACLE,
   BONUS
+};
+
+enum type_enemie
+{
+  EASY,
+  HARD,
+  BOSS
+};
+
+enum type_bullet
+{
+  LINEAR, //bullet qui se deplace lineraiement
+  RAYON_LINEAR // rayon lineaire
 };
 
 typedef	struct
@@ -64,6 +75,23 @@ typedef	struct
   float  xPosition;
   float  yPosition;
 }	drawable;
+
+typedef	struct
+{
+  int		id;
+  float		xPosition;
+  float		yPosition;
+  type_bullet	bullet;
+}		drawable_bullet;
+
+typedef	struct
+{
+  int		id;
+  float		xPosition;
+  float		yPosition;
+  type_enemie	enemie;
+}		drawable_enemie;
+
 
 /* typedef	struct */
 /* { */
