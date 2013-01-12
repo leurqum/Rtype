@@ -30,33 +30,23 @@ IScene* SceneGame::update(float elapsedTime)
   static int incr = 5;
 
   d.xPosition = x;
-   // x += incr;
-   // if (x > 500)
-   //   incr = -5;
-   // if (x <= 400)
-   //   incr = 5;
+   x += incr;
+   if (x > 500)
+     incr = -5;
+   if (x <= 400)
+     incr = 5;
   d.yPosition = 123;
 
 
-  if (ship[0] != nullptr)
+  if (ship[0] == nullptr)
     {
-      // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
-      // ship[0]->setUpdate(d);
-    }
-  else
-    {
-
       ship[0] = new DrawerShip(0);
-      // ret->setUpdate(d);
-
-      // ship[0] = ret;
     }
+  // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
+  ship[0]->setUpdate(d);
   // TODO: insert input managing code here.
 
   ship[0]->update(elapsedTime);
- //fixedBackground.update(elapsedTime);
- //scrollingBackground.update(elapsedTime);
- //scrollingBackground2.update(elapsedTime);
   std::cout << "scenegame END update" << std::endl;
   return this;
 }

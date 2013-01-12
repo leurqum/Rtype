@@ -2,7 +2,6 @@
 #include "IScene.h"
 #include "SceneManager.h"
 #include "DrawableGeneric.h"
-#include "SimpleDrawable.h"
 #include "DrawerDrawable.h"
 #include "FactoryDrawable.h"
 
