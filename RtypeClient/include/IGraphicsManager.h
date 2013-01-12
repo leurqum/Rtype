@@ -3,7 +3,8 @@
 #include <list>
 #include <map>
 
-#include "IDrawable.h"
+#include "Drawable.h"
+#include "ValueDrawer.h"
 #include "../../protocol.h"
 #include "SpriteSheet.h"
 #include "Vector2.h"
@@ -15,7 +16,7 @@ class IGraphicsManager
  public:
   virtual void reset() = 0;
   virtual void clear() = 0;
-  virtual void draw(IDrawable*, const IDrawer*) = 0;
+  virtual void draw(const Drawable*, const ValueDrawer&) = 0;
   virtual void display() = 0;
 };
 

@@ -3,17 +3,19 @@
 #include <list>
 
 #include "Rectangle.h"
+#include "ValueDrawable.h"
+#include "IAnimation.h"
 
-class Animation
+class Animation : public IAnimation<ValueDrawable>
 {
 public:
-  class Iterator
+  class Iterator : public IAnimation<ValueDrawable>::IIterator
   {
   public:
     Iterator(const Animation& s);
 
     // NOTE: we don't return a reference because the rectangle might be constructed in the function (in case of interpolation)
-    Rectangle<int> getValue() const; // TODO: operator* would be more iterator-like
+    const ValueDrawable& getFrame() const; // TODO: operator* would be more iterator-like
 
     // FIXME: we might want to increase(float elapsedMilliseconds) so the SpriteSheet manages entirely all its flow.
     void increase(float miliseconds); // TODO: operator+ would be more iterator-like
@@ -23,21 +25,26 @@ public:
     // this is const, and it's pretty useful to access it, so public.
     const Animation& a;
   private:
-    Rectangle<int> const * current;
-    std::list< Rectangle<int> >::const_iterator* nextRect;
+    void update_calculated();
+    ValueDrawable const * current;
+    std::list< ValueDrawable >::const_iterator* nextRect;
+    ValueDrawable calculated;
+
     int index_interpolation;
     float elapsedTime;
   };
 
+ virtual IIterator* getIterator() const override;
+
   //  const std::list<Rectangle<int> >& getFrames() const;
 
 
-  Animation(std::list<Rectangle<int> > fs, float framingTime, bool sml = false, int nb_interpolation = 0, bool smoothF = false);
+  Animation(std::list<ValueDrawable > fs, float framingTime, bool sml = false, int nb_interpolation = 0, bool smoothF = false);
 
 
   // private: // FIXME: this should be private but friend with iterator
   // NOTE: might be public as long as it's constant.
-  const std::list<Rectangle<int> > frames;
+  const std::list<ValueDrawable > frames;
 
 
   const float time_between_frames; // time between the start of a frame and the end of it.

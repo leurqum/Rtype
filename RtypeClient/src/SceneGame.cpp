@@ -1,6 +1,7 @@
 #include "SceneGame.h"
 
-SceneGame::SceneGame(IScene& decoratedScene) : ASceneHover(decoratedScene)
+SceneGame::SceneGame(IScene& decoratedScene) :
+  ASceneHover(decoratedScene)
 {
   ship[0] = nullptr;
   ship[1] = nullptr;
@@ -40,17 +41,16 @@ IScene* SceneGame::update(float elapsedTime)
   if (ship[0] != nullptr)
     {
       // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
-      ship[0]->setUpdate(d);
+      // ship[0]->setUpdate(d);
     }
   else
     {
 
-      DrawableRemote* ret = new DrawableRemote();
-      ret->setUpdate(d);
+      ship[0] = new DrawerShip(0);
+      // ret->setUpdate(d);
 
-      ship[0] = ret;
+      // ship[0] = ret;
     }
-
   // TODO: insert input managing code here.
 
   ship[0]->update(elapsedTime);
@@ -66,11 +66,6 @@ void SceneGame::draw()
   ASceneHover::draw();
 
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
-  //gm->draw(&fixedBackground);
-  //std::cout << "drawing" << std::endl;
-  //gm->draw(&scrollingBackground);
-  //gm->draw(&scrollingBackground2);
-  // FIXME: use a list ?
   if (ship[0] != nullptr)
     ship[0]->drawTo(gm);
   if (ship[1] != nullptr)

@@ -16,7 +16,7 @@ public IGraphicsManager
   GraphicsManagerSFML(void);
   virtual void reset();
   virtual void clear();
-  virtual void draw(IDrawable*, const IDrawer*);
+  virtual void draw(const Drawable*, const ValueDrawer&) override;
   virtual void display();
   
 

@@ -1,24 +1,27 @@
 #include "SceneHoverMenu.h"
 
 SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
-  ASceneHover(decoratedScene),
+  ASceneHover(decoratedScene) ,
   playButton(*SpriteSheetFactory::getInstance()->getSpriteSheet(3)),
+  _playButton(playButton),
   exitButton(*SpriteSheetFactory::getInstance()->getSpriteSheet(3)),
-  selectionArrow(*SpriteSheetFactory::getInstance()->getSpriteSheet(4))
+  _exitButton(exitButton),
+  selectionArrow(*SpriteSheetFactory::getInstance()->getSpriteSheet(4)),
+  _selectionArrow(selectionArrow)
 {
-  playButton.setPosition(Vector2<float>(330, 160));
+  _playButton.setInitialValue({{330, 160}, {1, 1}, 0});
 
-  exitButton.setPosition(Vector2<float>(330, 200));
+  _exitButton.setInitialValue({{330, 200}, {1, 1}, 0});
 
-  selectionArrow.setPosition(Vector2<float>(310, 160));
+  _selectionArrow.setInitialValue({{310, 160}, {1, 1}, 0});
 
-  std::list<Rectangle<int> > arrowAnimation;
-  arrowAnimation.push_back(Rectangle<int>(0, 0));
-  arrowAnimation.push_back(Rectangle<int>(0, 0, Vector2<int>(-10, 0)));
-  selectionArrow.addModifier(* (new Animation(arrowAnimation, 500, true, 0, true)));
+  // std::list<ValueDrawer > arrowAnimation;
+  // arrowAnimation.push_back({{0,0},{1,1}, 0});
+  // arrowAnimation.push_back({{-10, 0},{1,1},0});
+  // _selectionArrow.setAnimation(* (new Animation(arrowAnimation, 500, true, 0, true)));
 
-  allButtons.addDrawable(&playButton);
-  allButtons.addDrawable(&exitButton);
+  // allButtons.addDrawable(&playButton);
+  // allButtons.addDrawable(&exitButton);
 
   firstSelection = Vector2<float>(310, 160);
   gapButtons = Vector2<float>(0, 40);
@@ -42,29 +45,35 @@ IScene* SceneHoverMenu::update(float elapsedTime)
     {
       ++selectionPosition;
       if (selectionPosition >= nbButtons)
-	selectionPosition = 0;
-      selectionArrow.
-	setPosition(
-		    Vector2<float>(firstSelection.x + selectionPosition * gapButtons.x,
-				   firstSelection.y + selectionPosition * gapButtons.y));
+  	selectionPosition = 0;
+      _selectionArrow.
+  	setInitialValue(
+			{{firstSelection.x + selectionPosition * gapButtons.x,
+			      firstSelection.y + selectionPosition * gapButtons.y},
+			    {1, 1}, 0});
     }
   const Vector2<bool>& returnKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Return));
   if (!returnKey.x && returnKey.y)
     {
       // TODO: make this more dynamic (an idea would be to create a LayoutDrawerMenu, with the arrow and stuff).
       if (selectionPosition == 0)
-	playButton.animate(1);
+      	playButton.animate(1);
       else
-	exitButton.animate(1);
+      	exitButton.animate(1);
     }
   else if (returnKey.x && !returnKey.y)
     // INFO: Validation of current selected button
     return new SceneGame(this->decoratedScene);
 
 
-  allButtons.update(elapsedTime);
-  selectionArrow.update(elapsedTime);
+  // allButtons.update(elapsedTime);
+  playButton.update(elapsedTime);
+  _playButton.update(elapsedTime);
+  exitButton.update(elapsedTime);
+  _exitButton.update(elapsedTime);
 
+  selectionArrow.update(elapsedTime);
+  _selectionArrow.update(elapsedTime);
   return this;
 }
 
@@ -72,8 +81,10 @@ void SceneHoverMenu::draw()
 {
   ASceneHover::draw();
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
-  allButtons.drawTo(gm);
-  selectionArrow.drawTo(gm);
+  _playButton.drawTo(gm);
+  _exitButton.drawTo(gm);
+  // allButtons.drawTo(gm);
+  _selectionArrow.drawTo(gm);
 }
 
 void SceneHoverMenu::load()

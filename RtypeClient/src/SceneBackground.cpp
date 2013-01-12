@@ -2,34 +2,16 @@
 
 
 SceneBackground::SceneBackground(void) :
-  fixedBackground(SpriteSheetFactory::getInstance()->getSpriteSheet(1)->getFilename(), Rectangle<int>(1599, 599)),
-  scrollingBackground(*SpriteSheetFactory::getInstance()->getSpriteSheet(2)),
-  scrollingBackground2(*SpriteSheetFactory::getInstance()->getSpriteSheet(2))
+  fixedBackground(FactoryDrawable::getInstance()->createFarBackground()),
+  _fixedBackground(*fixedBackground),
+  scrollingBackground(FactoryDrawable::getInstance()->createMovingStarsBackground()),
+  _scrollingBackground(*scrollingBackground),
+  scrollingBackground2(FactoryDrawable::getInstance()->createMovingStarsBackground()),
+  _scrollingBackground2(*scrollingBackground2)
 {
-  //std::cout << "scenegame construct" << std::endl;
-  
-  // fixedBackground.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(1));
-  //std::cout << "scenegame multiple construct" << std::endl;
-  // fixedBackground.setPosition(0, 0);
-  //std::cout << "scenegame after setposition" << std::endl;
-  // fixedBackground.animate(0);
-  //std::cout << "scenegame END construct" << std::endl;
 
-  // scrollingBackground.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(2));
-  //std::cout << "scenegame multiple construct" << std::endl;
-  // scrollingBackground.setPosition(0, 0);
-  //std::cout << "scenegame after setposition" << std::endl;
-  // scrollingBackground.animate(0);
+  scrollingBackground->update(10000);
 
-  scrollingBackground._manual_next_frame();
-  //std::cout << "scenegame END construct" << std::endl;
-
-  // scrollingBackground2.setSpriteSheet(SpriteSheetFactory::getInstance()->getSpriteSheet(2));
-  //std::cout << "scenegame multiple construct" << std::endl;
-  // scrollingBackground2.setPosition(0, 0);
-  //std::cout << "scenegame after setposition" << std::endl;
-  // scrollingBackground2.animate(0);
-  //std::cout << "scenegame END construct" << std::endl;
 }
 
 
@@ -39,19 +21,22 @@ SceneBackground::~SceneBackground(void)
 
 IScene* SceneBackground::update(float elapsedTime)
 {
-  fixedBackground.update(elapsedTime);
-  scrollingBackground.update(elapsedTime);
-  scrollingBackground2.update(elapsedTime);
+  _fixedBackground.update(elapsedTime);
+  fixedBackground->update(elapsedTime);
+  _scrollingBackground.update(elapsedTime);
+  scrollingBackground->update(elapsedTime);
+  _scrollingBackground2.update(elapsedTime);
+  scrollingBackground2->update(elapsedTime);
   return this;
 }
 
 void SceneBackground::draw()
 {
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
-  gm->draw(&fixedBackground, &fixedBackground);
-  std::cout << "drawing" << std::endl;
-  gm->draw(&scrollingBackground, &scrollingBackground);
-  gm->draw(&scrollingBackground2, &scrollingBackground2);
+
+  _fixedBackground.drawTo(gm);
+  _scrollingBackground.drawTo(gm);
+  _scrollingBackground2.drawTo(gm);
 }
 
 void SceneBackground::load()

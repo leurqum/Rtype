@@ -27,16 +27,26 @@ void GraphicsManagerSFML::clear()
   window.clear(sf::Color());
 }
 
-void GraphicsManagerSFML::draw(IDrawable* drawable, const IDrawer* drawer)
+void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_drawer)
 {
   //std::cout << "getting spritesheet..." << std::endl;
-  const std::string& ss = drawable->getSpriteSheet();
+  const std::string& ss = drawable->getSpriteSheetFilename();
 
   //std::cout << "creating sprite..." << std::endl;
+  const ValueDrawable& v_drawable(drawable->getModifiedValue());
   sf::Sprite s(*getTextureFromFilename(ss),
-	       GraphicsManagerSFML::rectangleToSFMLRect( *drawable->getRectSpriteSheet()));
+	       GraphicsManagerSFML::rectangleToSFMLRect(Rectangle<int>(v_drawable.dimension.x,
+								       v_drawable.dimension.y,
+								       v_drawable.position
+								       )));
+  // std::cout << "drawing sprite" << std::endl;
+  // std::cout << "\tw:" << v_drawable.dimension.x << std::endl;
+  // std::cout << "\th:" << v_drawable.dimension.y << std::endl;
+  // std::cout << "\tx:" << v_drawable.position.x << std::endl;
+  // std::cout << "\ty:" << v_drawable.position.y << std::endl;
+
   //std::cout << "sprite created" << std::endl;
-  s.setPosition(drawer->getPosition().x, drawer->getPosition().y);
+  s.setPosition(v_drawer.position.x, v_drawer.position.y);
   window.draw(s);
 }
 
