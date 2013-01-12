@@ -13,23 +13,32 @@ void Game::loop()
     }
 }
 
-// void Game::update()
-// {
+void Game::update()
+{
   
-// }
+}
 
-// void Game::collision()
-// {
-//   for (std::list<IAUnit*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
-//     { 
-//       collisionIaWithBullet((*it));
-//     }
-//   collisionHumainWithBullet(HumainUnit *u);
-//   collisionWithEnemie(HumainUnit *u);
-//   collisionUWithObs(Unit *u);
-//   collisionBWithObs(Bullet *b);
-//   collisionWithBonus(HumainUnit *u);
-// }
+void Game::collision()
+{
+  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+    if (collisionIaWithBullet((*it)) == true)
+      eraseIa((*it)->getId());
+  
+  for (std::list<HumainUnit*>::iterator it = humanList.begin(); it != humanList.end(); it++)
+    collisionHumainWithBullet((*it));
+  
+  for (std::list<HumainUnit*>::iterator it = humanList.begin(); it != humanList.end(); it++)
+    collisionWithEnemie((*it));
+ 
+  //dans la fonction move
+  //collisionUWithObs(Unit *u);
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    if (collisionBWithObs((*it)) == true)
+      eraseBullet((*it)->getId());
+
+  for (std::list<HumainUnit*>::iterator it = humanList.begin(); it != humanList.end(); it++)
+    collisionWithBonus((*it));
+}
 
 IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable)
 {
@@ -345,7 +354,6 @@ bool Game::collisionIaWithBullet(IAUnit *u)
 	   x < obsX + (*it)->getWidth()))
 	{
 	  eraseBullet((*it)->getId());
-	  eraseIa(u->getId());
 	  return (true);
 	}
     }
@@ -366,6 +374,7 @@ bool Game::collisionWithEnemie(HumainUnit *u)
 	   x < iaX + (*it)->getWidth()))
 	{
 	  u->setHealth(0);
+	  eraseIa((*it)->getId());
 	  return (true);
 	}
     }
@@ -402,7 +411,7 @@ bool Game::collisionBWithObs(Bullet *b)
 	  (x + b->getWidth() > mObsX &&
 	   x < mObsX + (*it)->getWidth()))
 	{
-	  eraseBullet(b->getUnit());
+	  eraseObs((*it)->getId());
 	  return (true);
 	}
     }
@@ -450,8 +459,8 @@ void Game::move(int id)
   
   if (u == NULL)
     return;
-
-  u->getDefinition()->move();
+  if (collisionUWithObs(u) == false)
+    u->getDefinition()->move();
 }
 
 int Game::getSizeGame()const
