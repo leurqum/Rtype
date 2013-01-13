@@ -9,6 +9,8 @@ class ValueDrawer
   Vector2<float> scale;
   float rotation;
 
+  ValueDrawer(float posx = 0, float posy = 0, float scalex = 0, float scaley = 0, float rot = 0) : position(posx, posy), scale(scalex, scaley), rotation(rot) {}
+
   // Operators:
 
   ValueDrawer& operator+=(const ValueDrawer& incr)

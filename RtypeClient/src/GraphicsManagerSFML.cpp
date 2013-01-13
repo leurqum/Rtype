@@ -37,15 +37,12 @@ void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_dr
   sf::Sprite s(*getTextureFromFilename(ss),
 	       GraphicsManagerSFML::rectangleToSFMLRect(Rectangle<int>(v_drawable.dimension.x,
 								       v_drawable.dimension.y,
-		 {v_drawable.position.x, v_drawable.position.y}
-								       )));
-  std::cout << "drawing sprite" << std::endl;
-  std::cout << "\tw:" << v_drawable.dimension.x << std::endl;
-  std::cout << "\th:" << v_drawable.dimension.y << std::endl;
-  std::cout << "\tx:" << v_drawable.position.x << std::endl;
-  std::cout << "\ty:" << v_drawable.position.y << std::endl;
-  std::cout << "\tscale.x:" << v_drawer.scale.x << std::endl;
-  std::cout << "\tscale.y:" << v_drawer.scale.y << std::endl;
+								       Vector2<int>(v_drawable.position.x, v_drawable.position.y))));
+  // std::cout << "drawing sprite" << std::endl;
+  // std::cout << "\tw:" << v_drawable.dimension.x << std::endl;
+  // std::cout << "\th:" << v_drawable.dimension.y << std::endl;
+  // std::cout << "\tx:" << v_drawable.position.x << std::endl;
+  // std::cout << "\ty:" << v_drawable.position.y << std::endl;
 
   std::cout << "sprite created" << std::endl;
   s.setPosition(v_drawer.position.x, v_drawer.position.y);
