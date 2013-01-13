@@ -30,11 +30,11 @@ IScene* SceneGame::update(float elapsedTime)
   static int incr = 5;
 
   d.xPosition = x;
-   x += incr;
-   if (x > 500)
-     incr = -5;
-   if (x <= 400)
-     incr = 5;
+   // x += incr;
+   // if (x > 500)
+   //   incr = -5;
+   // if (x <= 400)
+   //   incr = 5;
   d.yPosition = 123;
 
 
@@ -46,6 +46,25 @@ IScene* SceneGame::update(float elapsedTime)
   ship[0]->setUpdate(d);
   // TODO: insert input managing code here.
 
+  d.id = 0;
+  d.type = Protocol::SHIP;
+  static int _x = 480;
+  static int _y = 223;
+  static int _incr = 2;
+
+  d.xPosition = _x;
+  // _x += _incr;
+  // _y += _incr;
+  //  if (_x > 500)
+  //    _incr = -5;
+  //  if (_x <= 400)
+  //    _incr = 5;
+
+  d.yPosition = _y;
+  enemy.setUpdate(d);
+  enemy.update(elapsedTime);
+
+
   ship[0]->update(elapsedTime);
   std::cout << "scenegame END update" << std::endl;
   return this;
@@ -55,7 +74,12 @@ void SceneGame::draw()
 {
   ASceneHover::draw();
 
+
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
+
+  enemy.drawTo(gm);
+
+
   if (ship[0] != nullptr)
     ship[0]->drawTo(gm);
   if (ship[1] != nullptr)

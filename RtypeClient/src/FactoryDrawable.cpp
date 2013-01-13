@@ -14,32 +14,37 @@ FactoryDrawable::FactoryDrawable()
   
 }
 
-DrawableGeneric* FactoryDrawable::createButton()
+DrawableGeneric* FactoryDrawable::createButton() const
 {
   return fromSpriteSheet(3);
 }
 
-DrawableGeneric* FactoryDrawable::createSelectionArrow()
+DrawableGeneric* FactoryDrawable::createSelectionArrow() const
 {
   return fromSpriteSheet(4);
 }
 
-DrawableGeneric* FactoryDrawable::createFarBackground()
+DrawableGeneric* FactoryDrawable::createFarBackground() const
 {
   return fromSpriteSheet(1);
 }
 
-DrawableGeneric* FactoryDrawable::createMovingStarsBackground()
+DrawableGeneric* FactoryDrawable::createMovingStarsBackground() const
 {
   return fromSpriteSheet(2);
 }
 
-DrawableGeneric* FactoryDrawable::createShip()
+DrawableGeneric* FactoryDrawable::createShip() const
 {
   return fromSpriteSheet(0);
 }
 
-DrawableGeneric* FactoryDrawable::fromSpriteSheet(int id)
+DrawableGeneric* FactoryDrawable::createEnemyBasic() const
+{
+  return fromSpriteSheet(5);
+}
+
+DrawableGeneric* FactoryDrawable::fromSpriteSheet(int id) const
 {
   SpriteSheet* s = SpriteSheetFactory::getInstance()->getSpriteSheet(id);
 

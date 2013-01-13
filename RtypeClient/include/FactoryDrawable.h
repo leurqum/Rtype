@@ -9,15 +9,16 @@ class FactoryDrawable
  public:
   static FactoryDrawable* getInstance();
 
-  DrawableGeneric* createButton();
-  DrawableGeneric* createSelectionArrow();
-  DrawableGeneric* createFarBackground();
-  DrawableGeneric* createMovingStarsBackground();
-  DrawableGeneric* createShip();
+  DrawableGeneric* createButton() const;
+  DrawableGeneric* createSelectionArrow() const;
+  DrawableGeneric* createFarBackground() const;
+  DrawableGeneric* createMovingStarsBackground() const;
+  DrawableGeneric* createShip() const;
+  DrawableGeneric* createEnemyBasic() const;
   
  private:
   static FactoryDrawable* instance;
   FactoryDrawable();
-  DrawableGeneric* fromSpriteSheet(int id);
+  DrawableGeneric* fromSpriteSheet(int id) const;
 
 };

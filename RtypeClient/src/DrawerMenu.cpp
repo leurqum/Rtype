@@ -7,7 +7,8 @@ DrawerMenu::DrawerMenu() : arrow(DrawableGeneric(*FactoryDrawable::getInstance()
   std::list<ValueDrawer > arrowAnimation;
   arrowAnimation.push_back({{0,0},{1,1}, 0});
   arrowAnimation.push_back({{10, 0},{1,1},0});
-  arrow.setAnimation((new Animation<ValueDrawer>(arrowAnimation, 500, true, 0, true)));
+  arrowAnimation.push_back({{0,0},{1,1}, 0});
+  arrow.setAnimation((new Animation<ValueDrawer>(arrowAnimation, 500, true)));
   updateArrowPosition();
 }
 

@@ -10,6 +10,7 @@
 #include "../../protocol.h"
 
 #include "DrawerShip.h"
+#include "DrawerEnemyBasic.h"
 
 class SceneGame :
 public ASceneHover
@@ -26,6 +27,7 @@ public ASceneHover
  private:
   // FIXME: remake this updatable. (specialize it)
   DrawerShip* ship[4]; // these are drawables updatable from a protocol::drawable.
+  DrawerEnemyBasic enemy;
   // TODO: put all the backgrounds in a LayerDrawable (implement LayerDrawable too :D )
   //Drawable fixedBackground;
   //Drawable scrollingBackground;
