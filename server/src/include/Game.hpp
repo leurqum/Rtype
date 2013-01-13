@@ -77,7 +77,7 @@ public:
 
   void fire_ia(int id);
   void fire(int id);
-  void move(int id);
+  void move(int id, Protocol::move *m);
 
   void createRandomObs(double time);
   void createRandomBonus(double time);

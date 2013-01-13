@@ -532,14 +532,14 @@ void Game::fire_ia(int id)
     }
 }
 
-void Game::move(int id)
+void Game::move(int id, Protocol::move *m)
 {
   Unit *u = getUnit(id);
   
   if (u == NULL)
     return;
   if (collisionUWithObs(u) == false)
-    u->getDefinition()->move();
+    u->getDefinition()->move(m);
 }
 
 int Game::getIaSize()const

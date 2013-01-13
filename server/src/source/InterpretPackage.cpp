@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Sun Jan 13 17:49:34 2013 mathieu leurquin
+// Last update Sun Jan 13 18:42:59 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -113,11 +113,12 @@ void	InterpretPackage::execMove(void * data, ISocket * sock)
 {
   Player *p;
   std::list <Game*> listGameCpy = _server->getGameList();
-
+  
+  Protocol::move *m= (Protocol::move*)data;
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
-	(*it)->move(p->getId());
+	(*it)->move(p->getId(), m);
     }
 }
 
@@ -129,7 +130,7 @@ void	InterpretPackage::execFire(void * data, ISocket * sock)
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
-	(*it)->move(p->getId());
+	(*it)->fire(p->getId());
     }  
 }
 
