@@ -3,6 +3,7 @@
 DrawerMenu::DrawerMenu() : arrow(DrawableGeneric(*FactoryDrawable::getInstance()->createSelectionArrow()))
 {
   selectionId = 0;
+  status = selectionType::UNSELECTED;
   addButton();
   std::list<ValueDrawer > arrowAnimation;
   arrowAnimation.push_back({{0,0},{1,1}, 0});
@@ -29,8 +30,15 @@ void DrawerMenu::drawTo(IGraphicsManager* gm, const ValueDrawer& modifier) const
 void DrawerMenu::update(float ms)
 {
   ADrawer::update(ms);
-  SceneManager* sm = SceneManager::getInstance();
-  const Vector2<bool>& returnKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Return));
+  updateArrowPosition();
+  for (DrawerUDrawable& d : buttons)
+    d.update(ms);
+  arrow.update(ms);
+}
+
+void DrawerMenu::checkInput(IInputManagerSFML* im)
+{
+  const Vector2<bool>& returnKey(im->getKeyStatus(sf::Keyboard::Return));
   if (!returnKey.x && returnKey.y)
     {
       buttons[selectionId].animate(1);
@@ -41,7 +49,7 @@ void DrawerMenu::update(float ms)
       status = selectionType::VALIDATED;
     }
 
-  const Vector2<bool>& downKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Down));
+  const Vector2<bool>& downKey(im->getKeyStatus(sf::Keyboard::Down));
   if (!downKey.x && downKey.y)
     {
       selectionId++;
@@ -49,7 +57,7 @@ void DrawerMenu::update(float ms)
       if (selectionId >= buttons.size())
 	selectionId = 0;
     }
-  const Vector2<bool>& upKey(sm->getInputManager()->getKeyStatus(sf::Keyboard::Up));
+  const Vector2<bool>& upKey(im->getKeyStatus(sf::Keyboard::Up));
   if (!upKey.x && upKey.y)
     {
       selectionId--;
@@ -57,10 +65,6 @@ void DrawerMenu::update(float ms)
       if (selectionId < 0)
 	selectionId = buttons.size() - 1;
     }
-  updateArrowPosition();
-  for (DrawerUDrawable& d : buttons)
-    d.update(ms);
-  arrow.update(ms);
 }
 
 void DrawerMenu::addButton()
@@ -81,5 +85,38 @@ DrawerMenu::selectionType DrawerMenu::getSelectionType() const
 
 void DrawerMenu::updateArrowPosition()
 {
+
+  // TODO: check if it's still ok, like, if no buttons have been deleted and stuff.
+  // or do this in another function..
   arrow.setInitialValue({{0, (selectionId) * 42}, {1, 1}, 0});
+}
+
+void DrawerMenu::selectionForward()
+{
+  buttons[selectionId].animate(0);
+  selectionId++;
+  status = selectionType::HOVER;
+  if (selectionId >= buttons.size())
+    selectionId = 0;
+}
+
+void DrawerMenu::selectionBackward()
+{
+  buttons[selectionId].animate(0);
+  selectionId--;
+  status = selectionType::HOVER;
+  if (selectionId < 0)
+    selectionId = buttons.size() - 1;
+}
+
+void DrawerMenu::select()
+{
+  if (status == selectionType::HOVER)
+    status = selectionType::SELECTED;
+}
+
+void DrawerMenu::validate()
+{
+  if (status == selectionType::SELECTED)
+    status = selectionType::SELECTED;
 }

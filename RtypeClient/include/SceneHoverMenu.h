@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "SceneGame.h"
 #include "DrawerMenu.h"
+#include "SceneListGame.h"
 
 class SceneHoverMenu :
 	public ASceneHover
@@ -20,18 +21,6 @@ public:
 	virtual void setToForeground();
 private:
 	DrawerMenu menu;
-	/* DrawableGeneric playButton; */
-	/* DrawerDrawable _playButton; */
-
-	/* DrawableGeneric exitButton; */
-	/* DrawerDrawable _exitButton; */
-
-	/* DrawableGeneric selectionArrow; */
-	/* DrawerDrawable _selectionArrow; */
-
-	/* int selectionPosition; */
-	/* int nbButtons; */
-	/* Vector2<float> firstSelection; */
-	/* Vector2<float> gapButtons; */
+	bool isBackground;
 };
 

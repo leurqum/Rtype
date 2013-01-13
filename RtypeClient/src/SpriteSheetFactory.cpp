@@ -42,9 +42,9 @@ SpriteSheetFactory::SpriteSheetFactory()
   ValueDrawable v = {{1599, 599}, {0, 0}};
   singleAnim.push_back(v);
   animList[0] = new Animation<ValueDrawable>(singleAnim, 250, false);
-  std::cout << v.position.x << std::endl;
-  std::cout << v.position.y << std::endl;
-  std::cout << "mmh"<<std::endl;
+  // std::cout << v.position.x << std::endl;
+  // std::cout << v.position.y << std::endl;
+  // std::cout << "mmh"<<std::endl;
   spriteSheets[1] = new SpriteSheet();
   spriteSheets[1]->setFilename("sprites/farback.gif");
   spriteSheets[1]->setAnimations(animList);
@@ -118,7 +118,6 @@ SpriteSheetFactory::SpriteSheetFactory()
   // singleAnim.push_back({{32, 36}, {502, 0}});
   // animList[1] = new Animation<ValueDrawable>(singleAnim, 250, false);
   spriteSheets[5]->setAnimations(animList);
-  
 }
 
 SpriteSheetFactory* SpriteSheetFactory::instance = nullptr;

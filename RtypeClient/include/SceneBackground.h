@@ -1,4 +1,5 @@
 #pragma once
+
 #include "IScene.h"
 #include "SceneManager.h"
 #include "DrawableGeneric.h"
@@ -21,7 +22,6 @@ private:
 	// TODO: put all the backgrounds in a LayerDrawable (implement LayerDrawable too :D )
 	DrawableGeneric* fixedBackground;
 	DrawerDrawable _fixedBackground;
-
 	DrawableGeneric* scrollingBackground;
 	DrawerDrawable _scrollingBackground;
 	DrawableGeneric* scrollingBackground2;

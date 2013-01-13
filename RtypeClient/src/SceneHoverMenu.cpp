@@ -5,6 +5,7 @@ SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
 {
   menu.addButton();
   menu.setInitialValue({{200, 160},{1, 1}, 0});
+  isBackground = false;
 }
 
 
@@ -16,9 +17,18 @@ IScene* SceneHoverMenu::update(float elapsedTime)
 {
   ASceneHover::update(elapsedTime);
 
+  if (!isBackground)
+    {
+      menu.checkInput(SceneManager::getInstance()->getInputManager());
+      if (menu.getSelectedId() == 0 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
+	return new SceneGame(this->decoratedScene);
+      if (menu.getSelectedId() == 1 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
+	{
+	  
+	  return new SceneListGame(*this);
+	}
+    }
   menu.update(elapsedTime);
-  if (menu.getSelectedId() == 0 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
-    return new SceneGame(this->decoratedScene);
   return this;
 }
 
@@ -41,7 +51,10 @@ void SceneHoverMenu::unload()
 
 void SceneHoverMenu::setToBackground()
 {
+  isBackground = true;
+  ValueDrawer d = menu.getInitialValue();
 
+  menu.setInitialValue({d.position - 50, d.scale - 0.2, d.rotation});
 }
 
 void SceneHoverMenu::setToForeground()

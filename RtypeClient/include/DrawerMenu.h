@@ -6,7 +6,9 @@
 #include "DrawableGeneric.h"
 #include "FactoryDrawable.h"
 #include "DrawerUDrawable.h"
-#include "SceneManager.h"
+#include "IInputManagerSFML.h"
+
+#include <vector>
 
 class DrawerMenu : public ADrawer // no inheritance from DrawerLayer because it doesnt upgrade its targets
 {
@@ -18,9 +20,16 @@ class DrawerMenu : public ADrawer // no inheritance from DrawerLayer because it 
 
   virtual void update(float ms) override;
 
+  void checkInput(IInputManagerSFML*);
+
   void addButton(); // TODO: give a string ?
   int getSelectedId() const; // -1 means no selection
-  
+
+  void selectionForward();
+  void selectionBackward();
+  void select();
+  void validate();
+
   enum selectionType
   {
     UNSELECTED,

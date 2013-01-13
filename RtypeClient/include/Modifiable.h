@@ -26,6 +26,10 @@ class Modifiable
   {
     initialValue = v; // copy...
   }
+  const T& getInitialValue()
+  {
+    return initialValue;
+  }
   virtual const T& getModifiedValue() const
   {
     return modifiedValue;

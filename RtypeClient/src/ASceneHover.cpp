@@ -3,6 +3,7 @@
 
 ASceneHover::ASceneHover(IScene& _decoratedScene) : decoratedScene(_decoratedScene)
 {
+  decoratedScene.setToBackground();
 }
 
 

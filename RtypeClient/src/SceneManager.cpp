@@ -31,16 +31,17 @@ void SceneManager::draw()
   current->draw();
 }
 
-void SceneManager::changeScene(IScene* newScene)
+IScene* SceneManager::changeScene(IScene* newScene)
 {
   // NOTE: current implementation is a blocking process, think about threading or implementing callbacks.
   if (current)
     current->unload();
-  delete current;
+  // delete current;
   current = newScene;
   //   NOTE: although unload is blocking, load() might not be : we will then call upgrade upon the current scene.
   //   NOTE: because unload is blocking, if unload display a long animation, next milliseconds for the upgrade function will be awfully long.
   current->load();
+  return current;
 }
 
 IScene* SceneManager::getCurrentScene()

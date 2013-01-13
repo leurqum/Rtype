@@ -15,7 +15,7 @@ public:
 	//getInputManager();
 	void draw();
 	void update(float milliseconds);
-	void changeScene(IScene* newScene);
+	IScene* changeScene(IScene* newScene);
 	IScene* getCurrentScene();
 	IGraphicsManager* getGraphicsManager();
 	IInputManagerSFML* getInputManager();
@@ -24,6 +24,7 @@ private:
 	static SceneManager* instance;
 	
 	IScene* current;
+
 	IGraphicsManager* graphicManager;
 	IInputManagerSFML* inputManager;
 };
