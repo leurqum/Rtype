@@ -7,6 +7,7 @@
 #include "FactoryDrawable.h"
 #include "DrawerUDrawable.h"
 #include "IInputManagerSFML.h"
+#include "ValueDrawer.h"
 
 #include <vector>
 

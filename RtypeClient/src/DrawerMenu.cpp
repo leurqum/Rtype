@@ -6,9 +6,13 @@ DrawerMenu::DrawerMenu() : arrow(DrawableGeneric(*FactoryDrawable::getInstance()
   status = selectionType::UNSELECTED;
   addButton();
   std::list<ValueDrawer > arrowAnimation;
-  arrowAnimation.push_back({{0,0},{1,1}, 0});
-  arrowAnimation.push_back({{10, 0},{1,1},0});
-  arrowAnimation.push_back({{0,0},{1,1}, 0});
+  ValueDrawer d;
+  
+  arrowAnimation.push_back(d);
+  d.position.x = 10;
+  arrowAnimation.push_back(d);
+  d.position.x = 0;
+  arrowAnimation.push_back(d);
   arrow.setAnimation((new Animation<ValueDrawer>(arrowAnimation, 500, true)));
   updateArrowPosition();
 }
@@ -70,7 +74,9 @@ void DrawerMenu::checkInput(IInputManagerSFML* im)
 void DrawerMenu::addButton()
 {  
   buttons.push_back(DrawerUDrawable(DrawableGeneric(*FactoryDrawable::getInstance()->createButton())));
-  buttons.back().setInitialValue({{30, (buttons.size() - 1) * 42}, {1, 1}, 0});
+  ValueDrawer d;
+  d.position = Vector2<float>(30, (buttons.size() - 1) * 42);
+  buttons.back().setInitialValue(d);
 }
 
 int DrawerMenu::getSelectedId() const
@@ -88,7 +94,7 @@ void DrawerMenu::updateArrowPosition()
 
   // TODO: check if it's still ok, like, if no buttons have been deleted and stuff.
   // or do this in another function..
-  arrow.setInitialValue({{0, (selectionId) * 42}, {1, 1}, 0});
+  arrow.setInitialValue(ValueDrawer(0, (selectionId) * 42, 0, 0, 0));
 }
 
 void DrawerMenu::selectionForward()

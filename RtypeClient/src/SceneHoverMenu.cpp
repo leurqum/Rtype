@@ -4,7 +4,7 @@ SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
   ASceneHover(decoratedScene)
 {
   menu.addButton();
-  menu.setInitialValue({{200, 160},{1, 1}, 0});
+  menu.setInitialValue(ValueDrawer(200, 160,0, 0, 0));
   isBackground = false;
 }
 
@@ -54,7 +54,11 @@ void SceneHoverMenu::setToBackground()
   isBackground = true;
   ValueDrawer d = menu.getInitialValue();
 
-  menu.setInitialValue({d.position - 50, d.scale - 0.2, d.rotation});
+  std::list<ValueDrawer > toBgAnimation;
+  toBgAnimation.push_back(ValueDrawer());
+  toBgAnimation.push_back(ValueDrawer(-200, -50, -0.3, -0.3)); // TODO: scaling :D
+
+  menu.setAnimation((new Animation<ValueDrawer>(toBgAnimation, 500, true)), 480); // 17 is the average timespan (so 500 - 17 + arbitraryvalue = 480)
 }
 
 void SceneHoverMenu::setToForeground()
