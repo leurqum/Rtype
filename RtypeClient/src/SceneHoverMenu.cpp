@@ -58,7 +58,7 @@ void SceneHoverMenu::setToBackground()
   toBgAnimation.push_back(ValueDrawer());
   toBgAnimation.push_back(ValueDrawer(-200, -50, -0.3, -0.3)); // TODO: scaling :D
 
-  menu.setAnimation((new Animation<ValueDrawer>(toBgAnimation, 500, true)), 490);
+  menu.setAnimation((new Animation<ValueDrawer>(toBgAnimation, 500, true)), 480); // 17 is the average timespan (so 500 - 17 + arbitraryvalue = 480)
 }
 
 void SceneHoverMenu::setToForeground()
