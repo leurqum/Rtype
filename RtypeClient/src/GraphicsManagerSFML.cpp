@@ -39,14 +39,18 @@ void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_dr
 								       v_drawable.dimension.y,
 		 {v_drawable.position.x, v_drawable.position.y}
 								       )));
-  // std::cout << "drawing sprite" << std::endl;
-  // std::cout << "\tw:" << v_drawable.dimension.x << std::endl;
-  // std::cout << "\th:" << v_drawable.dimension.y << std::endl;
-  // std::cout << "\tx:" << v_drawable.position.x << std::endl;
-  // std::cout << "\ty:" << v_drawable.position.y << std::endl;
+  std::cout << "drawing sprite" << std::endl;
+  std::cout << "\tw:" << v_drawable.dimension.x << std::endl;
+  std::cout << "\th:" << v_drawable.dimension.y << std::endl;
+  std::cout << "\tx:" << v_drawable.position.x << std::endl;
+  std::cout << "\ty:" << v_drawable.position.y << std::endl;
+  std::cout << "\tscale.x:" << v_drawer.scale.x << std::endl;
+  std::cout << "\tscale.y:" << v_drawer.scale.y << std::endl;
 
-  //std::cout << "sprite created" << std::endl;
+  std::cout << "sprite created" << std::endl;
   s.setPosition(v_drawer.position.x, v_drawer.position.y);
+  s.setScale(v_drawer.scale.x + 1, v_drawer.scale.y + 1);
+  s.rotate(v_drawer.rotation);
   window.draw(s);
 }
 
@@ -54,26 +58,6 @@ void GraphicsManagerSFML::display()
 {
   window.display();
 }
-
-// DrawableRemote* GraphicsManagerSFML::updateDrawableFrom(DrawableRemote* old, const Protocol::drawable& d )
-// {
-//   if (old != nullptr)
-//     {
-//       // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
-//       old->setUpdate(d);
-//       return old;
-//     }
-//   else
-//     {
-
-//       DrawableRemote* ret = new DrawableRemote();
-//       ret->setUpdate(d);
-
-//       drawables.push_back(ret);
-//       return ret;
-//     }
-//   return nullptr; // bah.
-// }
 
 template<typename T>
 const sf::Rect<T> GraphicsManagerSFML::rectangleToSFMLRect(const Rectangle<T>& r)

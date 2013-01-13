@@ -39,26 +39,22 @@ public:
 
     void increase_iterator()
     {
-      if (a.frames.size() == 1)
-	{
-	  *nextRect = a.frames.begin();
-	  current = &(*(*nextRect));
-	  return ;
-	}
       if (*nextRect == a.frames.end())
-	{
-	  *nextRect = a.frames.begin();
-	}
-      current = &(*((*nextRect)++));
-
-      if (*nextRect == a.frames.end() && a.smoothFrames)
       	{
       	  *nextRect = a.frames.begin();
-	  increase_iterator(); // NOTE: this would not be infinite recursive because of the if before.
       	}
+      current = &(*((*nextRect)++));
+      if  (a.frames.size() == 1)
+	return ;
+
+      if (*nextRect == a.frames.end() && a.smoothFrames)
+	{
+	  *nextRect = a.frames.begin();
+	  increase_iterator(); // NOTE: this would not be infinite recursive because of the if before.
+	}
     }
 
-    // this is const, and it's pretty useful to access it, so public. (used by iterator)
+    // this is const, and it's pretty useful to access it, so public. (useless actually..)
     const Animation<T>& a;
   private:
 
@@ -74,9 +70,9 @@ public:
     typedef typename std::list< T >::const_iterator t_frameIterator;
     t_frameIterator* nextRect;
     T calculated;
-
-    int index_interpolation;
     float elapsedTime;
+
+    bool isLastFrame;
   };
 
  virtual typename IAnimation<T>::IIterator* getIterator() const override

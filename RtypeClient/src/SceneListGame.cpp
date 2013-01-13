@@ -4,7 +4,7 @@ SceneListGame::SceneListGame(IScene& decoratedScene) :
   ASceneHover(decoratedScene)
 {
   menuGames.addButton();
-  menuGames.setInitialValue({{400, 160},{1, 1}, 0});
+  menuGames.setInitialValue({{400, 160},{0, 0}, 0});
 }
 
 

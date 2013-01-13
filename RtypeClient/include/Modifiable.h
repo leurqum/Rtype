@@ -9,7 +9,7 @@ class Modifiable
 {
  public:
  Modifiable() : it(nullptr) {}
- Modifiable(const T& v) : initialValue(v), it(nullptr) {}
+ Modifiable(const T& v) : initialValue(v), it(nullptr), timeLeft(-1) {}
  /* Modifiable(T&& v) : initialValue(v) {} */
 
   virtual void update(float ms)
@@ -18,7 +18,19 @@ class Modifiable
     if (it != nullptr)
       {
 	it->increase(ms);
-	modifiedValue += it->getFrame(); // assume T has an operator+(const& T) and then copy assign
+	
+	modifiedValue += it->getFrame(); // assume T has an operator+(const& T) and then copy assign	
+	if (timeLeft > -1)
+	  {
+	    timeLeft -= ms;
+	
+	    if (timeLeft <= 0)
+	      {
+		initialValue = modifiedValue;
+		delete it;
+		it = nullptr;
+	      }
+	  }    
       }
   }
 
@@ -34,12 +46,14 @@ class Modifiable
   {
     return modifiedValue;
   }
-  void setAnimation(const IAnimation<T>* m)
+
+  void setAnimation(const IAnimation<T>* m, float lastForMs = -1)
   {
     delete it;
     if (m != nullptr)
       {
 	it = m->getIterator();
+	timeLeft = lastForMs;
       }
     else
       {
@@ -54,4 +68,6 @@ class Modifiable
 
   // in c++11, we can initialize here :
   typename IAnimation<T>::IIterator* it = nullptr; // TODO: try to use move syntax ( && )
+
+  float timeLeft;
 };
