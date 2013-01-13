@@ -4,7 +4,7 @@ SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
   ASceneHover(decoratedScene)
 {
   menu.addButton();
-  menu.setInitialValue({{200, 160},{1, 1}, 0});
+  menu.setInitialValue(ValueDrawer(200, 160,1, 1, 0));
   isBackground = false;
 }
 
@@ -54,7 +54,7 @@ void SceneHoverMenu::setToBackground()
   isBackground = true;
   ValueDrawer d = menu.getInitialValue();
 
-  menu.setInitialValue({d.position - 50, d.scale - 0.2, d.rotation});
+  menu.setInitialValue(ValueDrawer(d.position.x - 50, d.position.y - 50, d.scale.x - 0.2, d.scale.y - 0.2, d.rotation));
 }
 
 void SceneHoverMenu::setToForeground()

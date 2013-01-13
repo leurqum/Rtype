@@ -52,6 +52,5 @@ class Modifiable
  private:
   T modifiedValue; // move too ?
 
-  // in c++11, we can initialize here :
-  typename IAnimation<T>::IIterator* it = nullptr; // TODO: try to use move syntax ( && )
+  typename IAnimation<T>::IIterator* it; // TODO: try to use move syntax ( && )
 };

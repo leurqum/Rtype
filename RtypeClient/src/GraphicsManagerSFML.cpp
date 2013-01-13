@@ -35,10 +35,9 @@ void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_dr
   //std::cout << "creating sprite..." << std::endl;
   const ValueDrawable& v_drawable(drawable->getModifiedValue());
   sf::Sprite s(*getTextureFromFilename(ss),
-	       GraphicsManagerSFML::rectangleToSFMLRect(Rectangle<int>(v_drawable.dimension.x,
-								       v_drawable.dimension.y,
-		 {v_drawable.position.x, v_drawable.position.y}
-								       )));
+	  GraphicsManagerSFML::rectangleToSFMLRect(Rectangle<int>(v_drawable.dimension.x,
+	  v_drawable.dimension.y,
+	  Vector2<int>(v_drawable.position.x, v_drawable.position.y))));
   // std::cout << "drawing sprite" << std::endl;
   // std::cout << "\tw:" << v_drawable.dimension.x << std::endl;
   // std::cout << "\th:" << v_drawable.dimension.y << std::endl;

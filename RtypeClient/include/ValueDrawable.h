@@ -8,7 +8,7 @@ class ValueDrawable
   Vector2<float> dimension;
   Vector2<float> position;
 
-
+  ValueDrawable(float dimx = 0, float dimy = 0, float posx = 0, float posy = 0) : dimension(dimx, dimy), position(posx, posy) {}
 
   // Operators:
 
