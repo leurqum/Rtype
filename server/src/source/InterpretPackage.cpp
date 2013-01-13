@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Fri Jan 11 18:54:32 2013 mathieu leurquin
+// Last update Sun Jan 13 17:49:34 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -54,7 +54,33 @@ void	InterpretPackage::execLogin(void * data, ISocket * sock)
 
 void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
 {
+  void	*res;
+  int	size = 0;
+  int position = 0;
+
+  Protocol::package *p = new Protocol::package();
+  p->id = Protocol::GET_GAME_LIST;
   
+  size = sizeof(Protocol::package*) +  sizeof(Protocol::parties*) + (_server->getNbGame() * sizeof (Protocol::party*));
+  p->size = size;
+  res = malloc(size);
+  memset(res, 0, size);
+  memcpy(&res, p, sizeof(Protocol::package*));
+  position += sizeof(Protocol::package*);
+  
+  Protocol::parties *pa = new Protocol::parties();
+  pa->nb_parties = _server->getNbGame();
+  memcpy(&res + position, pa, sizeof(Protocol::parties*));
+  position = sizeof(Protocol::parties*);
+
+  std::list <Game*> listGameCpy = _server->getGameList();
+  for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
+    {
+      Protocol::party *pa = new Protocol::party();
+      pa->nb_players = (*it)->getNbPlayer();
+      memcpy(&res + position, pa, sizeof(Protocol::party*));
+      position += sizeof(Protocol::party*);
+    }
 }
 
 void	InterpretPackage::execGameList(void * data, ISocket * sock)
@@ -104,8 +130,7 @@ void	InterpretPackage::execFire(void * data, ISocket * sock)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	(*it)->move(p->getId());
-    }
-  
+    }  
 }
 
 void	InterpretPackage::execResponse(void * data, ISocket * sock)
