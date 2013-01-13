@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
-** Last update Sat Jan 12 13:25:53 2013 mathieu leurquin
+** Last update Sun Jan 13 18:41:39 2013 mathieu leurquin
 */
 
 #ifndef __PROTOCOOL__
@@ -46,6 +46,7 @@ typedef	struct
   int	nb_obstacle;
   int	nb_ship;
   int	nb_bullet;
+  int	nb_bonus;
 }	 monde_param;
 
 enum type_drawable
@@ -118,7 +119,6 @@ typedef	struct
 
 typedef	struct
 {
-  char	partyName[50];
   int	nb_players;
 }	party;
 
@@ -145,8 +145,10 @@ typedef struct
 
 typedef	struct
 {
-  float xVelocity;
-  float yVelocity;
+  int top;
+  int right;
+  int down;
+  int left;
 }	move;
 
 typedef	struct
