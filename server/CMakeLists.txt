@@ -28,8 +28,8 @@ file (
      ./Abs_Thread_mutex/CWThread.h
 
      ./Abs_Socket/WSocket.hpp
-     ./Abs_Socket/WServerSocket.hpp
      ./Abs_Socket/WSocket.cpp
+     ./Abs_Socket/WServerSocket.hpp
      ./Abs_Socket/WServerSocket.cpp
 )
 
@@ -74,6 +74,12 @@ file (
      ./Abs_Socket/main.cpp
 )
 
+file (
+     GLOB_RECURSE
+     src_files_client_test
+	 ./clientTest.cpp
+)
+
 # Set default compile flags for GCC
 if(UNIX)
   message(STATUS "GCC detected, adding compile flags")
@@ -82,7 +88,7 @@ if(UNIX)
     RtypeServer
     ${src_files_unix}
     ${src_files_common}
-)
+  )
   target_link_libraries (RtypeServer pthread)
 
 endif(UNIX)
