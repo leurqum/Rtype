@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Sat Jan 12 15:58:54 2013 marche_m (Maxime Marchès)
+// Last update Mon Jan 14 17:59:57 2013 marche_m (Maxime Marchès)
 //
 
 #include "USocket.hpp"
@@ -67,6 +67,12 @@ bool	USocket::connectFromAcceptedFd(void * fd)
 {
   int * sock = static_cast<int *>(fd);
 
+  if (_udp == true)
+    {
+      this->_connectSocket = *sock;
+      return true;
+    }
+
   this->_connectSocket = *sock;
   this->_close = false;
   return true;
@@ -93,8 +99,11 @@ int		USocket::recv(void ** header, void ** data)
 
       if ((ret = ::recvfrom(this->_connectSocket, *header, 2 * sizeof(int), 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
 	return ret;
+      std::cout << ret << std::endl;
       *data = new char[((int *)(*header))[1]];
       memset(*data, 0, ((int *)(*header))[1]);
+      std::cout << ((int *)(*header))[0] << std::endl;
+      std::cout << ((int *)(*header))[1] << std::endl;
       if ((ret = ::recvfrom(this->_connectSocket, *data, ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
 	return ret;
       return 1;
@@ -114,7 +123,13 @@ int		USocket::sendv(int size, void * data)
   if (_udp == false)
     return ::send(this->_connectSocket, data, size, 0);
   else
-    return ::sendto(this->_connectSocket, data, size, 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
+    {
+      int n;
+      n = ::sendto(this->_connectSocket, data, (2 * sizeof(int)), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
+      n = ::sendto(this->_connectSocket, ((char*)data) + (2 * sizeof(int)), size - (2 * sizeof(int)), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
+      return n;
+    }
+  return 1;
 }
 
 USocket::~USocket()

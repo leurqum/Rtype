@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Sat Jan 12 15:53:20 2013 marche_m (Maxime Marchès)
+// Last update Mon Jan 14 18:03:31 2013 marche_m (Maxime Marchès)
 //
 
 #include "UServerSocket.hpp"
@@ -14,6 +14,11 @@ void	UServerSocket::addNewPeer(void * sock)
 {
   std::cout << "new Client !" << std::endl;
   ISocket * acc = this->myaccept(sock);
+  if (acc->isUDP() == true)
+    {
+      this->_clientsSocksMap[((USocket *)(acc))->getSocket()] = acc;
+      return ;
+    }
   this->_clientsList.push_back(((USocket *)(acc))->getSocket());
   this->_clientsSocksMap[((USocket *)(acc))->getSocket()] = acc;
 }
@@ -57,10 +62,6 @@ void	UServerSocket::callBack(std::list<int>::iterator & it)
       return ;
     }
   this->_interPckg->executeCmd(header, data, tmp);
-  if (data)
-    delete (char *)data;
-  if (header)
-    delete (int *)header;
   std::cout << "end callBack" << std::endl;
 }
 
@@ -69,7 +70,6 @@ void	UServerSocket::launch()
   std::cout << "server launched !" << std::endl;
   _clientsList.push_back(_listenSocketTcp);
   _clientsList.push_back(_listenSocketUdp);
-
   while (true)
     {
       int nbSocksReady = this->selectSockets();
@@ -77,8 +77,14 @@ void	UServerSocket::launch()
 	if (FD_ISSET((*it), &_readFd))
 	  {
 	    nbSocksReady--;
-	    if ((*it) == _listenSocketTcp || (*it) == _listenSocketUdp)
+	    if ((*it) == _listenSocketTcp)
 	      this->addNewPeer(&(*it)); // TODO udp / tcp
+	    else if ((*it) == _listenSocketUdp)
+	      {
+		this->addNewPeer(&(*it));
+		this->callBack(it);
+		_clientsSocksMap.erase(*it);
+	      }
 	    else
 	      this->callBack(it);
 	  }
@@ -91,6 +97,13 @@ ISocket	* UServerSocket::myaccept(void * sockType)
   struct sockaddr	saClient;
   int			clientSize = sizeof(saClient);
 
+  if ((*((int *)sockType)) == this->_listenSocketUdp)
+    {
+      ISocket * ret = new USocket();
+      ret->setUDP(true);
+      ret->connectFromAcceptedFd(((int *)sockType));
+      return ret;
+    }
   acceptSock = accept(*((int *)sockType), &saClient, (socklen_t *)&clientSize);
   if (acceptSock <= 0) {
     std::cerr << "accept failed with error: " << std::endl;
