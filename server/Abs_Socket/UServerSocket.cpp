@@ -110,9 +110,6 @@ ISocket	* UServerSocket::myaccept(void * sockType)
     return NULL;
   }
   ISocket * ret = new USocket();
-  if (*((int*)sockType) == _listenSocketUdp)
-    ret->setUDP(true);
-
   ret->connectFromAcceptedFd(&acceptSock);
   return ret;
 }

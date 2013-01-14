@@ -12,12 +12,15 @@ WSocket::WSocket()
 {
 	_connectSocket = INVALID_SOCKET;
 	_WSAClose = true;
-
+	_udp = false;
 }
 
 void WSocket::setUDP(bool val)
 {
-	_udp = val;
+if (_connectSocket == INVALID_SOCKET)
+    _udp = val;
+  else
+    std::cerr << "Socket: could not set udp while socket is already created" << std::endl;
 }
 
 bool WSocket::connectToServer(std::string const & host, std::string const & port)
@@ -49,11 +52,11 @@ bool WSocket::connectToServer(std::string const & host, std::string const & port
 	memcpy((char *)this->_server->h_addr, (char *)&this->_hints.sin_addr.s_addr, this->_server->h_length);
 	this->_hints.sin_port = htons(iPort);
 	if (_udp == false)
-    if (connect(this->_connectSocket,(struct sockaddr *) &this->_hints,sizeof(this->_hints)) < 0)
-    {
-		std::cerr << "ERROR connecting" << std::endl;
-		return false;
-    }
+		if (connect(this->_connectSocket,(struct sockaddr *) &this->_hints,sizeof(this->_hints)) < 0)
+	    {
+			std::cerr << "ERROR connecting" << std::endl;
+			return false;
+	    }
 	return true;
 
 	//this->_host = host;
@@ -95,6 +98,12 @@ bool WSocket::connectFromAcceptedFd(void * fd)
 {
 	SOCKET * sock = static_cast<SOCKET *>(fd);
 
+	if (_udp == true)
+    {
+		this->_connectSocket = *sock;
+		this->_WSAClose = false;
+		return true;
+    }
 	this->_connectSocket = *sock;
 	this->_WSAClose = false;
 	return true;
@@ -166,7 +175,15 @@ int WSocket::recv(void ** header, void ** data)
 
 int WSocket::sendv(int size, void * data)
 {
-	send(this->_connectSocket, (char*)data, size, NULL);
+	if (_udp == false)
+		return send(this->_connectSocket, (char*)data, size, NULL);
+	else
+    {
+		int n;
+		n = ::sendto(this->_connectSocket, (char *)data, (2 * sizeof(int)), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
+		n = ::sendto(this->_connectSocket, ((char*)data) + (2 * sizeof(int)), size - (2 * sizeof(int)), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
+		return n;
+    }
 	return 1;
 }
 

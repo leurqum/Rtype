@@ -34,6 +34,7 @@ public:
 	int					sendv(std::string const & data);
 	int					sendv(int size, void * data);
 	void				setUDP(bool val);
+	bool				isUDP() { return _udp; }
 
 	SOCKET				getSocket() const { return _connectSocket; }
 private:

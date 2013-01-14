@@ -20,6 +20,11 @@ void	WServerSocket::addNewPeer(void * peer)
 {
 	std::cout << "new Client !" << std::endl;
 	ISocket * acc = this->myaccept(peer);
+	if (acc->isUDP() == true)
+	{
+		this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;
+		return ;
+	}
 	this->_clientsList.push_back(((WSocket *)(acc))->getSocket());
 	this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;
 }
@@ -79,8 +84,14 @@ void	WServerSocket::launch()
 			if (FD_ISSET((*it), &_readFd))
 			{
 				nbSocksReady--;
-				if ((*it) == _listenSocketTcp || (*it) == _listenSocketUdp)
+				if ((*it) == _listenSocketTcp)
 					this->addNewPeer(&(*it));
+				else if ((*it) == _listenSocketUdp)
+				{
+					this->addNewPeer(&(*it));
+					this->callBack(it);
+					_clientsSocksMap.erase(*it);
+				}
 				else
 					this->callBack(it);
 			}
@@ -92,6 +103,14 @@ ISocket	* WServerSocket::myaccept(void * sockType)
 	SOCKET				acceptSock;
 	struct sockaddr_in	saClient;
 	int					clientSize = sizeof(saClient);
+
+	if ((*((int *)sockType)) == this->_listenSocketUdp)
+    {
+		ISocket * ret = new WSocket();
+		ret->setUDP(true);
+		ret->connectFromAcceptedFd(((int *)sockType));
+		return ret;
+    }
 
 	acceptSock = WSAAccept(
 		(*((SOCKET*)sockType)),
@@ -105,7 +124,6 @@ ISocket	* WServerSocket::myaccept(void * sockType)
         return NULL;
     }
 	ISocket * ret = new WSocket();
-
 	ret->connectFromAcceptedFd(&acceptSock);
 	return ret;
 }

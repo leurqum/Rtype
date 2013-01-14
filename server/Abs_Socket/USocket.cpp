@@ -70,6 +70,7 @@ bool	USocket::connectFromAcceptedFd(void * fd)
   if (_udp == true)
     {
       this->_connectSocket = *sock;
+	  this->_close = false;
       return true;
     }
 
