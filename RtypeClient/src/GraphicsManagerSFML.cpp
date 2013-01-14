@@ -3,6 +3,7 @@
 GraphicsManagerSFML::GraphicsManagerSFML(void) : window(sf::VideoMode(800, 600, 32), "what ?")
 {
   reset();
+  font = nullptr;
 }
 
 
@@ -48,12 +49,28 @@ void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_dr
 void GraphicsManagerSFML::write(const std::string& text, const ValueDrawer& drawer)
 {
   // Create a text
-  sf::Text t(text);
+   sf::Text t;
+   sf::Font f;
+   f.loadFromFile("sprites/Xephyr Shadow Italic.ttf");
+   // NOTE: that font is ugly, but the default font is not supported by 
+   t.setString(std::string(text));
+   t.setFont(f);
+   t.setStyle(sf::Text::Bold);
   t.setCharacterSize(20);
   t.setPosition(drawer.position.x, drawer.position.y);
   t.setScale(drawer.scale.x + 1, drawer.scale.y + 1);
   t.setRotation(drawer.rotation);
   window.draw(t);
+}
+
+sf::Font& GraphicsManagerSFML::getFont()
+{
+	if (font == nullptr)
+    {
+		font = new sf::Font();
+		font->loadFromFile("sprites/Xephyr Shadow Italic.ttf");
+	}
+	return *font;
 }
 
 void GraphicsManagerSFML::display()

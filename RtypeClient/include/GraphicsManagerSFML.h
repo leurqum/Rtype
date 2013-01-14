@@ -27,8 +27,10 @@ public IGraphicsManager
   const sf::Window& getWindow() const;
   const sf::Texture* getTextureFromFilename(const std::string& filename);
  private:
+  sf::Font& getFont();
   sf::RenderWindow window;
   sf::View view;
+  sf::Font* font;
 
   std::map<std::string, sf::Texture*> textures;
 };
