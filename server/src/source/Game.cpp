@@ -221,6 +221,17 @@ void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
   createHumainUnit(humainList.size(), std::pair<float, float>(1, 1), 3, 1, true, p);
 }
 
+HumainUnit* Game::addHumainUnitByPlayer(Player *p)
+{
+  std::pair<float, float> pos(0, 0);
+  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
+  HumainUnit *h = new HumainUnit(std::pair<float, float> (1, 1), p, humainList.size(), coll, 3, 1, true, this);
+
+  humainList.push_back(h);
+  playerList.push_back(p);
+  return (h);
+}
+
 int Game::getNbPlayer()const
 {
   return (humainList.size());
@@ -648,7 +659,7 @@ void Game::createRandomEnemie(double time)
 {
 }
 
-void *Game::formatGameSend()
+void *Game::formatGameSend(int *size)
 {
   Protocol::package *pac = new Protocol::package();
   void *res;
@@ -662,6 +673,7 @@ void *Game::formatGameSend()
     (sizeof(Protocol::drawable_enemie*) * getIaSize()) +
     (sizeof(Protocol::drawable*) * (getHumainSize() + getBonusSize() + getObsSize()));
   
+  *size = pac->size;
   res = malloc(pac->size);
   memset(res, 0, pac->size);
   memcpy(res, pac, sizeof(Protocol::package*));
