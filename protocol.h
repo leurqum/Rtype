@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
-** Last update Sun Jan 13 18:41:39 2013 mathieu leurquin
+** Last update Mon Jan 14 15:42:16 2013 mathieu leurquin
 */
 
 #ifndef __PROTOCOOL__
@@ -65,12 +65,11 @@ enum type_enemie
 
 enum patern_enemie
 {
-	STATIC,
-	SOLO,
-	LINE,
-	LINEUP,
-	LINEDOWN
-
+  STATIC,
+  SOLO,
+  LINE,
+  LINEUP,
+  LINEDOWN
 };
 
 enum type_bullet
@@ -127,11 +126,11 @@ typedef	struct
 
 enum reponse_type
 {
-	VALIDE,
-	INVALID_LOGIN,
-	INVALID_PASSWORD,
-	INVALID_GAME_NAME,
-	CANT_JOIN_GAME
+  VALIDE,
+  INVALID_LOGIN,
+  INVALID_PASSWORD,
+  INVALID_GAME,
+  CANT_JOIN_GAME
 };
 
 typedef struct
@@ -165,13 +164,13 @@ typedef	struct
 
 typedef	struct
 {
-  char	party_name[50];
+  int	id;
 }	join_game;
 
-typedef	struct
-{
-  char	party_name[50];
-}	create_party;
+/* typedef	struct */
+/* { */
+/*   char	party_name[50]; */
+/* }	create_party; */
 
 }
 

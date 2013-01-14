@@ -18,28 +18,31 @@
 #pragma comment(lib, "ws2_32.lib")
 
 #include "IServerSocket.hpp"
-#include "protocol.h"
-#include "UsersManager.hpp"
+#include "./../../protocol.h"
+#include "InterpretPackage.hpp"
 
 class WServerSocket : public IServerSocket
 {
 public:
-	WServerSocket();
+	WServerSocket(Server * s);
 	virtual						~WServerSocket();
-	bool						init(std::string const & listenHost, std::string const & listenPort, UsersManager * usersManager);
-	ISocket						* accept();
+	bool						init(std::string const & listenHost, std::string const & listenPort);
+	ISocket						* myaccept(void * sockType);
 	void						launch();
 
 private:
 	void						addNewPeer(void * peer);
-	SOCKET						getSocket() { return _listenSocket; }
+	SOCKET						getSocketTcp() { return _listenSocketTcp; }
+	SOCKET						getSocketUdp() { return _listenSocketUdp; }
 	int							selectSockets();
-	void						interpretCmd(std::list<SOCKET>::iterator & it);
+	void						callBack(std::list<SOCKET>::iterator & it);
 
-	SOCKET						_listenSocket;
+	SOCKET						_listenSocketTcp;
+	SOCKET						_listenSocketUdp;
 	std::list<SOCKET>			_clientsList;
 	std::map<SOCKET, ISocket *>	_clientsSocksMap;
-	UsersManager				* _usersManager;
 	fd_set						_readFd;
+	InterpretPackage *			_interPckg;
+	struct sockaddr_in			_servAddr;
 };
 

@@ -41,6 +41,7 @@ public:
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitByPlayer(Player *p)const;
   HumainUnit *getUnitHuman(int id)const;
+  HumainUnit* addHumainUnitByPlayer(Player *p);
   IAUnit *getUnitAI(int id)const;
   Unit *getUnit(int id)const;
   MovingObstacle *getObs(int id)const;
@@ -89,7 +90,7 @@ public:
   int getObsSize()const;
   int getBonusSize()const;
 
-  void *formatGameSend();
+  void *formatGameSend(int *size);
 };
 
 #endif //__GAME__

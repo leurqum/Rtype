@@ -11,7 +11,7 @@ private:
 public:
 	CWMutex();
 	virtual bool		MUnLock();
-	//virtual bool		MLock();
+	virtual bool		MLock();
 	virtual bool		MDestroy();
 	virtual bool		MTryLock();
 };

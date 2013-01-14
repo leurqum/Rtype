@@ -26,6 +26,7 @@ typedef UServerSocket MyServerSocket;
 # include "WSocket.hpp"
 # include "WServerSocket.hpp"
 
+class WServerSocket;
 typedef WSocket MySocket;
 typedef WServerSocket MyServerSocket;
 

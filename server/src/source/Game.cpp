@@ -1,5 +1,12 @@
 #include "../include/Game.hpp"
-#include <unistd.h>
+
+#ifdef __unix__
+	#include <unistd.h>
+#endif
+#ifdef _WIN32
+	#include <Windows.h>
+#endif
+
 #include <string>
 #include <time.h>
 
@@ -22,7 +29,12 @@ void Game::loop()
 	resetGame(&time);
       time = 10 * (double)(clock() - init) / (double)CLOCKS_PER_SEC;
       std::cout<<time<<std::endl;
-      usleep(100);
+	#ifdef __unix__
+		usleep(100);
+	#endif
+	#ifdef _WIN32
+		Sleep(100);
+	#endif
     }  
 }
 
@@ -207,6 +219,17 @@ void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
   Player *p = createPlayer(playerList.size(), name, 3, tcp, udp);
 
   createHumainUnit(humainList.size(), std::pair<float, float>(1, 1), 3, 1, true, p);
+}
+
+HumainUnit* Game::addHumainUnitByPlayer(Player *p)
+{
+  std::pair<float, float> pos(0, 0);
+  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
+  HumainUnit *h = new HumainUnit(std::pair<float, float> (1, 1), p, humainList.size(), coll, 3, 1, true, this);
+
+  humainList.push_back(h);
+  playerList.push_back(p);
+  return (h);
 }
 
 int Game::getNbPlayer()const
@@ -636,7 +659,7 @@ void Game::createRandomEnemie(double time)
 {
 }
 
-void *Game::formatGameSend()
+void *Game::formatGameSend(int *size)
 {
   Protocol::package *pac = new Protocol::package();
   void *res;
@@ -650,7 +673,7 @@ void *Game::formatGameSend()
     (sizeof(Protocol::drawable_enemie*) * getIaSize()) +
     (sizeof(Protocol::drawable*) * (getHumainSize() + getBonusSize() + getObsSize()));
   
-  res = malloc(pac->size);
+  *size = pac->size;
   memset(res, 0, pac->size);
   memcpy(res, pac, sizeof(Protocol::package*));
   position += sizeof(Protocol::package*);
