@@ -5,14 +5,14 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Sun Jan 13 16:58:56 2013 mathieu leurquin
+// Last update Mon Jan 14 10:10:22 2013 marche_m (Maxime Marchès)
 //
 
 #include "../include/Server.hpp"
 
 Server::Server()
 {
-  server_socket = new UServerSocket(this);
+  server_socket = new MyServerSocket(this);
   //sock->setUDP(true); //Problem avec l'udp ...
   if (server_socket->init("", "4242") == true)
     server_socket->launch();
