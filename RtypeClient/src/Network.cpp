@@ -1,9 +1,14 @@
 #include "Network.h"
 
 
-Network::Network(void)
+Network::Network(const std::string& host, const std::string& port)
 {
-	// TODO: verifier os pour bonne isocket
+	this->socketTCP = new MySocket();
+	this->socketTCP->connectToServer(host, port);
+
+	this->socketUDP = new MySocket();
+	this->socketUDP->setUDP(true);
+	this->socketUDP->connectToServer(host, port);
 }
 
 
@@ -22,6 +27,7 @@ std::list<Drawable>					Network::GetLastWorld() const
 	
 Protocol::reponse_type				Network::Register(std::string name, std::string pwd) const
 {
+	void*						package;
 	Protocol::package			header;
 	header.id = Protocol::REGISTER;
 	header.size = sizeof(Protocol::create_account);
@@ -30,17 +36,25 @@ Protocol::reponse_type				Network::Register(std::string name, std::string pwd) c
 	memcpy(reg.passwd, pwd.c_str(), 50);
 
 	Protocol::response			rep;
-	rep.response = Protocol::VALIDE;
 
 	// send header + reg
+	package = new char[sizeof(header) + sizeof(reg)];
+	memcpy(package, &header, sizeof(header));
+	memcpy((&package + sizeof(header)), &reg, sizeof(reg));
+	this->socketTCP->sendv(sizeof(header) + sizeof(reg), package);
 
 	// get reponse
+	void*			header_reponse;
+	void*			data_reponse;
+	this->socketTCP->recv(&header_reponse, &data_reponse);
+	rep = *(Protocol::response*)data_reponse;
 
 	return rep.response;
 }
 
 Protocol::reponse_type				Network::Login(std::string name, std::string pwd) const
 {
+	void*						package;
 	Protocol::package			header;
 	header.id = Protocol::LOGIN;
 	header.size = sizeof(Protocol::login);
@@ -50,31 +64,64 @@ Protocol::reponse_type				Network::Login(std::string name, std::string pwd) cons
 	memcpy(login.passwd, pwd.c_str(), 50);
 
 	Protocol::response			rep;
-	rep.response = Protocol::VALIDE;
 
 	// send header + login
+	package = new char[sizeof(header) + sizeof(login)];
+	memcpy(package, &header, sizeof(header));
+	memcpy((&package + sizeof(header)), &login, sizeof(login));
+	this->socketTCP->sendv(sizeof(header) + sizeof(login), package);
 
 	// get reponse
-
+	void*			header_reponse;
+	void*			data_reponse;
+	this->socketTCP->recv(&header_reponse, &data_reponse);
+	rep = *(Protocol::response*)data_reponse;
 	return rep.response;
 }
 
-Protocol::reponse_type				Network::Join(std::string name)
+Protocol::reponse_type				Network::Create()
 {
+	void*						package;
+	Protocol::package			header;
+	header.id = Protocol::CREATE_GAME;
+	header.size = 0;
+	Protocol::response			rep;
+
+	// send header
+	package = new char[sizeof(header)];
+	memcpy(package, &header, sizeof(header));
+	this->socketTCP->sendv(sizeof(header), package);
+
+
+	// get reponse
+	void*			header_reponse;
+	void*			data_reponse;
+	this->socketTCP->recv(&header_reponse, &data_reponse);
+	rep = *(Protocol::response*)data_reponse;
+	return rep.response;
+}
+
+Protocol::reponse_type				Network::Join(int id)
+{
+	void*						package;
 	Protocol::package			header;
 	header.id = Protocol::JOIN_GAME;
 	header.size = sizeof(Protocol::join_game);
-
 	Protocol::join_game				game;
-	memcpy(game.party_name, name.c_str(), 50);
-
+	game.id = id;
 	Protocol::response			rep;
-	rep.response = Protocol::VALIDE;
 
 	// send header + party_name
+	package = new char[sizeof(header) + sizeof(game)];
+	memcpy(package, &header, sizeof(header));
+	memcpy((&package + sizeof(header)), &game, sizeof(game));
+	this->socketTCP->sendv(sizeof(header) + sizeof(game), package);
 
 	// get reponse
-
+	void*			header_reponse;
+	void*			data_reponse;
+	this->socketTCP->recv(&header_reponse, &data_reponse);
+	rep = *(Protocol::response*)data_reponse;
 	return rep.response;
 }
 
@@ -85,21 +132,41 @@ std::list<Protocol::party>			Network::GetGameList() const
 	header.size = 0;
 
 	Protocol::response			rep;
-	rep.response = Protocol::VALIDE;
 
 	std::list<Protocol::party> partys;
-
 	// send header
 
 	// get reponse
-
+	void*			header_reponse;
+	void*			data_reponse;
+	this->socketTCP->recv(&header_reponse, &data_reponse);
+	rep = *(Protocol::response*)data_reponse;
 	return partys;
 }
 
-void								Network::Move(Protocol::move) const
+void								Network::Move(Protocol::move move) const
 {
+	void*						package;
+	Protocol::package			header;
+	header.size = sizeof(move);
+	Protocol::response			rep;
+
+	// send header + move
+	package = new char[sizeof(header) + sizeof(move)];
+	memcpy(package, &header, sizeof(header));
+	memcpy((&package + sizeof(header)), &move, sizeof(move));
+	this->socketTCP->sendv(sizeof(header), package);
 }
 
 void								Network::Fire() const
 {
+	void*						package;
+	Protocol::package			header;
+	header.size = 0;
+	Protocol::response			rep;
+
+	// send header
+	package = new char[sizeof(header)];
+	memcpy(package, &header, sizeof(header));
+	this->socketTCP->sendv(sizeof(header), package);
 }
