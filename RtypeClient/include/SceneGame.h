@@ -12,6 +12,8 @@
 #include "DrawerShip.h"
 #include "DrawerEnemyBasic.h"
 #include "Drawer2Bars.h"
+#include "SceneHoverMenu.h"
+#include "SceneHoverConfirmLeave.h"
 
 class SceneGame :
 public ASceneHover
@@ -26,13 +28,10 @@ public ASceneHover
   void setToBackground();
   void setToForeground();
  private:
-  // FIXME: remake this updatable. (specialize it)
+IScene* manageInput();
+
   DrawerShip* ship[4]; // these are drawables updatable from a protocol::drawable.
   DrawerEnemyBasic enemy;
   Drawer2Bars drawer_2bars;
-  // TODO: put all the backgrounds in a LayerDrawable (implement LayerDrawable too :D )
-  //Drawable fixedBackground;
-  //Drawable scrollingBackground;
-  //Drawable scrollingBackground2;
 };
 

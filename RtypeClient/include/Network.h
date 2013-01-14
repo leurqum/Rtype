@@ -3,7 +3,7 @@
 
 #include "Drawable.h" 
 #include "../../protocol.h" 
-#include "../../server/Abs_Socket/ISocket.hpp"
+#include "../../server/Abs_Socket/portaSocket.hpp"
 
  #include <string.h> 
  #include <list> 
@@ -11,7 +11,7 @@
  class Network 
  { 
  public: 
- 	Network(void); 
+ 	Network(const std::string& host, const std::string& port); 
  	~Network(void); 
 
  	//udp communication 
@@ -19,14 +19,16 @@
 
  	//tcp communication */
  	Protocol::reponse_type				Register(std::string name, std::string pwd) const; 
- 	Protocol::reponse_type				Login(std::string name, std::string pwd) const; 
- 	Protocol::reponse_type				Join(std::string name); 
+ 	Protocol::reponse_type				Login(std::string name, std::string pwd) const;
+	Protocol::reponse_type				Create();
+ 	Protocol::reponse_type				Join(int id);
  	std::list<Protocol::party>			GetGameList() const; 
  	void								Move(Protocol::move) const; 
  	void								Fire() const; 
 
  private: 
  	// TODO: ajouter class Isocket une fois qu'elle seras au bon endroit 
-	 ISocket*		socket;
+	 ISocket*			socketTCP;
+	 ISocket*			socketUDP;
  }; 
 

@@ -10,7 +10,7 @@ class Modifiable
  public:
  Modifiable() : it(nullptr) {}
  Modifiable(const T& v) : initialValue(v), it(nullptr), timeLeft(-1) {}
- /* Modifiable(T&& v) : initialValue(v) {} */
+  virtual ~Modifiable() {}
 
   virtual void update(float ms)
   {
