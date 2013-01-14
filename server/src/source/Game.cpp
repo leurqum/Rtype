@@ -1,4 +1,5 @@
 #include "../include/Game.hpp"
+#include <unistd.h>
 #include <string>
 #include <time.h>
 
