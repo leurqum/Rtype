@@ -30,20 +30,21 @@ public:
 
 	bool				connectToServer(std::string const & host, std::string const & port);
 	bool				connectFromAcceptedFd(void * fd);
-	int					recv(std::string & buffer, int blocksize);
-	int					recv(s_protocol * package);
+	int					recv(void ** header, void ** data);
 	int					sendv(std::string const & data);
-	int					sendv(void * const & data, int const & size);
-	int					sendv(s_protocol * const & package);
+	int					sendv(int size, void * data);
+	void				setUDP(bool val);
 
-	SOCKET				getSocket() const { return _connectSocket };
+	SOCKET				getSocket() const { return _connectSocket; }
 private:
+	struct hostent		* _server;
 	std::string			_host;
 	std::string			_port;
-	struct addrinfo		_hints;
+	struct sockaddr_in	_hints;
 	struct addrinfo		* _results;
 	SOCKET				_connectSocket;
 	bool				_WSAClose;
+	bool				_udp;
 };
 
 

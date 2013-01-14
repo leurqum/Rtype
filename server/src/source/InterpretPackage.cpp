@@ -27,14 +27,14 @@ InterpretPackage::InterpretPackage(Server *s)
 
 void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
-  std::cout << "executeCmd" << std::endl;
-  int hdTmp[2];
+	std::cout << "executeCmd" << std::endl;
+	int hdTmp[2];
 
-  memcpy(hdTmp, header, 2 * sizeof(int));
-  std::cout << "id:" << hdTmp[0] << std::endl;
-  std::cout << "size:" << hdTmp[1] << std::endl;
-  void (InterpretPackage::*pMethod)(void *, ISocket *) = (this->_funcMap[((Protocol::type_cmd)hdTmp[0])]);
-  (this->*pMethod)(data, sock);
+	memcpy(hdTmp, header, 2 * sizeof(int));
+	std::cout << "id:" << hdTmp[0] << std::endl;
+	std::cout << "size:" << hdTmp[1] << std::endl;
+	void (InterpretPackage::*pMethod)(void *, ISocket *) = (this->_funcMap[((Protocol::type_cmd)hdTmp[0])]);
+	(this->*pMethod)(data, sock);
 }
 
 void	InterpretPackage::execRegister(void * data, ISocket * sock)
