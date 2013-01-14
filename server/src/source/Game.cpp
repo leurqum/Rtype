@@ -1,5 +1,12 @@
 #include "../include/Game.hpp"
-#include <unistd.h>
+
+#ifdef __unix__
+	#include <unistd.h>
+#endif
+#ifdef _WIN32
+	#include <Windows.h>
+#endif
+
 #include <string>
 #include <time.h>
 
@@ -22,7 +29,12 @@ void Game::loop()
 	resetGame(&time);
       time = 10 * (double)(clock() - init) / (double)CLOCKS_PER_SEC;
       std::cout<<time<<std::endl;
-      usleep(100);
+	#ifdef __unix__
+		usleep(100);
+	#endif
+	#ifdef _WIN32
+		Sleep(100);
+	#endif
     }  
 }
 
