@@ -125,7 +125,7 @@ void DrawerMenu::selectionForward()
   buttons[selectionId].animate(0);
   selectionId++;
   status = selectionType::HOVER;
-  if (selectionId >= buttons.size())
+  if (selectionId >= (int)buttons.size())
     selectionId = 0;
 }
 

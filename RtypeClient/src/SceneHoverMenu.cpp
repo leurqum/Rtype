@@ -66,7 +66,7 @@ void SceneHoverMenu::unload()
 void SceneHoverMenu::setToBackground()
 {
   isBackground = BgState::BACKGROUND;
-  ValueDrawer d = menu.getInitialValue();
+  // ValueDrawer d = menu.getInitialValue();
 
   std::list<ValueDrawer > toBgAnimation;
   toBgAnimation.push_back(ValueDrawer());
@@ -80,7 +80,7 @@ void SceneHoverMenu::setToBackground()
 void SceneHoverMenu::setToForeground()
 {
   isBackground = BgState::TO_FOREGROUND;
-  ValueDrawer d = menu.getInitialValue();
+  // ValueDrawer d = menu.getInitialValue();
 
   std::list<ValueDrawer > toFgAnimation;
   toFgAnimation.push_back(ValueDrawer());

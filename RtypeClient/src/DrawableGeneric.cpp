@@ -31,7 +31,7 @@ bool DrawableGeneric::animate(int _idAnimation)
       setAnimation(spriteSheet->getAnimations().at(idAnimation));
       // std::cout << "animated" << std::endl;
     }
-  else
+  // else
     // std::cout << "no animation" << std::endl;
   return true;
 }
