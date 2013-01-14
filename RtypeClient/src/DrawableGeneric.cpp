@@ -35,8 +35,3 @@ bool DrawableGeneric::animate(int _idAnimation)
     std::cout << "no animation" << std::endl;
   return true;
 }
-
-// void Drawable::_manual_next_frame()
-// {
-//   rectIterator->increase_iterator();
-// }

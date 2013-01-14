@@ -7,6 +7,7 @@ SceneGame::SceneGame(IScene& decoratedScene) :
   ship[1] = nullptr;
   ship[2] = nullptr;
   ship[3] = nullptr;
+  drawer_2bars.setBar1(100);  
 }
 
 SceneGame::~SceneGame(void)
@@ -30,11 +31,11 @@ IScene* SceneGame::update(float elapsedTime)
   static int incr = 5;
 
   d.xPosition = x;
-   // x += incr;
-   // if (x > 500)
-   //   incr = -5;
-   // if (x <= 400)
-   //   incr = 5;
+   x += incr;
+   if (x > 500)
+     incr = -5;
+   if (x <= 400)
+     incr = 5;
   d.yPosition = 123;
 
 
@@ -46,26 +47,32 @@ IScene* SceneGame::update(float elapsedTime)
   ship[0]->setUpdate(d);
   // TODO: insert input managing code here.
 
+#define pos(x) ((x) > 0 ? (x) : -(x))
+  drawer_2bars.setBar1(pos(x - 500));
+
   d.id = 0;
   d.type = Protocol::SHIP;
   static int _x = 480;
   static int _y = 223;
   static int _incr = 2;
 
+  drawer_2bars.setBar2(pos(_x - 400));
+  // drawer_2bars.setBar2(100);
+
   d.xPosition = _x;
-  // _x += _incr;
-  // _y += _incr;
-  //  if (_x > 500)
-  //    _incr = -5;
-  //  if (_x <= 400)
-  //    _incr = 5;
+  _x += _incr;
+  _y += _incr;
+   if (_x > 500)
+     _incr = -3;
+   if (_x <= 400)
+     _incr = 3;
 
   d.yPosition = _y;
   enemy.setUpdate(d);
+
   enemy.update(elapsedTime);
-
-
   ship[0]->update(elapsedTime);
+  drawer_2bars.update(elapsedTime);
   std::cout << "scenegame END update" << std::endl;
   return this;
 }
@@ -79,7 +86,6 @@ void SceneGame::draw()
 
   enemy.drawTo(gm);
 
-
   if (ship[0] != nullptr)
     ship[0]->drawTo(gm);
   if (ship[1] != nullptr)
@@ -88,6 +94,7 @@ void SceneGame::draw()
     ship[0]->drawTo(gm);
   if (ship[3] != nullptr)
     ship[0]->drawTo(gm);
+  drawer_2bars.drawTo(gm);
 }
 
 void SceneGame::load()
