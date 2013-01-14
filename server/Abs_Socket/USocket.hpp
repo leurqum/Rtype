@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:16:53 2012 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 17:48:23 2013 marche_m (Maxime Marchès)
+// Last update Sat Jan 12 15:31:37 2013 marche_m (Maxime Marchès)
 */
 
 #ifndef __USOCKET__
@@ -61,7 +61,7 @@ private:
   struct sockaddr_in		_hints;
   int				_connectSocket;
   bool				_close;
-  int				_udp;
+  bool				_udp;
 };
 
 

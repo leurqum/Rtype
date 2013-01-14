@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:46 2013 marche_m (Maxime Marchès)
-// Last update Fri Jan 11 19:28:14 2013 mathieu leurquin
+// Last update Mon Jan 14 10:42:08 2013 marche_m (Maxime Marchès)
 //
 
 #ifndef __U_SERVER_SOCKET__
@@ -15,6 +15,7 @@
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <map>
+#include <sstream>
 
 #include "IServerSocket.hpp"
 #include "USocket.hpp"
@@ -26,23 +27,23 @@ public:
   UServerSocket(Server *s);
   virtual	~UServerSocket();
   bool		init(std::string const & listenHost, std::string const & listenPort);
-  ISocket	* myaccept();
+  ISocket	* myaccept(void * sockType);
   void		launch();
-  void		setUDP(bool val);
 
 private:
-  void		addNewPeer(void * peer);
-  int		getSocket() { return _listenSocket; }
+  void		addNewPeer(void * sock);
+  int		getSocketTcp() { return _listenSocketTcp; }
+  int		getSocketUdp() { return _listenSocketUdp; }
   int		selectSockets();
   void		callBack(std::list<int>::iterator & it);
 
   struct sockaddr_in		_servAddr;
-  int				_listenSocket;
+  int				_listenSocketTcp;
+  int				_listenSocketUdp;
   std::list<int>		_clientsList;
   std::map<int, ISocket *>	_clientsSocksMap;
   fd_set			_readFd;
-  int				_udp;
-  InterpretPackage*		_interPckg;		
+  InterpretPackage*		_interPckg;
 };
 
 #endif

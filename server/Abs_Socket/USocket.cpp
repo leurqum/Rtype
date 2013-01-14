@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Wed Jan  9 17:46:55 2013 marche_m (Maxime Marchès)
+// Last update Sat Jan 12 15:58:54 2013 marche_m (Maxime Marchès)
 //
 
 #include "USocket.hpp"
@@ -14,23 +14,31 @@ USocket::USocket()
 {
   _connectSocket = INVALID_SOCKET;
   _close = true;
-  _udp = IPPROTO_TCP;
+  _udp = false;
 }
 
 void	USocket::setUDP(bool val)
 {
-  if (val == true)
-    _udp = IPPROTO_UDP;
+  if (_connectSocket == INVALID_SOCKET)
+    _udp = val;
   else
-    _udp = IPPROTO_TCP;
+    std::cerr << "Socket: could not set udp while socket is already created" << std::endl;
 }
 
 bool	USocket::connectToServer(std::string const & host, std::string const & port)
 {
+  std::stringstream ss;
+  int iPort;
+
   this->_host = host;
   this->_port = port;
+  ss << _port;
+  ss >> iPort;
 
-  this->_connectSocket = socket(AF_INET, SOCK_STREAM, _udp);
+  if (_udp == false)
+    this->_connectSocket = socket(AF_INET, SOCK_STREAM, 0);
+  else
+    this->_connectSocket = socket(AF_INET, SOCK_DGRAM, 0);
   if (this->_connectSocket < 0)
     {
       std::cerr << "error: socket" << std::endl;
@@ -44,12 +52,13 @@ bool	USocket::connectToServer(std::string const & host, std::string const & port
   bzero((char *) &this->_hints, sizeof(this->_hints));
   this->_hints.sin_family = AF_INET;
   bcopy((char *)this->_server->h_addr, (char *)&this->_hints.sin_addr.s_addr, this->_server->h_length);
-  this->_hints.sin_port = htons(atoi(this->_port.c_str()));
-  if (connect(this->_connectSocket,(struct sockaddr *) &this->_hints,sizeof(this->_hints)) < 0)
-    {
-      std::cerr << "ERROR connecting" << std::endl;
-      return false;
-    }
+  this->_hints.sin_port = htons(iPort);
+  if (_udp == false)
+    if (connect(this->_connectSocket,(struct sockaddr *) &this->_hints,sizeof(this->_hints)) < 0)
+      {
+	std::cerr << "ERROR connecting" << std::endl;
+	return false;
+      }
   return true;
 }
 
@@ -65,43 +74,47 @@ bool	USocket::connectFromAcceptedFd(void * fd)
 
 int		USocket::recv(void ** header, void ** data)
 {
-  int	ret;
+  ssize_t	ret;
   *header = new int[2];
 
-  ret = read(this->_connectSocket, *header, (2 * sizeof(int)));
-  if (ret <= 0)
-    return ret;
-  *data = new char[((int *)(*header))[1]];
-  memset(*data, 0, ((int *)(*header))[1]);
-  ret = read(this->_connectSocket, *data, ((int *)(*header))[1]);
-  if (ret <= 0)
-    return ret;
-  return 1;
-  // int	* headerTmp = new int[2];
-  // char	* dataTmp = 0;
-  // int	ret;
+  if (_udp == false)
+    {
+      if ((ret = ::recv(this->_connectSocket, *header, 2 * sizeof(int), 0)) <= 0)
+	return ret;
+      *data = new char[((int *)(*header))[1]];
+      memset(*data, 0, ((int *)(*header))[1]);
+      if ((ret = ::recv(this->_connectSocket, *data, ((int *)(*header))[1], 0)) <= 0)
+	return ret;
+      return 1;
+    }
+  else
+    {
+      socklen_t tosize = sizeof(_hints);
 
-  // ret = read(this->_connectSocket, headerTmp, (2 * sizeof(int)));
-  // if (ret <= 0)
-  //   return ret;
-  // dataTmp = new char[headerTmp[1]];
-  // memset(dataTmp, 0, headerTmp[1]);
-  // ret = read(this->_connectSocket, dataTmp, headerTmp[1]);
-  // if (ret <= 0)
-  //   return ret;
-  // header = headerTmp;
-  // data = dataTmp;
-  // return 1;
+      if ((ret = ::recvfrom(this->_connectSocket, *header, 2 * sizeof(int), 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
+	return ret;
+      *data = new char[((int *)(*header))[1]];
+      memset(*data, 0, ((int *)(*header))[1]);
+      if ((ret = ::recvfrom(this->_connectSocket, *data, ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
+	return ret;
+      return 1;
+    }
 }
 
 int		USocket::sendv(std::string const & data)
 {
-  return write(this->_connectSocket, data.c_str(), data.size());
+  if (_udp == false)
+    return ::send(this->_connectSocket, data.c_str(), data.size(), 0);
+  else
+    return ::sendto(this->_connectSocket, data.c_str(), data.size(), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
 }
 
 int		USocket::sendv(int size, void * data)
 {
-  return write(this->_connectSocket, data, size);
+  if (_udp == false)
+    return ::send(this->_connectSocket, data, size, 0);
+  else
+    return ::sendto(this->_connectSocket, data, size, 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
 }
 
 USocket::~USocket()

@@ -4,13 +4,14 @@
 #include "Player.hpp"
 #include "Game.hpp"
 
-class UServerSocket;
+#include "../../Abs_Socket/portaSocket.hpp"
+
 class Server
 {
 private:
   std::list<Player *>	playerListWaiting;
   std::list<Game *>	gameList;
-  UServerSocket *	server_socket;
+  MyServerSocket *	server_socket;
 public:
   Server();
   
@@ -28,5 +29,3 @@ public:
 };
 
 #endif
-
-#include "../../Abs_Socket/UServerSocket.hpp"
