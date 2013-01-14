@@ -13,7 +13,7 @@ DrawableBar::~DrawableBar(void)
 void DrawableBar::setBarValue(int v)
 {
   barValue = v;
-  std::cout << 106 * ((float)v / 100) << std::endl;
+  // std::cout << 106 * ((float)v / 100) << std::endl;
   setInitialValue(ValueDrawable(106 * ((float)v / 100), 16, 0, getInitialValue().position.y));
 }
 

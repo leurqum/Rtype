@@ -18,11 +18,11 @@ IScene* SceneGame::update(float elapsedTime)
 {
   IScene* ret = ASceneHover::update(elapsedTime);
   if (ret != getParentScene())
-	  // FIXME: I don't know if the following scenario would be safe...
+    // FIXME: I don't know if the following scenario would be safe...
     return ret; // some decorated scene have changed the scene :(
 
   //std::cout << "scenegame update" << std::endl;
-  // TODO: (not here but in SceneHoverWhatever) update background scenes ?
+
   // TODO: update the scene depending on network data received.
   Protocol::drawable d;
   d.id = 0;
@@ -45,7 +45,6 @@ IScene* SceneGame::update(float elapsedTime)
     }
   // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
   ship[0]->setUpdate(d);
-  // TODO: insert input managing code here.
 
 #define pos(x) ((x) > 0 ? (x) : -(x))
   drawer_2bars.setBar1(pos(x - 500));
@@ -73,8 +72,10 @@ IScene* SceneGame::update(float elapsedTime)
   enemy.update(elapsedTime);
   ship[0]->update(elapsedTime);
   drawer_2bars.update(elapsedTime);
-  std::cout << "scenegame END update" << std::endl;
-  return this;
+
+
+  // std::cout << "scenegame END update" << std::endl;
+  return manageInput(); // manage input before updates would improve responsiveness if we take it into account for our drawings, but we don't do this for the moment, so it would add unnessecary complexity.
 }
 
 void SceneGame::draw()
@@ -115,4 +116,31 @@ void SceneGame::setToBackground()
 void SceneGame::setToForeground()
 {
 
+}
+
+IScene* SceneGame::manageInput()
+{
+  IInputManagerSFML* im = SceneManager::getInstance()->getInputManager();
+
+  // TODO: send cmd to server
+  // TODO: we might want to be able to quit or return to menu.
+  if (im->getKeyStatus(sf::Keyboard::Key::Up).y == true)
+    {
+      std::cout << "Up !" << std::endl;
+    }
+  if (im->getKeyStatus(sf::Keyboard::Key::Down).y == true)
+    {
+      std::cout << "Down !" << std::endl;
+    }
+  if (im->getKeyStatus(sf::Keyboard::Key::Left).y == true)
+    {
+      std::cout << "Left !" << std::endl;
+    }
+  if (im->getKeyStatus(sf::Keyboard::Key::Right).y == true)
+    {
+      std::cout << "Right !" << std::endl;
+    }
+  if (im->getKeyStatus(sf::Keyboard::Key::Escape).y == true)
+    return new SceneHoverConfirmLeave(*this);
+  return this;
 }

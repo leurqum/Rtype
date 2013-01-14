@@ -29,11 +29,11 @@ void GraphicsManagerSFML::clear()
 
 void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_drawer)
 {
-  std::cout << "getting spritesheet..." << std::endl;
+  // std::cout << "getting spritesheet..." << std::endl;
 
   const std::string& ss = drawable->getSpriteSheetFilename();
 
-  std::cout << "creating sprite..." << std::endl;
+  // std::cout << "creating sprite..." << std::endl;
   const ValueDrawable& v_drawable(drawable->getModifiedValue());
   sf::Sprite s(*getTextureFromFilename(ss),
 	       GraphicsManagerSFML::rectangleToSFMLRect(Rectangle<int>(v_drawable.dimension.x,
@@ -45,7 +45,7 @@ void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_dr
   // std::cout << "\tx:" << v_drawable.position.x << std::endl;
   // std::cout << "\ty:" << v_drawable.position.y << std::endl;
 
-  std::cout << "sprite created" << std::endl;
+  // std::cout << "sprite created" << std::endl;
   s.setPosition(v_drawer.position.x, v_drawer.position.y);
   s.setScale(v_drawer.scale.x + 1, v_drawer.scale.y + 1);
   s.rotate(v_drawer.rotation);

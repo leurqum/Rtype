@@ -7,16 +7,16 @@ Drawer2Bars::Drawer2Bars() : BarContainer(DrawableGeneric(*FactoryDrawable::getI
 
 void Drawer2Bars::_drawTo(IGraphicsManager* gm, const ValueDrawer& v) const
 {
-  std::cout << v.position.x << " " << v.position.y << std::endl;
+  // std::cout << v.position.x << " " << v.position.y << std::endl;
   ValueDrawable d(bar1.getModifiedValue());
 
-  std::cout << d.position.x << " " << d.position.y << std::endl;
-  std::cout << "drawing2 bars" << std::endl;
+  // std::cout << d.position.x << " " << d.position.y << std::endl;
+  // std::cout << "drawing2 bars" << std::endl;
   BarContainer.drawTo(gm, v);
-  std::cout << "drawn container" << std::endl;
+  // std::cout << "drawn container" << std::endl;
   
   gm->draw(&bar1, v);
-  std::cout << "drawn 1 bar" << std::endl;
+  // std::cout << "drawn 1 bar" << std::endl;
   gm->draw(&bar2, v + ValueDrawer(0, 16));
 }
 
