@@ -5,7 +5,9 @@ project (RtypeServer)
 include_directories("./src/include/", "./Abs_Socket/", "./Abs_Thread_mutex/")
 
 # Set default compile flags for GCC
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(UNIX)
+  message(STATUS "GCC detected, adding compile flags")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
   add_executable(
     RtypeServer
     ./src/source/IAUnit.cpp
@@ -28,7 +30,29 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     ./Abs_Thread_mutex/UThread.cpp
     )
   target_link_libraries (RtypeServer pthread)
-  message(STATUS "GCC detected, adding compile flags")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
-endif(CMAKE_COMPILER_IS_GNUCXX)
 
+endif(UNIX)
+
+if(WIN32)
+  add_executable(
+    RtypeServer
+    ./src/source/IAUnit.cpp
+    ./src/source/HumainUnit.cpp
+    ./src/source/Bullet.cpp
+    ./src/source/BasicWeapon.cpp
+    ./src/source/LifePowerUp.cpp
+    ./src/source/MovingObstacle.cpp
+    ./src/source/Obstacle.cpp
+    ./src/source/Player.cpp
+    ./src/source/RectangleCollisionDefinition.cpp
+    ./src/source/Unit.cpp
+    ./src/source/Game.cpp
+    ./src/source/Server.cpp
+    ./src/source/InterpretPackage.cpp
+    ./Abs_Socket/WServerSocket.cpp
+    ./Abs_Socket/WSocket.cpp
+    ./Abs_Socket/main.cpp
+    ./Abs_Thread_mutex/WMutex.cpp
+    ./Abs_Thread_mutex/WThread.cpp
+    )
+endif(WIN32)
