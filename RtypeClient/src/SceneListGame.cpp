@@ -1,9 +1,9 @@
 #include "SceneListGame.h"
 
 SceneListGame::SceneListGame(IScene& decoratedScene) :
-  ASceneHover(decoratedScene)
+  ASceneHover(decoratedScene), menuGames("Back")
 {
-  menuGames.addButton();
+  menuGames.addButton("First Game"); // TODO: do a proper list..
   menuGames.setInitialValue(ValueDrawer(400, 160,0, 0, 0));
 }
 

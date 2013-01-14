@@ -14,7 +14,8 @@ public:
   class Iterator : public IAnimation<T>::IIterator
   {
   public:
-    Iterator(const Animation<T>& animation) : a(animation), current(nullptr), nextRect(nullptr)
+    virtual ~Iterator() {};
+  Iterator(const Animation<T>& animation) : a(animation), current(nullptr), nextRect(nullptr)
     {
       elapsedTime = 0;
       nextRect = new t_frameIterator(a.frames.begin());

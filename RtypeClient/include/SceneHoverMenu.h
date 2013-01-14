@@ -5,6 +5,8 @@
 #include "SceneGame.h"
 #include "DrawerMenu.h"
 #include "SceneListGame.h"
+#include "SceneHoverConfirmLeave.h"
+
 
 class SceneHoverMenu :
 	public ASceneHover

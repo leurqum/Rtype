@@ -14,10 +14,11 @@ public IGraphicsManager
  public:
   ~GraphicsManagerSFML(void);
   GraphicsManagerSFML(void);
-  virtual void reset();
-  virtual void clear();
+  virtual void reset() override;
+  virtual void clear() override;
   virtual void draw(const Drawable*, const ValueDrawer&) override;
-  virtual void display();
+  virtual void write(const std::string&, const ValueDrawer&) override;
+  virtual void display() override;
   
 
   template<typename T>

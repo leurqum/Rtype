@@ -8,6 +8,7 @@ class IAnimation
   class IIterator
   {
   public:
+    virtual ~IIterator() {}
     virtual const Frame& getFrame() const = 0;
     virtual void increase(float ms) = 0;
   };

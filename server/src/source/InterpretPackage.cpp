@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Mon Jan 14 16:05:19 2013 mathieu leurquin
+// Last update Mon Jan 14 17:59:18 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -59,7 +59,7 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
   Protocol::package *p = new Protocol::package();
   p->id = Protocol::GET_GAME_LIST;
   
-  size = sizeof(Protocol::package*) +  sizeof(Protocol::parties*) + (_server->getNbGame() * sizeof (Protocol::party*));
+  size = sizeof(Protocol::parties*) + (_server->getNbGame() * sizeof (Protocol::party*));
   p->size = size;
 
   memset(res, 0, size);

@@ -17,6 +17,7 @@ class IGraphicsManager
   virtual void reset() = 0;
   virtual void clear() = 0;
   virtual void draw(const Drawable*, const ValueDrawer&) = 0;
+  virtual void write(const std::string&, const ValueDrawer&) = 0;
   virtual void display() = 0;
 };
 

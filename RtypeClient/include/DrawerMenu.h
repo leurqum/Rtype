@@ -14,7 +14,7 @@
 class DrawerMenu : public ADrawer // no inheritance from DrawerLayer because it doesnt upgrade its targets
 {
  public:
-  DrawerMenu(); // TODO: give skins for buttons/arrow ?
+  DrawerMenu(const std::string&); // TODO: give skins for buttons/arrow ?
 
   virtual void drawTo(IGraphicsManager*) const override;
   virtual void drawTo(IGraphicsManager*, const ValueDrawer&) const override;
@@ -23,7 +23,7 @@ class DrawerMenu : public ADrawer // no inheritance from DrawerLayer because it 
 
   void checkInput(IInputManagerSFML*);
 
-  void addButton(); // TODO: give a string ?
+  void addButton(const std::string&);
   int getSelectedId() const; // -1 means no selection
 
   void resetSelections();
@@ -47,6 +47,9 @@ class DrawerMenu : public ADrawer // no inheritance from DrawerLayer because it 
   void updateArrowPosition();
   int selectionId;
   selectionType status;
+
   std::vector<DrawerUDrawable> buttons;
+  std::vector<std::string> texts;
+
   DrawerUDrawable arrow;
 };
