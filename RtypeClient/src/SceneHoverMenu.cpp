@@ -1,11 +1,10 @@
 #include "SceneHoverMenu.h"
 
 SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
-  ASceneHover(decoratedScene)
+  ASceneHover(decoratedScene), menu("Play")
 {
-  // first is "straight to the game"
-  menu.addButton(); // list of games
-  menu.addButton(); // confirm exit
+  menu.addButton("Game List"); // list of games
+  menu.addButton("Exit ?"); // confirm exit
   menu.setInitialValue(ValueDrawer(200, 160,0, 0, 0));
   isBackground = BgState::FOREGROUND;
 }
@@ -30,7 +29,7 @@ IScene* SceneHoverMenu::update(float elapsedTime)
 	}
       if (menu.getSelectedId() == 2 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
 	{
-	  return new SceneHoverConfirmLeave(*this);
+	  return new SceneHoverConfirmLeave(*this, false);
 	}
     }
   if (isBackground == BgState::TO_FOREGROUND)

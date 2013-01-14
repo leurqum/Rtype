@@ -1,14 +1,13 @@
 #include "SceneHoverConfirmLeave.h"
 
 SceneHoverConfirmLeave::SceneHoverConfirmLeave(IScene& decoratedScene, bool homeLink) :
-  ASceneHover(decoratedScene)
+  ASceneHover(decoratedScene), menu("Back")
 {
-  // first button is back
-  menu.addButton(); // then exit totally
+  menu.addButton("Exit !!"); // then exit totally
   // NOTE: I am aware that the user design is not perfect here, because these two opposite buttons shouldn't be next to one another, but it's pretty convenient to code, so f*ck you.
 
   if (homeLink)
-    menu.addButton(); // then Home
+    menu.addButton("Home"); // then Home
   menu.setInitialValue(ValueDrawer(200, 160,0, 0, 0));
 }
 

@@ -1,10 +1,10 @@
 #include "DrawerMenu.h"
 
-DrawerMenu::DrawerMenu() : arrow(DrawableGeneric(*FactoryDrawable::getInstance()->createSelectionArrow()))
+DrawerMenu::DrawerMenu(const std::string& firstButton) : arrow(DrawableGeneric(*FactoryDrawable::getInstance()->createSelectionArrow()))
 {
   selectionId = 0;
   status = selectionType::HOVER;
-  addButton();
+  addButton(firstButton);
   std::list<ValueDrawer > arrowAnimation;
   ValueDrawer d;
   
@@ -19,8 +19,20 @@ DrawerMenu::DrawerMenu() : arrow(DrawableGeneric(*FactoryDrawable::getInstance()
 
 void DrawerMenu::drawTo(IGraphicsManager* gm) const
 {
+  // FIXME: maybe one loop would be more efficient...
+  // not sure though; and we would have to use 2 iterators, so the code would be more complex.
+
   for (const ADrawer& d : buttons)
-    d.drawTo(gm, this->getModifiedValue());
+    {
+      d.drawTo(gm, this->getModifiedValue());
+    }
+  int i = 0;
+  for (const std::string& t : texts)
+    {
+      gm->write(t, this->getModifiedValue() + ValueDrawer(42,  i * 42)); // FIXME: we don't put t in coherency with the button, so moving a single button would cause problems.
+      i++;
+    }
+  
   arrow.drawTo(gm, this->getModifiedValue());
 }
 
@@ -78,12 +90,15 @@ void DrawerMenu::checkInput(IInputManagerSFML* im)
     }
 }
 
-void DrawerMenu::addButton()
+void DrawerMenu::addButton(const std::string& s)
 {  
   buttons.push_back(DrawerUDrawable(DrawableGeneric(*FactoryDrawable::getInstance()->createButton())));
   ValueDrawer d;
   d.position = Vector2<float>(30, (buttons.size() - 1) * 42);
   buttons.back().setInitialValue(d);
+
+  // Create the text
+  texts.push_back(s);
 }
 
 int DrawerMenu::getSelectedId() const

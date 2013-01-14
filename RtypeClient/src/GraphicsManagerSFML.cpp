@@ -39,17 +39,21 @@ void GraphicsManagerSFML::draw(const Drawable* drawable, const ValueDrawer& v_dr
 	       GraphicsManagerSFML::rectangleToSFMLRect(Rectangle<int>(v_drawable.dimension.x,
 								       v_drawable.dimension.y,
 								       Vector2<int>(v_drawable.position.x, v_drawable.position.y))));
-  // std::cout << "drawing sprite" << std::endl;
-  // std::cout << "\tw:" << v_drawable.dimension.x << std::endl;
-  // std::cout << "\th:" << v_drawable.dimension.y << std::endl;
-  // std::cout << "\tx:" << v_drawable.position.x << std::endl;
-  // std::cout << "\ty:" << v_drawable.position.y << std::endl;
-
-  // std::cout << "sprite created" << std::endl;
   s.setPosition(v_drawer.position.x, v_drawer.position.y);
   s.setScale(v_drawer.scale.x + 1, v_drawer.scale.y + 1);
   s.rotate(v_drawer.rotation);
   window.draw(s);
+}
+
+void GraphicsManagerSFML::write(const std::string& text, const ValueDrawer& drawer)
+{
+  // Create a text
+  sf::Text t(text);
+  t.setCharacterSize(20);
+  t.setPosition(drawer.position.x, drawer.position.y);
+  t.setScale(drawer.scale.x + 1, drawer.scale.y + 1);
+  t.setRotation(drawer.rotation);
+  window.draw(t);
 }
 
 void GraphicsManagerSFML::display()
