@@ -53,6 +53,6 @@ if(WIN32)
     ./Abs_Socket/WSocket.cpp
     ./Abs_Socket/main.cpp
     ./Abs_Thread_mutex/WMutex.cpp
-    ./Abs_Thread_mutex/WThread.cpp
+    ./Abs_Thread_mutex/CWThread.cpp
     )
 endif(WIN32)
