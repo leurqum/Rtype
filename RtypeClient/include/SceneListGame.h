@@ -4,14 +4,15 @@
 #include "SceneManager.h"
 #include "SceneGame.h"
 #include "DrawerMenu.h"
-#include "SceneListGame.h"
 
-class SceneHoverMenu :
+#include "SceneBackground.h"
+
+class SceneListGame :
 	public ASceneHover
 {
 public:
-	SceneHoverMenu(IScene& decoratedScene);
-	~SceneHoverMenu(void);
+	SceneListGame(IScene& decoratedScene);
+	~SceneListGame(void);
 
 	virtual IScene* update(float elapsedTime);
 	virtual void draw();
@@ -20,7 +21,6 @@ public:
 	virtual void setToBackground();
 	virtual void setToForeground();
 private:
-	DrawerMenu menu;
-	bool isBackground;
+	DrawerMenu menuGames;
 };
 

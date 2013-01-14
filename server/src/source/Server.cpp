@@ -5,7 +5,7 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Sat Jan 12 10:35:17 2013 mathieu leurquin
+// Last update Sun Jan 13 16:58:56 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
@@ -79,4 +79,9 @@ Game *Server::createGame(int id)
 
   gameList.push_back(g);
   return (g);
+}
+
+int Server::getNbGame()const
+{
+  return (gameList.size());
 }

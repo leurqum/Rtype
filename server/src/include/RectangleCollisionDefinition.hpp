@@ -16,7 +16,7 @@ public:
   virtual bool isCollidingWith();
   virtual std::pair<float, float> getPosition()const;
   virtual void setCollisionFilter(int filter);
-  virtual void move();
+  virtual void move(Protocol::move *m);
   void setPosition(std::pair<float, float>position);
   virtual float getHeight()const;
   void setHeight(float height);

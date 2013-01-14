@@ -47,6 +47,13 @@ void RectangleCollisionDefinition::setWidth(float width)
   _width = width;
 }
 
-void RectangleCollisionDefinition::move()
+void RectangleCollisionDefinition::move(Protocol::move *m)
 {
+  std::pair<float, float>position = _position;
+  (m->top == 1) ?  position.second++ : position.second;
+  (m->right == 1) ? position.first++ : position.first;
+  (m->down == 1) ?  position.second-- : position.second;
+  (m->left == 1) ?  position.first-- : position.first;
+
+  setPosition(position);
 }

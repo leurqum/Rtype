@@ -6,12 +6,13 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
 #include "RectangleCollisionDefinition.hpp"
-#include "./../../Abs_Socket/ISocket.hpp"
+#include "./../../Abs_Socket/USocket.hpp"
 #include "./../../../protocol.h"
 #include "MovingObstacle.hpp"
 #include "LifePowerUp.hpp"
 #include <iostream>
 #include <string.h>
+#include <cstdlib>
 
 class IAUnit;
 class HumainUnit;
@@ -20,7 +21,7 @@ class Game
 private:
   int _id;
   std::list<IAUnit*>		iaList;
-  std::list<HumainUnit*>	humanList;
+  std::list<HumainUnit*>	humainList;
   std::list<Player*>		playerList;
   std::list<Bullet*>		bulletList;
   std::list<MovingObstacle*>	obsList;
@@ -36,6 +37,7 @@ public:
   Player* createPlayer(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_udp);
   LifePowerUp* createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength);
   Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_bullet);
+ 
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitByPlayer(Player *p)const;
   HumainUnit *getUnitHuman(int id)const;
@@ -49,6 +51,7 @@ public:
   Player *getPlayerBySockTcp(ISocket *socket_tcp)const;
   Player *getPlayerBySockUdp(ISocket *socket_udp)const;
   int getId()const;
+
   void eraseBullet(int id);
   void eraseBulletsPlayer(int idPlayer);
   void erasePlayer(int id);
@@ -57,6 +60,13 @@ public:
   void eraseObs(int id);
   void eraseBonus(int id);
   
+  void eraseAllIa();
+  void eraseAllObs();
+  void eraseAllBonus();
+  void resetLife();
+  void resetGame(double *time);
+  bool allDead();
+
   bool isFriendlyBullet(Bullet *b);
   bool collisionIaWithBullet(IAUnit *u);
   bool collisionHumainWithBullet(HumainUnit *u);
@@ -67,14 +77,18 @@ public:
 
   void fire_ia(int id);
   void fire(int id);
-  void move(int id);
+  void move(int id, Protocol::move *m);
 
   void createRandomObs(double time);
   void createRandomBonus(double time);
   void createRandomEnemie(double time);
 
+  int getIaSize()const;
+  int getHumainSize()const;
+  int getBulletSize()const;
+  int getObsSize()const;
+  int getBonusSize()const;
 
-  int getSizeGame()const;
   void *formatGameSend();
 };
 

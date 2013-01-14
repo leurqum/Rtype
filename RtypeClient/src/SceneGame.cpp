@@ -1,6 +1,7 @@
 #include "SceneGame.h"
 
-SceneGame::SceneGame(IScene& decoratedScene) : ASceneHover(decoratedScene)
+SceneGame::SceneGame(IScene& decoratedScene) :
+  ASceneHover(decoratedScene)
 {
   ship[0] = nullptr;
   ship[1] = nullptr;
@@ -37,26 +38,34 @@ IScene* SceneGame::update(float elapsedTime)
   d.yPosition = 123;
 
 
-  if (ship[0] != nullptr)
+  if (ship[0] == nullptr)
     {
-      // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
-      ship[0]->setUpdate(d);
+      ship[0] = new DrawerShip(0);
     }
-  else
-    {
-
-      DrawableRemote* ret = new DrawableRemote();
-      ret->setUpdate(d);
-
-      ship[0] = ret;
-    }
-
+  // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
+  ship[0]->setUpdate(d);
   // TODO: insert input managing code here.
 
+  d.id = 0;
+  d.type = Protocol::SHIP;
+  static int _x = 480;
+  static int _y = 223;
+  static int _incr = 2;
+
+  d.xPosition = _x;
+  // _x += _incr;
+  // _y += _incr;
+  //  if (_x > 500)
+  //    _incr = -5;
+  //  if (_x <= 400)
+  //    _incr = 5;
+
+  d.yPosition = _y;
+  enemy.setUpdate(d);
+  enemy.update(elapsedTime);
+
+
   ship[0]->update(elapsedTime);
- //fixedBackground.update(elapsedTime);
- //scrollingBackground.update(elapsedTime);
- //scrollingBackground2.update(elapsedTime);
   std::cout << "scenegame END update" << std::endl;
   return this;
 }
@@ -65,12 +74,12 @@ void SceneGame::draw()
 {
   ASceneHover::draw();
 
+
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
-  //gm->draw(&fixedBackground);
-  //std::cout << "drawing" << std::endl;
-  //gm->draw(&scrollingBackground);
-  //gm->draw(&scrollingBackground2);
-  // FIXME: use a list ?
+
+  enemy.drawTo(gm);
+
+
   if (ship[0] != nullptr)
     ship[0]->drawTo(gm);
   if (ship[1] != nullptr)

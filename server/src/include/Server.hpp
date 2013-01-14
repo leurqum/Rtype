@@ -13,6 +13,9 @@ private:
   UServerSocket *	server_socket;
 public:
   Server();
+  
+  int getNbGame()const;
+  
   Player *getPlayerWaiting(int id)const;
   Game *getGame(int id)const;
   std::list<Game*> &getGameList();
