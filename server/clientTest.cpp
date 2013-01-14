@@ -1,5 +1,5 @@
 #include "../protocol.h"
-#include "./Abs_Socket/USocket.hpp"
+#include "./Abs_Socket/portaSocket.hpp"
 
 int main(int ac, char ** av)
 {
@@ -8,7 +8,7 @@ int main(int ac, char ** av)
       std::cerr << "missing argument" << std::endl;
       return 0;
     }
-  ISocket  * sock = new USocket();
+  ISocket  * sock = new MySocket();
   //sock->setUDP(true); // probleme ...
   if (sock->connectToServer("127.0.0.1", av[1]) == false)
     return 0;
@@ -27,6 +27,6 @@ int main(int ac, char ** av)
   std::cout << "id:" << header[0] << std::endl;
   std::cout << "size:" << header[1] << std::endl;
   sock->sendv(((2 * sizeof(int)) + sizeof(datas)), pckg);
-  sleep(1);
+  Sleep(1000);
   return 0;
 }
