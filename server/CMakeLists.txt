@@ -83,7 +83,7 @@ file (
 # Set default compile flags for GCC
 if(UNIX)
   message(STATUS "GCC detected, adding compile flags")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -g")
   add_executable(
     RtypeServer
     ${src_files_unix}
