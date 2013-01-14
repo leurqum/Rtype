@@ -70,6 +70,7 @@ file (
      ./Abs_Thread_mutex/IMutex.h
      ./Abs_Socket/ISocket.hpp
      ./Abs_Socket/IServerSocket.hpp
+     ./Abs_Socket/portaSocket.hpp
      ./Abs_Socket/main.cpp
 )
 
