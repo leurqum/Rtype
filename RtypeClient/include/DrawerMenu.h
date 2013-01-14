@@ -26,10 +26,7 @@ class DrawerMenu : public ADrawer // no inheritance from DrawerLayer because it 
   void addButton(); // TODO: give a string ?
   int getSelectedId() const; // -1 means no selection
 
-  void selectionForward();
-  void selectionBackward();
-  void select();
-  void validate();
+  void resetSelections();
 
   enum selectionType
   {
@@ -39,6 +36,13 @@ class DrawerMenu : public ADrawer // no inheritance from DrawerLayer because it 
     VALIDATED
   };
   selectionType getSelectionType() const;
+
+ protected:
+  void selectionForward();
+  void selectionBackward();
+  void select();
+  void validate();
+
  private:
   void updateArrowPosition();
   int selectionId;
