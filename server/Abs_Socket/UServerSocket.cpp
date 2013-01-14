@@ -5,23 +5,17 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Fri Jan 11 19:19:35 2013 mathieu leurquin
+// Last update Sat Jan 12 15:53:20 2013 marche_m (Maxime Marchès)
 //
 
 #include "UServerSocket.hpp"
 
-void	UServerSocket::addNewPeer(void * peer)
+void	UServerSocket::addNewPeer(void * sock)
 {
-  peer = peer;
   std::cout << "new Client !" << std::endl;
-  ISocket * acc = this->myaccept();
+  ISocket * acc = this->myaccept(sock);
   this->_clientsList.push_back(((USocket *)(acc))->getSocket());
   this->_clientsSocksMap[((USocket *)(acc))->getSocket()] = acc;
-}
-
-void		UServerSocket::setUDP(bool val)
-{
-  (val == true) ? (_udp = IPPROTO_UDP) : (_udp = IPPROTO_TCP);
 }
 
 int		UServerSocket::selectSockets()
@@ -47,7 +41,6 @@ int		UServerSocket::selectSockets()
 void	UServerSocket::callBack(std::list<int>::iterator & it)
 {
   std::cout << "start callBack" << std::endl;
-  // s_protocol * package = new s_protocol;
 
   ISocket * tmp = _clientsSocksMap[*it];
   void	* data = 0;
@@ -65,33 +58,17 @@ void	UServerSocket::callBack(std::list<int>::iterator & it)
     }
   this->_interPckg->executeCmd(header, data, tmp);
   if (data)
-    delete data;
+    delete (char *)data;
   if (header)
-    delete header;
+    delete (int *)header;
   std::cout << "end callBack" << std::endl;
-  // std::cout << "------------ readCmd ------------" << std::endl;
-  // std::cout << "Commande ID: " << package->cmdId << std::endl;
-  // std::cout << "Size parameter: " << package->size << std::endl;
-  // std::cout << "Data: " << (char*)package->data << std::endl;
-  // std::cout << "---------------------------------" << std::endl;
-  // s_protocol * ret = _usersManager->executeCmd(package, tmp);
-  // if (ret != NULL)
-  //   {
-  //     std::cout << "------------ return package ------------" << std::endl;
-  //     std::cout << "Commande ID: " << ret->cmdId << std::endl;
-  //     std::cout << "Size parameter: " << ret->size << std::endl;
-  //     std::cout << "Data: " << (char *)ret->data << std::endl;
-  //     std::cout << "----------------------------------------" << std::endl;
-  //     tmp->sendv(ret);
-  //     delete ret;
-  //   }
-  // delete package;
 }
 
 void	UServerSocket::launch()
 {
   std::cout << "server launched !" << std::endl;
-  _clientsList.push_back(_listenSocket);
+  _clientsList.push_back(_listenSocketTcp);
+  _clientsList.push_back(_listenSocketUdp);
 
   while (true)
     {
@@ -100,26 +77,28 @@ void	UServerSocket::launch()
 	if (FD_ISSET((*it), &_readFd))
 	  {
 	    nbSocksReady--;
-	    if ((*it) == _listenSocket)
-	      this->addNewPeer(&(*it));
+	    if ((*it) == _listenSocketTcp || (*it) == _listenSocketUdp)
+	      this->addNewPeer(&(*it)); // TODO udp / tcp
 	    else
 	      this->callBack(it);
 	  }
     }
 }
 
-ISocket	* UServerSocket::myaccept()
+ISocket	* UServerSocket::myaccept(void * sockType)
 {
-  int		acceptSock;
+  int			acceptSock;
   struct sockaddr	saClient;
   int			clientSize = sizeof(saClient);
 
-  acceptSock = accept(this->_listenSocket, &saClient, (socklen_t *)&clientSize);
+  acceptSock = accept(*((int *)sockType), &saClient, (socklen_t *)&clientSize);
   if (acceptSock <= 0) {
     std::cerr << "accept failed with error: " << std::endl;
     return NULL;
   }
   ISocket * ret = new USocket();
+  if (*((int*)sockType) == _listenSocketUdp)
+    ret->setUDP(true);
 
   ret->connectFromAcceptedFd(&acceptSock);
   return ret;
@@ -128,45 +107,70 @@ ISocket	* UServerSocket::myaccept()
 bool	UServerSocket::init(std::string const & listenHost, std::string const & listenPort)
 {
   int	i;
-  int port = atoi(listenPort.c_str());
+  std::stringstream ss;
+  int port;
 
+  ss << listenPort;
+  ss >> port;
+  ss.str("");
+  ss.clear();
+  // ========= TCP =========
   bzero((char *) &(this->_servAddr), sizeof(this->_servAddr));
   this->_servAddr.sin_family = AF_INET;
   this->_servAddr.sin_addr.s_addr = INADDR_ANY;
   this->_servAddr.sin_port = htons(port);
-
-  this->_listenSocket = socket(AF_INET, SOCK_STREAM, this->_udp);
-  if (this->_listenSocket <= 0)
+  this->_listenSocketTcp = socket(AF_INET, SOCK_STREAM, 0);
+  if (this->_listenSocketTcp <= 0)
     {
-      std::cerr << "socket failed with error" << std::endl;
+      std::cerr << "socket failed with error (TCP)" << std::endl;
       return false;
     }
-
-  // Setup the TCP listening socket
-  // TODO: probleme deuxieme argument
-  i = bind( this->_listenSocket, (struct sockaddr *) &this->_servAddr, sizeof(this->_servAddr));
+  i = bind( this->_listenSocketTcp, (struct sockaddr *) &this->_servAddr, sizeof(this->_servAddr));
   if (i < 0)
     {
-      std::cerr << "bind failed with error: " << std::endl;
-      close(this->_listenSocket);
+      std::cerr << "bind failed with error (TCP): " << std::endl;
+      close(this->_listenSocketTcp);
       return false;
     }
-  if (listen(_listenSocket, 5) < 0)
+  if (listen(_listenSocketTcp, 5) < 0)
     {
-      std::cerr << "listen failed with error: " << std::endl;
+      std::cerr << "listen failed with error (TCP): " << std::endl;
       return false;
     }
+
+  // ========== UDP =========
+  bzero((char *) &(this->_servAddr), sizeof(this->_servAddr));
+  this->_servAddr.sin_family = AF_INET;
+  this->_servAddr.sin_addr.s_addr = INADDR_ANY;
+  this->_servAddr.sin_port = htons(port + 1);
+  this->_listenSocketUdp = socket(AF_INET, SOCK_DGRAM, 0);
+  if (this->_listenSocketUdp <= 0)
+    {
+      std::cerr << "socket failed with error (UDP)" << std::endl;
+      return false;
+    }
+  i = bind( this->_listenSocketUdp, (struct sockaddr *) &this->_servAddr, sizeof(this->_servAddr));
+  if (i < 0)
+    {
+      std::cerr << "bind failed with error (UDP): " << std::endl;
+      close(this->_listenSocketUdp);
+      return false;
+    }
+
   return true;
 }
 
 UServerSocket::~UServerSocket()
 {
-  close(this->_listenSocket);
+  if (this->_listenSocketTcp)
+    close(this->_listenSocketTcp);
+  if (this->_listenSocketUdp)
+    close(this->_listenSocketUdp);
 }
 
 UServerSocket::UServerSocket(Server *s)
 {
   _interPckg = new InterpretPackage(s);
-  this->_listenSocket = 0;
-  this->_udp = IPPROTO_TCP;
+  this->_listenSocketTcp = 0;
+  this->_listenSocketUdp = 0;
 }
