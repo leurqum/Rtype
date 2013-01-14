@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:16:53 2012 marche_m (Maxime Marchès)
-// Last update Mon Jan 14 15:05:13 2013 mathieu leurquin
+// Last update Mon Jan 14 16:54:38 2013 marche_m (Maxime Marchès)
 */
 
 #ifndef __USOCKET__
@@ -52,6 +52,7 @@ public:
   int		sendv(int size, void * data);
   int		getSocket() const { return _connectSocket; }
   void		setUDP(bool val);
+  bool		isUDP() { return _udp; }
 private:
   struct hostent		* _server;
 

@@ -667,7 +667,7 @@ void *Game::formatGameSend(int *size)
   
   memset(pac, 0, sizeof(Protocol::package*));
   pac->id = Protocol::SEND_WORLD;
-  pac->size = sizeof(Protocol::package*) + 
+  pac->size = 
     sizeof(Protocol::monde_param*) +
     (sizeof(Protocol::drawable_bullet*) * getBulletSize()) +
     (sizeof(Protocol::drawable_enemie*) * getIaSize()) +
