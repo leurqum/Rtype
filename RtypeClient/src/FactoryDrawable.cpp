@@ -44,12 +44,27 @@ DrawableGeneric* FactoryDrawable::createEnemyBasic() const
   return fromSpriteSheet(5);
 }
 
+DrawableGeneric* FactoryDrawable::createBarContainer() const
+{
+  return fromSpriteSheet(6);
+}
+
 DrawableGeneric* FactoryDrawable::fromSpriteSheet(int id) const
 {
   SpriteSheet* s = SpriteSheetFactory::getInstance()->getSpriteSheet(id);
 
   if (s == nullptr)
     {
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
+      std::cout << "WAAAAAT" << std::endl;
       // wtf ?
       return nullptr;
     }

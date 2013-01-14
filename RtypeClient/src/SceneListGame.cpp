@@ -20,11 +20,13 @@ IScene* SceneListGame::update(float elapsedTime)
   if (menuGames.getSelectedId() == 1 && menuGames.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
     {
       return SceneManager::getInstance()->changeScene(new SceneGame(* (new SceneBackground())));
-      // return new SceneGame(this->decoratedScene);
     }
-// if (menuGames.getSelectedId() == 1 && menuGames.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
-//     return new SceneGame(this->decoratedScene);
-
+  if (menuGames.getSelectedId() == 0 && menuGames.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
+    {
+      decoratedScene.setToForeground();
+      // FIXME: DAT FAT LEAK
+      return &this->decoratedScene;
+    }
   return this;
 }
 

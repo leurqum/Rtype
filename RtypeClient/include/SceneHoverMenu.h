@@ -21,6 +21,13 @@ public:
 	virtual void setToForeground();
 private:
 	DrawerMenu menu;
-	bool isBackground;
+	enum BgState
+	{
+	  FOREGROUND,
+	  BACKGROUND,
+	  TO_FOREGROUND,
+	  TO_BACKGROUND
+	};
+	BgState isBackground;
 };
 

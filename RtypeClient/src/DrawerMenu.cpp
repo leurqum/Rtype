@@ -3,7 +3,7 @@
 DrawerMenu::DrawerMenu() : arrow(DrawableGeneric(*FactoryDrawable::getInstance()->createSelectionArrow()))
 {
   selectionId = 0;
-  status = selectionType::UNSELECTED;
+  status = selectionType::HOVER;
   addButton();
   std::list<ValueDrawer > arrowAnimation;
   ValueDrawer d;
@@ -45,29 +45,36 @@ void DrawerMenu::checkInput(IInputManagerSFML* im)
   const Vector2<bool>& returnKey(im->getKeyStatus(sf::Keyboard::Return));
   if (!returnKey.x && returnKey.y)
     {
-      buttons[selectionId].animate(1);
-      status = selectionType::SELECTED;
+      select();
+      // buttons[selectionId].animate(1);
+      // status = selectionType::SELECTED;
     }
-  else if (returnKey.x && !returnKey.y)
+  else if (returnKey.x && !returnKey.y // && status == selectionType::SELECTED
+	   )
     {
-      status = selectionType::VALIDATED;
+      validate();
+      // status = selectionType::VALIDATED;
     }
 
   const Vector2<bool>& downKey(im->getKeyStatus(sf::Keyboard::Down));
   if (!downKey.x && downKey.y)
     {
-      selectionId++;
-      status = selectionType::HOVER;
-      if (selectionId >= buttons.size())
-	selectionId = 0;
+      selectionForward();
+      // buttons[selectionId].animate(0);
+      // selectionId++;
+      // status = selectionType::HOVER;
+      // if (selectionId >= buttons.size())
+      // 	selectionId = 0;
     }
   const Vector2<bool>& upKey(im->getKeyStatus(sf::Keyboard::Up));
   if (!upKey.x && upKey.y)
     {
-      selectionId--;
-      status = selectionType::HOVER;
-      if (selectionId < 0)
-	selectionId = buttons.size() - 1;
+      selectionBackward();
+      // buttons[selectionId].animate(0);
+      // selectionId--;
+      // status = selectionType::HOVER;
+      // if (selectionId < 0)
+      // 	selectionId = buttons.size() - 1;
     }
 }
 
@@ -95,6 +102,7 @@ void DrawerMenu::updateArrowPosition()
   // TODO: check if it's still ok, like, if no buttons have been deleted and stuff.
   // or do this in another function..
   arrow.setInitialValue(ValueDrawer(0, (selectionId) * 42, 0, 0, 0));
+
 }
 
 void DrawerMenu::selectionForward()
@@ -118,11 +126,23 @@ void DrawerMenu::selectionBackward()
 void DrawerMenu::select()
 {
   if (status == selectionType::HOVER)
-    status = selectionType::SELECTED;
+    {
+      buttons[selectionId].animate(1);
+      status = selectionType::SELECTED;
+    }
 }
 
 void DrawerMenu::validate()
 {
   if (status == selectionType::SELECTED)
-    status = selectionType::SELECTED;
+    {
+      status = selectionType::VALIDATED;
+    }
+}
+void DrawerMenu::resetSelections()
+{
+  status = selectionType::HOVER;
+  for (DrawerUDrawable& d : buttons)
+    d.animate(0);
+  updateArrowPosition();
 }

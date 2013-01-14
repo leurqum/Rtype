@@ -112,11 +112,18 @@ SpriteSheetFactory::SpriteSheetFactory()
   singleAnim.push_back(ValueDrawable(28, 36, 232, 0));
 
   animList[0] = new Animation<ValueDrawable>(singleAnim, 250, false);
-  // singleAnim.clear();
-  // singleAnim.push_back({{32, 36}, {232, 0}});
-  // singleAnim.push_back({{32, 36}, {502, 0}});
-  // animList[1] = new Animation<ValueDrawable>(singleAnim, 250, false);
   spriteSheets[5]->setAnimations(animList);
+
+  // BAR CONTAINER  
+  spriteSheets[6] = new SpriteSheet();
+  spriteSheets[6]->setFilename("sprites/bar_hp_mp.png");
+
+  singleAnim.clear();
+
+  singleAnim.push_back(ValueDrawable(106, 32, 0, 32));
+
+  animList[0] = new Animation<ValueDrawable>(singleAnim, 250, false);
+  spriteSheets[6]->setAnimations(animList);
 }
 
 SpriteSheetFactory* SpriteSheetFactory::instance = nullptr;

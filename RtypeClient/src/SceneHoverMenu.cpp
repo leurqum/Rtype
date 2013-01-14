@@ -5,7 +5,7 @@ SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
 {
   menu.addButton();
   menu.setInitialValue(ValueDrawer(200, 160,0, 0, 0));
-  isBackground = false;
+  isBackground = BgState::FOREGROUND;
 }
 
 
@@ -17,16 +17,25 @@ IScene* SceneHoverMenu::update(float elapsedTime)
 {
   ASceneHover::update(elapsedTime);
 
-  if (!isBackground)
+  if (isBackground == BgState::FOREGROUND)
     {
       menu.checkInput(SceneManager::getInstance()->getInputManager());
       if (menu.getSelectedId() == 0 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
 	return new SceneGame(this->decoratedScene);
       if (menu.getSelectedId() == 1 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
-	{
-	  
+	{	  
 	  return new SceneListGame(*this);
 	}
+    }
+  if (isBackground == BgState::TO_FOREGROUND)
+    {
+      menu.resetSelections();
+      menu.checkInput(SceneManager::getInstance()->getInputManager());
+      isBackground = BgState::FOREGROUND;
+    }
+  else if (isBackground == BgState::TO_BACKGROUND)
+    {
+      isBackground = BgState::BACKGROUND;
     }
   menu.update(elapsedTime);
   return this;
@@ -51,7 +60,7 @@ void SceneHoverMenu::unload()
 
 void SceneHoverMenu::setToBackground()
 {
-  isBackground = true;
+  isBackground = BgState::BACKGROUND;
   ValueDrawer d = menu.getInitialValue();
 
   std::list<ValueDrawer > toBgAnimation;
@@ -63,5 +72,13 @@ void SceneHoverMenu::setToBackground()
 
 void SceneHoverMenu::setToForeground()
 {
+  isBackground = BgState::TO_FOREGROUND;
+  ValueDrawer d = menu.getInitialValue();
 
+  std::list<ValueDrawer > toFgAnimation;
+  toFgAnimation.push_back(ValueDrawer());
+  toFgAnimation.push_back(ValueDrawer(200, 50, 0.3, 0.3)); // TODO: scaling :D
+
+  menu.setAnimation((new Animation<ValueDrawer>(toFgAnimation, 500, true)), 480); // 17 is the average timespan (so 500 - 17 + arbitraryvalue = 480)
+  
 }
