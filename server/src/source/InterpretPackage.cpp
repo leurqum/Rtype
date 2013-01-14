@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Mon Jan 14 15:45:08 2013 mathieu leurquin
+// Last update Mon Jan 14 16:05:19 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -25,14 +25,14 @@ InterpretPackage::InterpretPackage(Server *s)
 
 void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
-	std::cout << "executeCmd" << std::endl;
-	int hdTmp[2];
-
-	memcpy(hdTmp, header, 2 * sizeof(int));
-	std::cout << "id:" << hdTmp[0] << std::endl;
-	std::cout << "size:" << hdTmp[1] << std::endl;
-	void (InterpretPackage::*pMethod)(void *, ISocket *) = (this->_funcMap[((Protocol::type_cmd)hdTmp[0])]);
-	(this->*pMethod)(data, sock);
+  std::cout << "executeCmd" << std::endl;
+  int hdTmp[2];
+  
+  memcpy(hdTmp, header, 2 * sizeof(int));
+  std::cout << "id:" << hdTmp[0] << std::endl;
+  std::cout << "size:" << hdTmp[1] << std::endl;
+  void (InterpretPackage::*pMethod)(void *, ISocket *) = (this->_funcMap[((Protocol::type_cmd)hdTmp[0])]);
+  (this->*pMethod)(data, sock);
 }
 
 void	InterpretPackage::execRegister(void * data, ISocket * sock)
@@ -61,7 +61,7 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
   
   size = sizeof(Protocol::package*) +  sizeof(Protocol::parties*) + (_server->getNbGame() * sizeof (Protocol::party*));
   p->size = size;
-  res = malloc(size);
+
   memset(res, 0, size);
   memcpy(&res, p, sizeof(Protocol::package*));
   position += sizeof(Protocol::package*);

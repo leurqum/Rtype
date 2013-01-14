@@ -674,7 +674,6 @@ void *Game::formatGameSend(int *size)
     (sizeof(Protocol::drawable*) * (getHumainSize() + getBonusSize() + getObsSize()));
   
   *size = pac->size;
-  res = malloc(pac->size);
   memset(res, 0, pac->size);
   memcpy(res, pac, sizeof(Protocol::package*));
   position += sizeof(Protocol::package*);
