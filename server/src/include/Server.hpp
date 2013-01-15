@@ -24,7 +24,7 @@ public:
   void erasePlayerWaiting(int id);
   void eraseGame(int id);
   
-  Player* createPlayerWaiting(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_upd);
+  Player* createPlayerWaiting(int id, std::string name, ISocket *socket_tcp, ISocket *socket_upd);
   Game *createGame(int id);
 };
 
