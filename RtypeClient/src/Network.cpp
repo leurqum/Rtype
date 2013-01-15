@@ -8,6 +8,7 @@ Network::Network(const std::string& host, int portTCP, int portUDP) :
 
 	this->socketTCP->connect(host, portTCP);
 	this->socketUDP->bind(portUDP);
+	this->socketUDP->setBlocking(false);
 }
 
 
