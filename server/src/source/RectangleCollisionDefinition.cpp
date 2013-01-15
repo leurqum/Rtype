@@ -50,10 +50,10 @@ void RectangleCollisionDefinition::setWidth(float width)
 void RectangleCollisionDefinition::move(Protocol::move *m)
 {
   std::pair<float, float>position = _position;
-  (m->top == 1) ?  position.second++ : position.second;
-  (m->right == 1) ? position.first++ : position.first;
-  (m->down == 1) ?  position.second-- : position.second;
-  (m->left == 1) ?  position.first-- : position.first;
+  position.second = (m->top == 1) ?  position.second + 0.2 : position.second;
+  position.first = (m->right == 1) ? position.first + 0.2 : position.first;
+  position.second = (m->down == 1) ?  position.second - 0.2 : position.second;
+  position.first = (m->left == 1) ?  position.first - 0.2 : position.first;
 
   setPosition(position);
 }
