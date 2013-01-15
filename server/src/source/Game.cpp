@@ -23,11 +23,10 @@ void Game::loop()
   init = clock();
   while (1)
     {
-      collision();
+      //      collision();
       update(time);
-      if (allDead() == true)
-	resetGame(&time);
       time = 10 * (double)(clock() - init) / (double)CLOCKS_PER_SEC;
+      sendGame();
       std::cout<<time<<std::endl;
 	#ifdef __unix__
 		usleep(100);
@@ -48,9 +47,9 @@ bool Game::allDead()
 
 void Game::update(double time)
 {
-  createRandomObs(time);
-  createRandomBonus(time);
-  createRandomEnemie(time);
+  // createRandomObs(time);
+  // createRandomBonus(time);
+  // createRandomEnemie(time);
 
   for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
@@ -82,7 +81,7 @@ void Game::collision()
     collisionWithBonus((*it));
 }
 
-IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_enemie type)
+IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_drawable type)
 {
   IAUnit *u = new IAUnit(speed, type, id, coll, health, strength, isDestroyable, this);
   
@@ -124,7 +123,7 @@ LifePowerUp* Game::createBonus(int nb_life, int id, ICollisionDefinition *coll, 
   return (l);
 }
 
-Bullet *Game::createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_bullet type)
+Bullet *Game::createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable type)
 {
   
   Bullet *b = new Bullet(idUnit, speed, id, rec, strength, isDestroyable, type);
@@ -532,7 +531,7 @@ void Game::fire(int id)
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
  
-  createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::LINEAR);
+  createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
 }
 
 void Game::fire_ia(int id)
@@ -544,16 +543,17 @@ void Game::fire_ia(int id)
   
   ICollisionDefinition *coll;
 
-  if (u->getType() == Protocol::EASY)
-    {
-      coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
-      createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::LINEAR);
-    }    
-  else if (u->getType() == Protocol::HARD)
-    {
-      coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
-      createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::RAYON_LINEAR);
-    }
+  // if (u->getType() == Protocol::EASY)
+  //   {
+  //     coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
+  //     createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true//,  Protocol::LINEAR
+  // 		   );
+  //   }    
+  // else if (u->getType() == Protocol::HARD)
+  //   {
+  //     coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
+  //     createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
+  //   }
 }
 
 void Game::move(int id, Protocol::move *m)
@@ -573,14 +573,7 @@ int Game::getIaSize()const
 
 int Game::getHumainSize()const
 {
-  int size = 0;
-
-  for (std::list<HumainUnit*>::const_iterator it = humainList.begin(); it != humainList.end(); it++)
-    {
-      if ((*it)->getHealth() != 0)
-	size++;
-    }
-  return (size);
+  return (humainList.size());
 }
 
 int Game::getBulletSize()const
@@ -659,100 +652,86 @@ void Game::createRandomEnemie(double time)
 {
 }
 
-void *Game::formatGameSend(int *size)
+void Game::sendGame()const
 {
-  Protocol::package *pac = new Protocol::package();
-  void *res;
-  int position = 0;
-  
-  memset(pac, 0, sizeof(Protocol::package*));
-  pac->id = Protocol::SEND_WORLD;
-  pac->size = 
-    sizeof(Protocol::monde_param*) +
-    (sizeof(Protocol::drawable_bullet*) * getBulletSize()) +
-    (sizeof(Protocol::drawable_enemie*) * getIaSize()) +
-    (sizeof(Protocol::drawable*) * (getHumainSize() + getBonusSize() + getObsSize()));
-  
-  *size = pac->size;
-  memset(res, 0, pac->size);
-  memcpy(res, pac, sizeof(Protocol::package*));
-  position += sizeof(Protocol::package*);
-  
-  Protocol::monde_param* m = new Protocol::monde_param();
-  m->nb_monstre = getIaSize();
-  m->nb_obstacle = getObsSize();
-  m->nb_ship = getHumainSize();
-  m->nb_bullet = getBulletSize();
-  m->nb_bonus = getBonusSize();
-  memcpy(&res + position, m, sizeof(Protocol::monde_param*));
-  position += sizeof(Protocol::monde_param*);
-  
-  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+  sendBullet();
+  sendObs();
+  sendIA();
+  sendBonus();
+  sendShip();
+}
+
+void Game::sendBullet()const
+{
+  for (std::list<Bullet*>::const_iterator it = bulletList.begin(); it != bulletList.end(); it++)
     {
-      Protocol::drawable_bullet * d = new Protocol::drawable_bullet(); 
-      
-      memset(d, 0, sizeof(Protocol::drawable_bullet *));
+      Protocol::drawable * d = new Protocol::drawable(); 
+      memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
       d->xPosition = (*it)->getPositionX();
       d->xPosition = (*it)->getPositionY();
-      d->bullet = (*it)->getType();
-      memcpy(&res + position, d, sizeof(Protocol::drawable_bullet*));
-      position += sizeof(Protocol::drawable_bullet*);
+      d->type = (*it)->getType();
+      for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
     }
-  
-  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
-    {
-      Protocol::drawable_enemie * d = new Protocol::drawable_enemie(); 
-      
-      memset(d, 0, sizeof(Protocol::drawable_enemie *));
-      d->id = (*it)->getId();
-      d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();
-      d->enemie = (*it)->getType();
-      memcpy(&res + position, d, sizeof(Protocol::drawable_enemie*));
-      position += sizeof(Protocol::drawable_enemie*);
-    }
-     
-  for (std::list<HumainUnit*>::const_iterator it = humainList.begin(); it != humainList.end(); it++)
-    {
-      if ((*it)->getHealth() != 0)
-	{
-	  Protocol::drawable * d = new Protocol::drawable(); 
-	  
-	  memset(d, 0, sizeof(Protocol::drawable *));
-	  d->id = (*it)->getId();
-	  d->type = Protocol::SHIP;
-	  d->xPosition = (*it)->getPositionX();
-	  d->xPosition = (*it)->getPositionY();       
-	  memcpy(&res + position, d, sizeof(Protocol::drawable*));
-	  position += sizeof(Protocol::drawable*);
-	}
-    }
-  
+}
+
+void Game::sendObs()const
+{
   for (std::list<MovingObstacle*>::const_iterator it = obsList.begin(); it != obsList.end(); it++)
     {
       Protocol::drawable * d = new Protocol::drawable(); 
-      
       memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
-      d->type = Protocol::OBSTACLE;
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();       
-      memcpy(&res + position, d, sizeof(Protocol::drawable*));
-      position += sizeof(Protocol::drawable*);
+      d->xPosition = (*it)->getPositionY();
+      d->type = Protocol::OBSTACLE;
+      for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
     }
-  
+}
+
+void Game::sendIA()const
+{
+  for (std::list<IAUnit*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
+    {
+      Protocol::drawable * d = new Protocol::drawable(); 
+      memset(d, 0, sizeof(Protocol::drawable *));
+      d->id = (*it)->getId();
+      d->xPosition = (*it)->getPositionX();
+      d->xPosition = (*it)->getPositionY();
+      d->type = (*it)->getType();
+      for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+    }
+}
+
+void Game::sendBonus()const
+{
   for (std::list<LifePowerUp*>::const_iterator it = bonusList.begin(); it != bonusList.end(); it++)
     {
       Protocol::drawable * d = new Protocol::drawable(); 
-      
       memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
-      d->type = Protocol::BONUS;
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();       
-      memcpy(&res + position, d, sizeof(Protocol::drawable*));
-      position += sizeof(Protocol::drawable*);
-    } 
-  return (res);
+      d->xPosition = (*it)->getPositionY();
+      d->type = Protocol::BONUS;
+      for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+    }
+}
+
+void Game::sendShip()const
+{
+  for (std::list<HumainUnit*>::const_iterator it = humainList.begin(); it != humainList.end(); it++)
+    {
+      Protocol::drawable * d = new Protocol::drawable(); 
+      memset(d, 0, sizeof(Protocol::drawable *));
+      d->id = (*it)->getId();
+      d->xPosition = (*it)->getPositionX();
+      d->xPosition = (*it)->getPositionY();
+      d->type = (*it)->getType();
+      for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+    }
 }

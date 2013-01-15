@@ -1,7 +1,7 @@
 #include "../include/Bullet.hpp"
 
 
-Bullet::Bullet(int unit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_bullet type) : MovingObstacle(speed, id, rec, strength, isDestroyable)
+Bullet::Bullet(int unit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable type) : MovingObstacle(speed, id, rec, strength, isDestroyable)
 {
   _unit = unit;
   _type = type;
@@ -13,7 +13,7 @@ int Bullet::getUnit()const
   return (_unit);
 }
 
-Protocol::type_bullet Bullet::getType()const
+Protocol::type_drawable Bullet::getType()const
 {
   return (_type);
 }

@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Mon Jan 14 17:59:18 2013 mathieu leurquin
+// Last update Tue Jan 15 12:22:04 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -17,7 +17,6 @@ InterpretPackage::InterpretPackage(Server *s)
   _funcMap[Protocol::GET_GAME_LIST] = &InterpretPackage::execGetGameList;
   _funcMap[Protocol::JOIN_GAME] = &InterpretPackage::execJoinGame;
   _funcMap[Protocol::CREATE_GAME] = &InterpretPackage::execCreateGame;
-  _funcMap[Protocol::SEND_WORLD] = &InterpretPackage::execSendWorld;
   _funcMap[Protocol::MOVE] = &InterpretPackage::execMove;
   _funcMap[Protocol::FIRE] = &InterpretPackage::execFire;
   _server = s;
@@ -112,23 +111,6 @@ void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
 void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
 {
 
-}
-
-void	InterpretPackage::execSendWorld(void * data, ISocket * sock)
-{
-  std::cout << "exexSendWorld" << std::endl;
-
-  Player *p;
-  std::list <Game*> listGameCpy = _server->getGameList();
-  for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
-    {
-      int size = 0;
-      if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
-	{
-	  void *res = (*it)->formatGameSend(&size);
-	  sock->sendv(size, res);
-	}
-    }
 }
 
 void	InterpretPackage::execMove(void * data, ISocket * sock)

@@ -31,12 +31,12 @@ public:
   void loop();
   void update(double time);
   void collision();
-  IAUnit* createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_enemie type);
+  IAUnit* createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_drawable type);
   HumainUnit* createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Player *p);
   MovingObstacle* createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable);
   Player* createPlayer(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_udp);
   LifePowerUp* createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength);
-  Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_bullet);
+  Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable);
  
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitByPlayer(Player *p)const;
@@ -90,7 +90,12 @@ public:
   int getObsSize()const;
   int getBonusSize()const;
 
-  void *formatGameSend(int *size);
+  void sendGame()const;
+  void sendBullet()const;
+  void sendObs()const;
+  void sendIA()const;
+  void sendBonus()const;
+  void sendShip()const;
 };
 
 #endif //__GAME__

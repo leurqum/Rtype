@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:26 2013 marche_m (Maxime Marchès)
-// Last update Mon Jan 14 15:05:13 2013 mathieu leurquin
+// Last update Tue Jan 15 12:22:17 2013 mathieu leurquin
 //
 
 #ifndef __INTERPRET_PACKAGE__
@@ -30,7 +30,6 @@ private:
   void execGetGameList(void * data, ISocket * sock);	//Matthieu
   void execJoinGame(void * data, ISocket * sock);	//Max
   void execCreateGame(void * data, ISocket * sock);	//Max
-  void execSendWorld(void * data, ISocket * sock);	//Matthieu
   void execMove(void * data, ISocket * sock);		//Matthieu
   void execFire(void * data, ISocket * sock);		//Matthieu
   std::map<Protocol::type_cmd, void (InterpretPackage::*)(void *, ISocket *)>	_funcMap;
