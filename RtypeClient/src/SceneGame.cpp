@@ -41,18 +41,20 @@ IScene* SceneGame::update(float elapsedTime)
 
   // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
   
-
-  Protocol::drawable d = network->GetPieceWorld();
-
-  if (d.type == Protocol::type_drawable::SHIP)
+  bool recved = true;
+  while (recved)
     {
-      if (ship[0] == nullptr)
+      Protocol::drawable d = network->GetPieceWorld(recved);
+      
+      if (recved && d.type == Protocol::type_drawable::SHIP)
 	{
-	  ship[0] = new DrawerShip(0);
+	  if (ship[0] == nullptr)
+	    {
+	      ship[0] = new DrawerShip(0);
+	    }
+	  ship[0]->setUpdate(d);
 	}
-      ship[0]->setUpdate(d);
     }
-
 // #define pos(x) ((x) > 0 ? (x) : -(x))
 //   drawer_2bars.setBar1(pos(x - 500));
 
@@ -103,7 +105,7 @@ void SceneGame::draw()
     ship[0]->drawTo(gm);
   if (ship[3] != nullptr)
     ship[0]->drawTo(gm);
-  drawer_2bars.drawTo(gm);
+  // drawer_2bars.drawTo(gm);
 }
 
 void SceneGame::load()
@@ -132,23 +134,35 @@ IScene* SceneGame::manageInput()
 
   // TODO: send cmd to server
   // TODO: we might want to be able to quit or return to menu.
+  Protocol::cmd_client c;
+  memset(&c, 0, sizeof(c));
+
   if (im->getKeyStatus(sf::Keyboard::Key::Up).y == true)
     {
+      c.top = true;
       std::cout << "Up !" << std::endl;
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Down).y == true)
     {
+      c.down = true;
       std::cout << "Down !" << std::endl;
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Left).y == true)
     {
+      c.left = true;
       std::cout << "Left !" << std::endl;
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Right).y == true)
     {
+      c.right = true;
       std::cout << "Right !" << std::endl;
+    }
+  if (im->getKeyStatus(sf::Keyboard::Key::Space).y == true)
+    {
+      network->Fire();
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Escape).y == true)
     return new SceneHoverConfirmLeave(*this);
+  network->Move(&c);
   return this;
 }
