@@ -66,10 +66,14 @@ enum patern_enemie
 {
   STATIC,
   SOLO,
-  LINE,
+  PACKV,
+  VFLY,
   LINEUP,
   LINEDOWN
 };
+
+#define XMAX 800
+#define YMAX 600
 
 typedef	struct
 {
