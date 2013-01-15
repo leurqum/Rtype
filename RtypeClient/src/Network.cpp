@@ -1,6 +1,5 @@
 #include "Network.h"
 
-
 Network::Network(const std::string& host, const std::string& port)
 {
 	this->socketTCP = new MySocket();
@@ -144,29 +143,10 @@ std::list<Protocol::party>			Network::GetGameList() const
 	return partys;
 }
 
-void								Network::Move(Protocol::move move) const
+void								Network::Move(Protocol::cmd_client move) const
 {
-	void*						package;
-	Protocol::package			header;
-	header.size = sizeof(move);
-	Protocol::response			rep;
-
-	// send header + move
-	package = new char[sizeof(header) + sizeof(move)];
-	memcpy(package, &header, sizeof(header));
-	memcpy((&package + sizeof(header)), &move, sizeof(move));
-	this->socketTCP->sendv(sizeof(header), package);
 }
 
 void								Network::Fire() const
 {
-	void*						package;
-	Protocol::package			header;
-	header.size = 0;
-	Protocol::response			rep;
-
-	// send header
-	package = new char[sizeof(header)];
-	memcpy(package, &header, sizeof(header));
-	this->socketTCP->sendv(sizeof(header), package);
 }

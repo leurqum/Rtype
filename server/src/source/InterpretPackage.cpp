@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Tue Jan 15 12:22:04 2013 mathieu leurquin
+// Last update Tue Jan 15 13:10:17 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -123,10 +123,13 @@ void	InterpretPackage::execMove(void * data, ISocket * sock)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	{
-	  (*it)->move(p->getId(), m);
-	  Protocol::response *rep = new Protocol::response();
-	  rep->response = Protocol::VALIDE;
-	  sock->sendv(sizeof(Protocol::response*), (void*)rep);
+	  if (p->getLife() > 0)
+	    {
+	      (*it)->move(p->getId(), m);
+	      Protocol::response *rep = new Protocol::response();
+	      rep->response = Protocol::VALIDE;
+	      sock->sendv(sizeof(Protocol::response*), (void*)rep);
+	    }
 	}
     }
 }
@@ -140,10 +143,13 @@ void	InterpretPackage::execFire(void * data, ISocket * sock)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	{
-	  (*it)->fire(p->getId());
-	  Protocol::response *rep = new Protocol::response();
-	  rep->response = Protocol::VALIDE;
-	  sock->sendv(sizeof(Protocol::response*), (void*)rep);
+	  if (p->getLife() > 0)
+	    {
+	      (*it)->fire(p->getId());
+	      Protocol::response *rep = new Protocol::response();
+	      rep->response = Protocol::VALIDE;
+	      sock->sendv(sizeof(Protocol::response*), (void*)rep);
+	    }
 	}
     }  
 }
