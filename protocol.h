@@ -115,11 +115,12 @@ typedef struct
 
 typedef	struct
 {
-  int top;
-  int right;
-  int down;
-  int left;
-}	move;
+  bool top;
+  bool right;
+  bool down;
+  bool left;
+  bool fire;
+}	cmd_client;
 
 typedef	struct
 {
