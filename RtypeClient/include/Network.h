@@ -25,7 +25,7 @@ typedef WSocket MySocket;
  	~Network(void); 
 
  	//udp communication 
- 	std::list<Drawable> GetLastWorld() const; 
+ 	Protocol::drawable GetPieceWorld() const; 
 
  	//tcp communication */
  	Protocol::reponse_type				Register(std::string name, std::string pwd) const; 
@@ -33,7 +33,7 @@ typedef WSocket MySocket;
 	Protocol::reponse_type				Create();
  	Protocol::reponse_type				Join(int id);
  	std::list<Protocol::party>			GetGameList() const; 
-	void								Move(Protocol::cmd_client) const; 
+	void								Move(Protocol::cmd_client*) const; 
  	void								Fire() const; 
 
  private: 

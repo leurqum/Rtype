@@ -16,11 +16,17 @@ Network::~Network(void)
 }
 
 
-std::list<Drawable>					Network::GetLastWorld() const
+Protocol::drawable					Network::GetPieceWorld() const
 {
-	std::list<Drawable> World;
+	void* received;
+	Protocol::drawable draw;
+	
 	// TODO: fill world properly
-	return World;
+	void * header = new int[2];
+	((int*)header)[1] = sizeof(Protocol::drawable);
+	this->socketUDP->recv(&header, &received);
+	draw = (Protocol::drawable)draw;
+	return draw;
 }
 
 	
@@ -126,27 +132,47 @@ Protocol::reponse_type				Network::Join(int id)
 
 std::list<Protocol::party>			Network::GetGameList() const
 {
+	void*						package;
 	Protocol::package			header;
 	header.id = Protocol::GET_GAME_LIST;
 	header.size = 0;
 
-	Protocol::response			rep;
-
+	//Protocol::response			rep;
 	std::list<Protocol::party> partys;
+
 	// send header
+	package = new char[sizeof(header)];
+	memcpy(package, &header, sizeof(header));
+	this->socketTCP->sendv(sizeof(header), package);
 
 	// get reponse
 	void*			header_reponse;
 	void*			data_reponse;
 	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
+	//rep = *(Protocol::response*)data_reponse;
+	//header_reponse =  (Protocol::response)(header_reponse);
+	//for (int i = 0; i < )
+	//{
+	//}
+
 	return partys;
 }
 
-void								Network::Move(Protocol::cmd_client move) const
+void								Network::Move(Protocol::cmd_client *cmd) const
 {
+	this->socketUDP->sendv(sizeof(Protocol::cmd_client), (void**)(&cmd));
 }
 
 void								Network::Fire() const
 {
+	Protocol::cmd_client* cmd = new Protocol::cmd_client();
+
+	cmd->down = false;
+	cmd->top = false;
+	cmd->left = false;
+	cmd->right = false;
+	cmd->fire = true;
+
+	this->socketUDP->sendv(sizeof(Protocol::cmd_client), (void**)(&cmd));
+	delete cmd;
 }
