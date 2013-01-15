@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
-** Last update Mon Jan 14 15:42:16 2013 mathieu leurquin
+** Last update Tue Jan 15 11:18:10 2013 mathieu leurquin
 */
 
 #ifndef __PROTOCOOL__
@@ -57,7 +57,9 @@ enum type_drawable
   BOSS,
   BULLET_LINEAR,
   BULLET_RAYON,
-  BONUS
+  BONUS,
+  OBSTACLE,
+  DEAD
 };
 
 enum patern_enemie
