@@ -11,7 +11,7 @@ class Server
 private:
   std::list<Player *>	playerListWaiting;
   std::list<Game *>	gameList;
-  MyServerSocket *	server_socket;
+  MyServerSocket*	server_socket;
 public:
   Server();
   

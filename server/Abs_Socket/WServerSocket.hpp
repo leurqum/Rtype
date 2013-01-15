@@ -19,7 +19,7 @@
 
 #include "IServerSocket.hpp"
 #include "./../../protocol.h"
-#include "InterpretPackage.hpp"
+#include "../src/include/InterpretPackage.hpp"
 
 class WServerSocket : public IServerSocket
 {
