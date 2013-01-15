@@ -88,9 +88,9 @@ void Game::collision()
     collisionWithBonus((*it));
 }
 
-IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_drawable type)
+IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_drawable type, Protocol::patern_enemie patern)
 {
-  IAUnit *u = new IAUnit(speed, type, id, coll, health, strength, isDestroyable, this);
+  IAUnit *u = new IAUnit(speed, type, id, coll, health, strength, isDestroyable, this, patern);
   
   iaList.push_back(u);
   return (u);

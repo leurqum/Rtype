@@ -24,13 +24,13 @@ void	WServerSocket::addNewPeer(void * peer)
 	sockUdp->setUDP(true);
 	sockUdp->connectToServer(acc->getHost(), "4243");
 	this->_server->createPlayerWaiting(this->_server->getGameList().size(), acc->getHost(), acc, sockUdp);
-/*	if (acc->isUDP() == true)
-	{
-		this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;
-		return ;
-	}
-*/	this->_clientsList.push_back(((WSocket *)(acc))->getSocket());
+
+	this->_clientsList.push_back(((WSocket *)(acc))->getSocket());
 	this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;
+
+	// TODO : voir si select sur l'udp est clean
+	this->_clientsList.push_back(((WSocket *)(sockUdp))->getSocket());
+	this->_clientsSocksMap[((WSocket *)(sockUdp))->getSocket()] = sockUdp;
 }
 
 int		WServerSocket::selectSockets()
