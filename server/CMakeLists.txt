@@ -72,6 +72,7 @@ file (
      ./Abs_Socket/IServerSocket.hpp
      ./Abs_Socket/portaSocket.hpp
      ./Abs_Socket/main.cpp
+	 ./../protocol.h
 )
 
 file (

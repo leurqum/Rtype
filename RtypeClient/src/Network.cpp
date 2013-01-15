@@ -4,7 +4,7 @@ Network::Network(const std::string& host, const std::string& port)
 {
 	this->socketTCP = new MySocket();
 	this->socketTCP->connectToServer(host, port);
-
+	
 	this->socketUDP = new MySocket();
 	this->socketUDP->setUDP(true);
 	this->socketUDP->connectToServer(host, port);

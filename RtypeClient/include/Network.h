@@ -2,7 +2,18 @@
 
 #include "Drawable.h" 
 #include "../../protocol.h" 
-#include "../../server/Abs_Socket/portaSocket.hpp"
+
+#ifdef __unix__
+
+#include "../../server/Abs_Socket/USocket.hpp"
+typedef USocket MySocket;
+
+#elif _WIN32
+
+#include "../../server/Abs_Socket/WSocket.hpp"
+typedef WSocket MySocket;
+
+#endif // __unix__
 
  #include <string.h> 
  #include <list> 
