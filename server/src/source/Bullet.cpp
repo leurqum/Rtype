@@ -20,7 +20,14 @@ Protocol::type_drawable Bullet::getType()const
 
 void Bullet::update(double time)
 {
-  // if (type == Protocol::LINEAR)  
+  Protocol::move *m = new Protocol::move();
+  m->right = 1;
+  m->top = 0;
+  m->left = 0;
+  m->down = 0;
+  
+  if (this->getType() == Protocol::BULLET_LINEAR) 
+    this->getDefinition()->move(m);
   // deplacement de la bullet lineaire
   // else if (type == Protocol::RAYON_LINEAR)
   // deplacement de la bullet d'un autre maniere
