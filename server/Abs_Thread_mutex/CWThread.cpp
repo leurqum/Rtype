@@ -18,7 +18,7 @@ CWThread::CWThread(LPVOID parameter, LPTHREAD_START_ROUTINE function, LPDWORD re
 	_thread = thread;
 }
 
-bool		CWThread::THSart()
+bool		CWThread::THStart()
 {
 	DWORD ret;
 

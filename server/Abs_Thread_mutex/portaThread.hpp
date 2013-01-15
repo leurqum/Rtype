@@ -13,7 +13,7 @@ typedef UThread MyThread;
 
 #elif defined _WIN32
 
-# include "CWThread.hpp"
+# include "CWThread.h"
 # include "WServerSocket.hpp"
 
 class CWThread;
