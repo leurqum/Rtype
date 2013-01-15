@@ -23,12 +23,42 @@ void IAUnit::update(double time)
 		executeDecision();
 }
 
-void IAUnit::chooseDirection()
+void IAUnit::paternSolo(int time)
 {
-	//if (this->_patern == 1)
-	//{
 
-	//}
+}
+
+void IAUnit::paternPack(int time)
+{
+	if (time % 3 == 0)
+		{
+			if (this->getPositionY() >= 0 || this->_direction.top == 1)
+			{
+				this->_direction.top = 0;
+				this->_direction.down = 1;
+			}
+			
+			if (this->getPositionY() <= YMAX || this->_direction.down == 1)
+			{
+				this->_direction.top = 1;
+				this->_direction.down = 0;
+			}
+		}
+}
+
+void IAUnit::paternLineToDiago(int time)
+{
+
+}
+
+void IAUnit::chooseDirection(double time)
+{
+		if (this->_patern == 1)
+		paternSolo(time);
+	else if (this->_patern == 2)
+		paternPack(time);
+	else if (this->_patern == 4 || this->_patern == 5)
+		paternLineToDiago(time);
 }
 void IAUnit::takeDecision(double time)
 {
@@ -47,7 +77,7 @@ void IAUnit::takeDecision(double time)
 			else
 			{
 				this->_toShoot = false;
-				chooseDirection();
+				chooseDirection(time);
 			}
 		}
 }

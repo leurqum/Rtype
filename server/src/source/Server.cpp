@@ -103,7 +103,7 @@ void Server::createGame(int id)
   th = new MyThread(NULL, NULL, 0, this);
 #endif
 #ifdef _WIN32
-  th = new MyThread(NULL, (LPTHREAD_START_ROUTINE)((ptr)g), NULL);
+ // th = new MyThread(NULL, (LPTHREAD_START_ROUTINE)(ptr)g, NULL);
 #endif
   threadList.push_back(th);
   th->THStart();
