@@ -19,7 +19,7 @@ IScene* SceneListGame::update(float elapsedTime)
   menuGames.update(elapsedTime);
   if (menuGames.getSelectedId() == 1 && menuGames.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
     {
-      return SceneManager::getInstance()->changeScene(new SceneGame(* (new SceneBackground())));
+		return SceneManager::getInstance()->changeScene(new SceneGame(* (new SceneBackground()), NULL));
     }
   if (menuGames.getSelectedId() == 0 && menuGames.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
     {

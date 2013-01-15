@@ -1,13 +1,13 @@
 #include "SceneGame.h"
 
-SceneGame::SceneGame(IScene& decoratedScene) :
-  ASceneHover(decoratedScene)
+SceneGame::SceneGame(IScene& decoratedScene, Network* net) :
+	ASceneHover(decoratedScene), network(net)
 {
   ship[0] = nullptr;
   ship[1] = nullptr;
   ship[2] = nullptr;
   ship[3] = nullptr;
-  drawer_2bars.setBar1(100);  
+  drawer_2bars.setBar1(100);
 }
 
 SceneGame::~SceneGame(void)

@@ -1,13 +1,13 @@
 #include "Network.h"
 
-Network::Network(const std::string& host, const std::string& port)
+Network::Network(const std::string& host, const std::string& portTCP, const std::string& portUDP)
 {
 	this->socketTCP = new MySocket();
-	this->socketTCP->connectToServer(host, port);
+	this->socketTCP->connectToServer(host, portTCP);
 	
 	this->socketUDP = new MySocket();
 	this->socketUDP->setUDP(true);
-	this->socketUDP->connectToServer(host, port);
+	this->socketUDP->connectToServer(host, portUDP);
 }
 
 

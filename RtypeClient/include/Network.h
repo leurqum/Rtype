@@ -21,7 +21,7 @@ typedef WSocket MySocket;
  class Network 
  { 
  public: 
- 	Network(const std::string& host, const std::string& port); 
+ 	Network(const std::string& host, const std::string& portTCP, const std::string& portUDP);
  	~Network(void); 
 
  	//udp communication 

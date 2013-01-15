@@ -15,11 +15,13 @@
 #include "SceneHoverMenu.h"
 #include "SceneHoverConfirmLeave.h"
 
+#include "Network.h"
+
 class SceneGame :
 public ASceneHover
 {
  public:
-  SceneGame(IScene&);
+  SceneGame(IScene&, Network*);
   ~SceneGame(void);
   IScene* update(float elapsedTime);
   void draw();
@@ -33,5 +35,6 @@ IScene* manageInput();
   DrawerShip* ship[4]; // these are drawables updatable from a protocol::drawable.
   DrawerEnemyBasic enemy;
   Drawer2Bars drawer_2bars;
+  Network*		network;
 };
 
