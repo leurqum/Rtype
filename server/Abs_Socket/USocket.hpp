@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:16:53 2012 marche_m (Maxime Marchès)
-// Last update Mon Jan 14 16:54:38 2013 marche_m (Maxime Marchès)
+// Last update Tue Jan 15 16:39:38 2013 marche_m (Maxime Marchès)
 */
 
 #ifndef __USOCKET__
@@ -45,14 +45,17 @@ public:
   virtual ~USocket();
   USocket();
 
-  bool		connectToServer(std::string const & host, std::string const & port);
-  bool		connectFromAcceptedFd(void * fd);
-  int		recv(void ** header, void ** data);
-  int		sendv(std::string const & data);
-  int		sendv(int size, void * data);
-  int		getSocket() const { return _connectSocket; }
-  void		setUDP(bool val);
-  bool		isUDP() { return _udp; }
+  bool			connectToServer(std::string const & host, std::string const & port);
+  bool			connectFromAcceptedFd(void * fd);
+  int			recv(void ** header, void ** data);
+  int			sendv(std::string const & data);
+  int			sendv(int size, void * data);
+  int			getSocket() const { return _connectSocket; }
+  void			setUDP(bool val);
+  bool			isUDP() { return _udp; }
+  void			setHost(std::string const & ip);
+  std::string const &	getHost();
+
 private:
   struct hostent		* _server;
 

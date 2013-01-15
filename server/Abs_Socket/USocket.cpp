@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Mon Jan 14 17:59:57 2013 marche_m (Maxime Marchès)
+// Last update Tue Jan 15 16:56:33 2013 marche_m (Maxime Marchès)
 //
 
 #include "USocket.hpp"
@@ -15,6 +15,17 @@ USocket::USocket()
   _connectSocket = INVALID_SOCKET;
   _close = true;
   _udp = false;
+  _host = "";
+}
+
+void	USocket::setHost(std::string const & host)
+{
+  _host = host;
+}
+
+std::string const & USocket::getHost()
+{
+  return _host;
 }
 
 void	USocket::setUDP(bool val)
@@ -94,21 +105,13 @@ int		USocket::recv(void ** header, void ** data)
 	return ret;
       return 1;
     }
-  else
-    {
-      socklen_t tosize = sizeof(_hints);
+  socklen_t tosize = sizeof(_hints);
 
-      if ((ret = ::recvfrom(this->_connectSocket, *header, 2 * sizeof(int), 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
-	return ret;
-      std::cout << ret << std::endl;
-      *data = new char[((int *)(*header))[1]];
-      memset(*data, 0, ((int *)(*header))[1]);
-      std::cout << ((int *)(*header))[0] << std::endl;
-      std::cout << ((int *)(*header))[1] << std::endl;
-      if ((ret = ::recvfrom(this->_connectSocket, *data, ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
-	return ret;
-      return 1;
-    }
+  *data = new char[((int *)(*header))[1]];
+  memset(*data, 0, ((int *)(*header))[1]);
+  if ((ret = ::recvfrom(this->_connectSocket, *data, ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
+    return ret;
+  return 1;
 }
 
 int		USocket::sendv(std::string const & data)
@@ -124,12 +127,7 @@ int		USocket::sendv(int size, void * data)
   if (_udp == false)
     return ::send(this->_connectSocket, data, size, 0);
   else
-    {
-      int n;
-      n = ::sendto(this->_connectSocket, data, (2 * sizeof(int)), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
-      n = ::sendto(this->_connectSocket, ((char*)data) + (2 * sizeof(int)), size - (2 * sizeof(int)), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
-      return n;
-    }
+    return ::sendto(this->_connectSocket, ((char*)data), size, 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
   return 1;
 }
 
@@ -140,7 +138,5 @@ USocket::~USocket()
   //Connect from accepted fd
   if (this->_close == true)
     {
-      //      WSACleanup();
-      //      freeaddrinfo(this->_results);
     }
 }

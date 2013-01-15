@@ -33,12 +33,10 @@ public:
 private:
 	void						addNewPeer(void * peer);
 	SOCKET						getSocketTcp() { return _listenSocketTcp; }
-//	SOCKET						getSocketUdp() { return _listenSocketUdp; }
 	int							selectSockets();
 	void						callBack(std::list<SOCKET>::iterator & it);
 
 	SOCKET						_listenSocketTcp;
-//	SOCKET						_listenSocketUdp;
 	std::list<SOCKET>			_clientsList;
 	std::map<SOCKET, ISocket *>	_clientsSocksMap;
 	fd_set						_readFd;

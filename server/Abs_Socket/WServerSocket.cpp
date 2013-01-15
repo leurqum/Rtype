@@ -84,7 +84,6 @@ void	WServerSocket::launch()
 {
 	std::cout << "server launched !" << std::endl;
 	_clientsList.push_back(_listenSocketTcp);
-//	_clientsList.push_back(_listenSocketUdp);
 
 	while (true)
 	{
@@ -95,13 +94,7 @@ void	WServerSocket::launch()
 				nbSocksReady--;
 				if ((*it) == _listenSocketTcp)
 					this->addNewPeer(&(*it));
-/*				else if ((*it) == _listenSocketUdp)
-				{
-					this->addNewPeer(&(*it));
-					this->callBack(it);
-					_clientsSocksMap.erase(*it);
-				}
-*/				else
+				else
 					this->callBack(it);
 			}
 	}
@@ -113,14 +106,7 @@ ISocket	* WServerSocket::myaccept(void * sockType)
 	sockaddr_in			saClient;
 	int					clientSize = sizeof(saClient);
 
-/*	if ((*((int *)sockType)) == this->_listenSocketUdp)
-    {
-		ISocket * ret = new WSocket();
-		ret->setUDP(true);
-		ret->connectFromAcceptedFd(((int *)sockType));
-		return ret;
-    }
-*/
+
 	acceptSock = WSAAccept(
 		(*((SOCKET*)sockType)),
 		(SOCKADDR*) &saClient,
@@ -187,25 +173,6 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
       std::cerr << "listen failed with error (TCP): " << std::endl;
       return false;
     }
-  // ========== UDP =========
-/*  memset((char *) &(this->_servAddr), 0, sizeof(this->_servAddr));
-  this->_servAddr.sin_family = AF_INET;
-  this->_servAddr.sin_addr.s_addr = INADDR_ANY;
-  this->_servAddr.sin_port = htons(port + 1);
-  this->_listenSocketUdp = socket(AF_INET, SOCK_DGRAM, 0);
-  if (this->_listenSocketUdp <= 0)
-    {
-      std::cerr << "socket failed with error (UDP)" << std::endl;
-      return false;
-    }
-  i = bind( this->_listenSocketUdp, (struct sockaddr *) &this->_servAddr, sizeof(this->_servAddr));
-  if (i < 0)
-    {
-      std::cerr << "bind failed with error (UDP): " << std::endl;
-      closesocket(this->_listenSocketUdp);
-      return false;
-    }
-	*/
   return true;
 }
 
@@ -213,9 +180,7 @@ WServerSocket::~WServerSocket()
 {
 	if (this->_listenSocketTcp != INVALID_SOCKET)
 		closesocket(this->_listenSocketTcp);
-/*	if (this->_listenSocketUdp != INVALID_SOCKET)
-		closesocket(this->_listenSocketUdp);
-*/	WSACleanup();
+	WSACleanup();
 }
 
 WServerSocket::WServerSocket(Server * s)
@@ -223,5 +188,4 @@ WServerSocket::WServerSocket(Server * s)
 	this->_interPckg = new InterpretPackage(s);
 	this->_server = s;
 	this->_listenSocketTcp = INVALID_SOCKET;
-//	this->_listenSocketUdp = INVALID_SOCKET;
 }

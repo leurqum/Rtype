@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:46 2013 marche_m (Maxime Marchès)
-// Last update Mon Jan 14 10:42:08 2013 marche_m (Maxime Marchès)
+// Last update Tue Jan 15 16:58:49 2013 marche_m (Maxime Marchès)
 //
 
 #ifndef __U_SERVER_SOCKET__
@@ -14,6 +14,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/select.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <map>
 #include <sstream>
 
@@ -33,17 +35,16 @@ public:
 private:
   void		addNewPeer(void * sock);
   int		getSocketTcp() { return _listenSocketTcp; }
-  int		getSocketUdp() { return _listenSocketUdp; }
   int		selectSockets();
   void		callBack(std::list<int>::iterator & it);
 
-  struct sockaddr_in		_servAddr;
   int				_listenSocketTcp;
-  int				_listenSocketUdp;
   std::list<int>		_clientsList;
   std::map<int, ISocket *>	_clientsSocksMap;
   fd_set			_readFd;
   InterpretPackage*		_interPckg;
+  struct sockaddr_in		_servAddr;
+  Server			* _server;
 };
 
 #endif
