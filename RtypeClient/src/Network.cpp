@@ -1,7 +1,7 @@
 #include "Network.h"
 
 Network::Network(const std::string& host, int portTCP, int portUDP) :
-	host(host), portTCP(portTCP), portUDP(portUDP)
+	host(host), portUDP(portUDP), portTCP(portTCP)
 {
 	this->socketTCP = new sf::TcpSocket();
 	this->socketUDP = new sf::UdpSocket();
@@ -79,13 +79,12 @@ Protocol::reponse_type				Network::Login(std::string name, std::string pwd) cons
 
 Protocol::reponse_type				Network::Create()
 {
-	void*						package;
 	Protocol::package			header;
 	header.id = Protocol::CREATE_GAME;
 	header.size = 0;
 
 	// send header
-	this->socketTCP->send(package, sizeof(header));
+	this->socketTCP->send(&header, sizeof(header));
 
 	// get reponse
 	Protocol::response rep;
