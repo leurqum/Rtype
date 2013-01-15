@@ -27,11 +27,7 @@ public:
   void eraseGame(int id);
   
   Player* createPlayerWaiting(int id, std::string name, ISocket *socket_tcp, ISocket *socket_upd);
-<<<<<<< HEAD
   void createGame(int id);
-=======
-  Game *createGame(int id);
->>>>>>> a560a0a6e8ebfe322240db298995a48a38a66202
 };
 
 #endif

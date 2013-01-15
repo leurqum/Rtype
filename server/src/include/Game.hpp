@@ -29,6 +29,7 @@ private:
 public:
   Game(int id);
   void* operator()(void*);
+  // TODO operator for win
   void loop();
   void update(double time);
   void collision();
