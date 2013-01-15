@@ -18,4 +18,6 @@ class ISocket
   virtual int		sendv(int size, void * data) = 0;
   virtual void		setUDP(bool val) = 0;
   virtual bool		isUDP() = 0;
+  virtual void		setHost(std::string const & ip) = 0;
+  virtual std::string const & getHost() = 0;
 };

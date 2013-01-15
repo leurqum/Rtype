@@ -20,6 +20,10 @@ void	WServerSocket::addNewPeer(void * peer)
 {
 	std::cout << "new Client !" << std::endl;
 	ISocket * acc = this->myaccept(peer);
+	ISocket * sockUdp = new WSocket();
+	sockUdp->setUDP(true);
+	sockUdp->connectToServer(acc->getHost(), "4243");
+	this->_server->createPlayerWaiting(this->_server->getGameList().size(), acc->getHost(), acc, sockUdp);
 /*	if (acc->isUDP() == true)
 	{
 		this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;
@@ -53,16 +57,21 @@ void	WServerSocket::callBack(std::list<SOCKET>::iterator & it)
   void	* data = 0;
   void	* header = 0;
 
+  if (tmp->isUDP() == true)
+  {
+	  header = new int[2];
+	  ((int*)header)[1] = sizeof(Protocol::cmd_client);
+  }
   if (!tmp->recv(&header, &data))
-    {
-      std::cout << "client disconnected" << std::endl;
-      it = _clientsList.erase(it);
-      _clientsSocksMap.erase(((WSocket*)(tmp))->getSocket());
-      delete tmp;
-      it--;
-      std::cout << "end callBack" << std::endl;
-      return ;
-    }
+	{
+		  std::cout << "client disconnected" << std::endl;
+		  it = _clientsList.erase(it);
+		  _clientsSocksMap.erase(((WSocket*)(tmp))->getSocket());
+		  delete tmp;
+		  it--;
+		  std::cout << "end callBack" << std::endl;
+		  return ;
+	}
   this->_interPckg->executeCmd(header, data, tmp);
   if (data)
     delete (char *)data;
@@ -101,7 +110,8 @@ void	WServerSocket::launch()
 ISocket	* WServerSocket::myaccept(void * sockType)
 {
 	SOCKET				acceptSock;
-	int					clientSize = sizeof(_saClient);
+	sockaddr_in			saClient;
+	int					clientSize = sizeof(saClient);
 
 /*	if ((*((int *)sockType)) == this->_listenSocketUdp)
     {
@@ -113,7 +123,7 @@ ISocket	* WServerSocket::myaccept(void * sockType)
 */
 	acceptSock = WSAAccept(
 		(*((SOCKET*)sockType)),
-		(SOCKADDR*) &_saClient,
+		(SOCKADDR*) &saClient,
 		&clientSize,
 		&conditionAcceptFunc,
 		NULL
@@ -122,11 +132,10 @@ ISocket	* WServerSocket::myaccept(void * sockType)
         std::cerr << "accept failed with error: " << WSAGetLastError() << std::endl;
         return NULL;
     }
-	char * ipPtr = inet_ntoa(_saClient.sin_addr);
-	std::cout << ipPtr << std::endl;
 
 	ISocket * ret = new WSocket();
 	ret->connectFromAcceptedFd(&acceptSock);
+	ret->setHost(inet_ntoa(saClient.sin_addr));
 	return ret;
 }
 
@@ -150,6 +159,7 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
 	_listenSocketTcp = socket(AF_INET, SOCK_STREAM, 0);
 	if(_listenSocketTcp == INVALID_SOCKET)
 	{
+		std::cerr << "socket error" << std::endl;
 		perror("socket()");
 	    exit(errno);
 	}
@@ -177,7 +187,6 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
       std::cerr << "listen failed with error (TCP): " << std::endl;
       return false;
     }
-
   // ========== UDP =========
 /*  memset((char *) &(this->_servAddr), 0, sizeof(this->_servAddr));
   this->_servAddr.sin_family = AF_INET;
@@ -196,9 +205,8 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
       closesocket(this->_listenSocketUdp);
       return false;
     }
-
+	*/
   return true;
-*/
 }
 
 WServerSocket::~WServerSocket()
@@ -213,6 +221,7 @@ WServerSocket::~WServerSocket()
 WServerSocket::WServerSocket(Server * s)
 {
 	this->_interPckg = new InterpretPackage(s);
+	this->_server = s;
 	this->_listenSocketTcp = INVALID_SOCKET;
 //	this->_listenSocketUdp = INVALID_SOCKET;
 }

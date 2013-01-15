@@ -35,6 +35,8 @@ public:
 	int					sendv(int size, void * data);
 	void				setUDP(bool val);
 	bool				isUDP() { return _udp; }
+	void				setHost(std::string const & ip);
+	std::string const & getHost();
 
 	SOCKET				getSocket() const { return _connectSocket; }
 private:
@@ -46,7 +48,7 @@ private:
 	SOCKET				_connectSocket;
 	bool				_WSAClose;
 	bool				_udp;
-	int					_sizeReadUdp;
+	//int					_sizeReadUdp;
 };
 
 
