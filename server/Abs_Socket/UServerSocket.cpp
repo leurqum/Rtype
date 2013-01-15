@@ -23,8 +23,8 @@ void	UServerSocket::addNewPeer(void * peer)
   this->_clientsSocksMap[((USocket *)(acc))->getSocket()] = acc;
 
 	// TODO : voir si select sur l'udp est clean
-	this->_clientsList.push_back(((WSocket *)(sockUdp))->getSocket());
-	this->_clientsSocksMap[((WSocket *)(sockUdp))->getSocket()] = sockUdp;
+	this->_clientsList.push_back(((USocket *)(sockUdp))->getSocket());
+	this->_clientsSocksMap[((USocket *)(sockUdp))->getSocket()] = sockUdp;
 }
 
 int		UServerSocket::selectSockets()
