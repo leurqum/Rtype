@@ -17,7 +17,8 @@ Game::Game(int id)
 
 void* Game::operator()(void*)
 {
-  this->loop();
+  std::cout<<"salut"<<std::endl;
+  //this->loop();
   return NULL;
 }
 

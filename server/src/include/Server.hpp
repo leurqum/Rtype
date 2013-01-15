@@ -9,7 +9,7 @@
 
 class Server
 {
-private:
+public:
   std::list<Player *>	playerListWaiting;
   std::list<Game *>	gameList;
   std::list<MyThread*>	threadList;
@@ -28,6 +28,7 @@ public:
   
   Player* createPlayerWaiting(int id, std::string name, ISocket *socket_tcp, ISocket *socket_upd);
   void createGame(int id);
+  void launchGame(int id);
 };
 
 #endif

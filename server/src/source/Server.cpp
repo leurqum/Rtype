@@ -5,7 +5,7 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Tue Jan 15 15:40:48 2013 mathieu leurquin
+// Last update Tue Jan 15 17:47:17 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
@@ -98,16 +98,20 @@ void Server::createGame(int id)
 { 
   
   MyThread *th;
-  Game *g = new Game(id);
-  typedef void* (*ptr)(void*);
+  
 #ifdef __unix__
-  th = new MyThread(NULL, (ptr)(g), NULL);
+  th = new MyThread(NULL, NULL, 0, this);
 #endif
 #ifdef _WIN32
   th = new MyThread(NULL, (LPTHREAD_START_ROUTINE)((ptr)g), NULL);
 #endif
-  gameList.push_back(g);
   threadList.push_back(th);
-
   th->THStart();
+}
+
+void Server::launchGame(int id)
+{
+  Game *g = new Game(id);
+
+  gameList.push_back(g);
 }
