@@ -19,8 +19,8 @@
 
 Server::Server()
 {
-  this->createGame(0);
   server_socket = new MyServerSocket(this);
+  this->createGame(0);
   if (server_socket->init("", "4242") == true)
     server_socket->launch();
 }
@@ -101,12 +101,13 @@ void Server::createGame(int id)
   Game *g = new Game(id);
   typedef void* (*ptr)(void*);
 #ifdef __unix__
-  th = new MyThread(NULL, (ptr)(&g), NULL);
+  th = new MyThread(NULL, (ptr)(g), NULL);
 #endif
 #ifdef _WIN32
-  th = new MyThread(NULL, (LPTHREAD_START_ROUTINE)g, NULL);
+  th = new MyThread(NULL, (LPTHREAD_START_ROUTINE)((ptr)g), NULL);
 #endif
   gameList.push_back(g);
   threadList.push_back(th);
+
   th->THStart();
 }
