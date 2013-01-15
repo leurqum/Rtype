@@ -1,6 +1,5 @@
  #pragma once 
 
-
 #include "Drawable.h" 
 #include "../../protocol.h" 
 #include "../../server/Abs_Socket/portaSocket.hpp"
@@ -23,7 +22,7 @@
 	Protocol::reponse_type				Create();
  	Protocol::reponse_type				Join(int id);
  	std::list<Protocol::party>			GetGameList() const; 
- 	void								Move(Protocol::move) const; 
+	void								Move(Protocol::cmd_client) const; 
  	void								Fire() const; 
 
  private: 

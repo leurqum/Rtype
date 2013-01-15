@@ -144,6 +144,14 @@ typedef	struct
 /*   char	party_name[50]; */
 /* }	create_party; */
 
+typedef struct
+{
+	int top;
+	int left;
+	int right;
+	int down;
+} move;
+
 }
 
 #endif	// __PROTOCOOL__
