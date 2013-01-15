@@ -5,12 +5,14 @@
 #include "Game.hpp"
 
 #include "../../Abs_Socket/portaSocket.hpp"
+#include "../../Abs_Thread_mutex/portaThread.hpp"
 
 class Server
 {
 private:
   std::list<Player *>	playerListWaiting;
   std::list<Game *>	gameList;
+  std::list<MyThread*>	threadList;
   MyServerSocket*	server_socket;
 public:
   Server();
@@ -25,7 +27,7 @@ public:
   void eraseGame(int id);
   
   Player* createPlayerWaiting(int id, std::string name, ISocket *socket_tcp, ISocket *socket_upd);
-  Game *createGame(int id);
+  void createGame(int id);
 };
 
 #endif

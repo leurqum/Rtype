@@ -28,6 +28,7 @@ private:
   std::list<LifePowerUp*>	bonusList;
 public:
   Game(int id);
+  void* operator()(void*);
   void loop();
   void update(double time);
   void collision();

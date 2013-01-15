@@ -5,13 +5,21 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Tue Jan 15 13:18:29 2013 mathieu leurquin
+// Last update Tue Jan 15 15:40:48 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
 
+#ifdef __unix__
+	#include <unistd.h>
+#endif
+#ifdef _WIN32
+	#include <Windows.h>
+#endif
+
 Server::Server()
 {
+  this->createGame(0);
   server_socket = new MyServerSocket(this);
   //sock->setUDP(true); //Problem avec l'udp ...
   if (server_socket->init("", "4242") == true)
@@ -65,23 +73,41 @@ void Server::eraseGame(int id)
     }
 }  
  
-Player* Server::createPlayerWaiting(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_udp)
+Player* Server::createPlayerWaiting(int id, std::string name, ISocket *socket_tcp, ISocket *socket_udp)
 {
   Player* p = new Player(id, name, socket_tcp, socket_udp);
 
   playerListWaiting.push_back(p);
+
+  //TEST
+  Protocol::join_game *game = new Protocol::join_game();
+  game->id = 0;
+  
+  (*(gameList.begin()))->addHumainUnitByPlayer(p);
+  this->erasePlayerWaiting(p->getId());
+
+  
   return (p);
-}
-
-Game *Server::createGame(int id)
-{
-  Game *g = new Game(id);
-
-  gameList.push_back(g);
-  return (g);
 }
 
 int Server::getNbGame()const
 {
   return (gameList.size());
+}
+
+void Server::createGame(int id)
+{ 
+  
+  MyThread *th;
+  Game *g = new Game(id);
+  typedef void* (*ptr)(void*);
+#ifdef __unix__
+  th = new MyThread(NULL, (ptr)(&g), NULL);
+#endif
+#ifdef _WIN32
+  th = new MyThread(NULL, (LPTHREAD_START_ROUTINE)g, NULL);
+#endif
+  gameList.push_back(g);
+  threadList.push_back(th);
+  th->THStart();
 }

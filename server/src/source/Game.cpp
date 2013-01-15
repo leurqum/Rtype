@@ -15,6 +15,12 @@ Game::Game(int id)
   _id = id;
 }
 
+void* Game::operator()(void*)
+{
+  this->loop();
+  return NULL;
+}
+
 void Game::loop()
 {
   clock_t init;
