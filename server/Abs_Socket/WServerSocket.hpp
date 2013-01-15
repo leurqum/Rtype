@@ -44,6 +44,6 @@ private:
 	fd_set						_readFd;
 	InterpretPackage *			_interPckg;
 	struct sockaddr_in			_servAddr;
-	struct sockaddr_in			_saClient;
+	Server						* _server;
 };
 

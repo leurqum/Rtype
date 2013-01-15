@@ -9,12 +9,23 @@ std::wstring StringToWString(const std::string& s)
   return temp;
 }
 
+void	WSocket::setHost(std::string const & host)
+{
+	_host = host;
+}
+
+std::string const & WSocket::getHost()
+{
+	return _host;
+}
+
 WSocket::WSocket()
 {
 	_connectSocket = INVALID_SOCKET;
 	_WSAClose = true;
 	_udp = false;
-	_sizeReadUdp = sizeof(Protocol::drawable);
+	//_sizeReadUdp = sizeof(Protocol::drawable);
+	_host = "";
 }
 
 void WSocket::setUDP(bool val)
@@ -60,39 +71,6 @@ bool WSocket::connectToServer(std::string const & host, std::string const & port
 			return false;
 	    }
 	return true;
-
-	//this->_host = host;
-	//this->_port = port;
-
-	//WSADATA			wsd;
-	//DWORD			dwFlags = 0;
-	//int				rc;
-
- //   if ((rc = WSAStartup(MAKEWORD(2, 2), &wsd)))
-	//{
- //       std::cerr << "Unable to load Winsock: " << rc << std::endl;
- //       return false;
- //   }
-
-	////Init of struct addrinfo
- //   ZeroMemory((PVOID) &this->_hints, sizeof((this->_hints)));
- //   this->_hints.ai_family = AF_INET;
- //   this->_hints.ai_socktype = SOCK_STREAM;
- //   this->_hints.ai_protocol = IPPROTO_TCP;
-
-
-	//if ((rc = getaddrinfo(host.c_str(), port.c_str(), &(this->_hints), (&this->_results))) != 0 )
-	//{
- //       std::cerr << "getaddrinfo failed with error: " << rc << std::endl;
- //       return false;
- //   }
-	//if ((this->_connectSocket = WSASocket(this->_results->ai_family, this->_results->ai_socktype, this->_results->ai_protocol, NULL, 0, 0)) == INVALID_SOCKET)
-	//{
-	//	std::cerr << "Error at socket(): " << WSAGetLastError() << std::endl;
-	//	return false;
-	//}
-	//WSAConnect(this->_connectSocket, this->_results->ai_addr, this->_results->ai_addrlen, 0, 0, 0, 0);
-	//return true;
 }
 
 
@@ -126,51 +104,16 @@ int WSocket::recv(void ** header, void ** data)
 			return ret;
 		return 1;
 	}
-	else
-	{
-		socklen_t tosize = sizeof(_hints);
+	socklen_t tosize = sizeof(_hints);
 
-		*data = new char[this->_sizeReadUdp];
-		memset(*data, 0, this->_sizeReadUdp);
-		if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), this->_sizeReadUdp, 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
-			return ret;
-		return 1;
-	}
-	//WSABUF			buf;
-	//int				rc, err;
-	//DWORD			recvBytes, flags;
-	//WSAOVERLAPPED	recvOverlapped;
-
-	//buf.len = blocksize;
-	//buf.buf= new char[buf.len];
-	//ZeroMemory(buf.buf, blocksize);
-	//flags = 0;
-	//SecureZeroMemory((PVOID) & recvOverlapped, sizeof (WSAOVERLAPPED));
-	//// Create an event handle and setup an overlapped structure.
- //   recvOverlapped.hEvent = WSACreateEvent();
- //   if (recvOverlapped.hEvent == NULL) {
- //       std::cerr << "WSACreateEvent failed: " << WSAGetLastError() << std::endl;
- //       return 0;
- //   }
-
-	//rc = WSARecv(this->_connectSocket, &buf, 1, &recvBytes, &flags, &recvOverlapped, NULL);
-	//if ((rc == SOCKET_ERROR) && (WSA_IO_PENDING != (err = WSAGetLastError())))
-	//{
-	//	std::cerr << "WSARecv failed with error: " << err << std::endl;
-	//	return 0;
-	//}
-	//if (recvBytes == 0)
-	//{
-	//	std::cout << "Socket disconected" << std::endl;
-	//	return 0;
-	//}
-	//
-	//
-	//buffer = buf.buf;
-	//delete buf.buf;
-	//WSAResetEvent(recvOverlapped.hEvent);
-	//std::cout << "recv: |" << buffer << "|" << std::endl;
-	//return 1;
+	//*data = new char[this->_sizeReadUdp];
+	//memset(*data, 0, this->_sizeReadUdp);
+	//if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), this->_sizeReadUdp, 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
+	*data = new char[((int *)(*header))[1]];
+	memset(*data, 0, ((int *)(*header))[1]);
+	if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
+		return ret;
+	return 1;
 }
 
 int WSocket::sendv(int size, void * data)
