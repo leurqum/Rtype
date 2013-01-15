@@ -46,6 +46,7 @@ private:
 	SOCKET				_connectSocket;
 	bool				_WSAClose;
 	bool				_udp;
+	int					_sizeReadUdp;
 };
 
 

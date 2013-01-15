@@ -1,4 +1,5 @@
 #include <sstream>
+#include "./../../protocol.h"
 #include "WSocket.hpp"
 
 std::wstring StringToWString(const std::string& s)
@@ -13,6 +14,7 @@ WSocket::WSocket()
 	_connectSocket = INVALID_SOCKET;
 	_WSAClose = true;
 	_udp = false;
+	_sizeReadUdp = sizeof(Protocol::drawable);
 }
 
 void WSocket::setUDP(bool val)
@@ -128,11 +130,9 @@ int WSocket::recv(void ** header, void ** data)
 	{
 		socklen_t tosize = sizeof(_hints);
 
-		if ((ret = ::recvfrom(this->_connectSocket, (char *)(*header), 2 * sizeof(int), 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
-			return ret;
-		*data = new char[((int *)(*header))[1]];
-		memset(*data, 0, ((int *)(*header))[1]);
-		if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
+		*data = new char[this->_sizeReadUdp];
+		memset(*data, 0, this->_sizeReadUdp);
+		if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), this->_sizeReadUdp, 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
 			return ret;
 		return 1;
 	}
@@ -178,12 +178,7 @@ int WSocket::sendv(int size, void * data)
 	if (_udp == false)
 		return send(this->_connectSocket, (char*)data, size, NULL);
 	else
-    {
-		int n;
-		n = ::sendto(this->_connectSocket, (char *)data, (2 * sizeof(int)), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
-		n = ::sendto(this->_connectSocket, ((char*)data) + (2 * sizeof(int)), size - (2 * sizeof(int)), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
-		return n;
-    }
+		return ::sendto(this->_connectSocket, ((char*)data), size, 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
 	return 1;
 }
 
