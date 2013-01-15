@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Tue Jan 15 13:10:17 2013 mathieu leurquin
+// Last update Tue Jan 15 13:18:02 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -123,7 +123,7 @@ void	InterpretPackage::execMove(void * data, ISocket * sock)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	{
-	  if (p->getLife() > 0)
+	  if ((*it)->getUnitByPlayer(p)->getHealth() > 0)
 	    {
 	      (*it)->move(p->getId(), m);
 	      Protocol::response *rep = new Protocol::response();
@@ -143,7 +143,7 @@ void	InterpretPackage::execFire(void * data, ISocket * sock)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	{
-	  if (p->getLife() > 0)
+	  if ((*it)->getUnitByPlayer(p)->getHealth() > 0)
 	    {
 	      (*it)->fire(p->getId());
 	      Protocol::response *rep = new Protocol::response();
@@ -151,5 +151,5 @@ void	InterpretPackage::execFire(void * data, ISocket * sock)
 	      sock->sendv(sizeof(Protocol::response*), (void*)rep);
 	    }
 	}
-    }  
+    }
 }

@@ -5,7 +5,7 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Mon Jan 14 12:56:28 2013 mathieu leurquin
+// Last update Tue Jan 15 13:18:29 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
@@ -67,7 +67,7 @@ void Server::eraseGame(int id)
  
 Player* Server::createPlayerWaiting(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_udp)
 {
-  Player* p = new Player(id, name, life, socket_tcp, socket_udp);
+  Player* p = new Player(id, name, socket_tcp, socket_udp);
 
   playerListWaiting.push_back(p);
   return (p);
