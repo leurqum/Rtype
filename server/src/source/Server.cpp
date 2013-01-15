@@ -21,7 +21,6 @@ Server::Server()
 {
   this->createGame(0);
   server_socket = new MyServerSocket(this);
-  //sock->setUDP(true); //Problem avec l'udp ...
   if (server_socket->init("", "4242") == true)
     server_socket->launch();
 }

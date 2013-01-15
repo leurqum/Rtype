@@ -13,5 +13,6 @@
 int	main(int ac, char ** av)
 {
   Server *s = new Server();
+  system("PAUSE");
   return 0;
 }
