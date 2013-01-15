@@ -107,9 +107,9 @@ MovingObstacle* Game::createLinearMovingObstacle(int id, std::pair<float, float>
   return (l);
 }
 
-Player* Game::createPlayer(int id, std::string name, int life, ISocket *tcp, ISocket *udp)
+Player* Game::createPlayer(int id, std::string name, ISocket *tcp, ISocket *udp)
 {
-  Player* p = new Player(id, name, life, tcp, udp);
+  Player* p = new Player(id, name, tcp, udp);
 
   playerList.push_back(p);
   return (p);
@@ -215,7 +215,7 @@ Player *Game::getPlayer(int id)const
 
 void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
 {
-  Player *p = createPlayer(playerList.size(), name, 3, tcp, udp);
+  Player *p = createPlayer(playerList.size(), name, tcp, udp);
 
   createHumainUnit(humainList.size(), std::pair<float, float>(1, 1), 3, 1, true, p);
 }

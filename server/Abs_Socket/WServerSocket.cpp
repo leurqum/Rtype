@@ -20,12 +20,12 @@ void	WServerSocket::addNewPeer(void * peer)
 {
 	std::cout << "new Client !" << std::endl;
 	ISocket * acc = this->myaccept(peer);
-	if (acc->isUDP() == true)
+/*	if (acc->isUDP() == true)
 	{
 		this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;
 		return ;
 	}
-	this->_clientsList.push_back(((WSocket *)(acc))->getSocket());
+*/	this->_clientsList.push_back(((WSocket *)(acc))->getSocket());
 	this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;
 }
 
@@ -75,7 +75,7 @@ void	WServerSocket::launch()
 {
 	std::cout << "server launched !" << std::endl;
 	_clientsList.push_back(_listenSocketTcp);
-	_clientsList.push_back(_listenSocketUdp);
+//	_clientsList.push_back(_listenSocketUdp);
 
 	while (true)
 	{
@@ -86,13 +86,13 @@ void	WServerSocket::launch()
 				nbSocksReady--;
 				if ((*it) == _listenSocketTcp)
 					this->addNewPeer(&(*it));
-				else if ((*it) == _listenSocketUdp)
+/*				else if ((*it) == _listenSocketUdp)
 				{
 					this->addNewPeer(&(*it));
 					this->callBack(it);
 					_clientsSocksMap.erase(*it);
 				}
-				else
+*/				else
 					this->callBack(it);
 			}
 	}
@@ -101,20 +101,19 @@ void	WServerSocket::launch()
 ISocket	* WServerSocket::myaccept(void * sockType)
 {
 	SOCKET				acceptSock;
-	struct sockaddr_in	saClient;
-	int					clientSize = sizeof(saClient);
+	int					clientSize = sizeof(_saClient);
 
-	if ((*((int *)sockType)) == this->_listenSocketUdp)
+/*	if ((*((int *)sockType)) == this->_listenSocketUdp)
     {
 		ISocket * ret = new WSocket();
 		ret->setUDP(true);
 		ret->connectFromAcceptedFd(((int *)sockType));
 		return ret;
     }
-
+*/
 	acceptSock = WSAAccept(
 		(*((SOCKET*)sockType)),
-		(SOCKADDR*) &saClient,
+		(SOCKADDR*) &_saClient,
 		&clientSize,
 		&conditionAcceptFunc,
 		NULL
@@ -123,6 +122,9 @@ ISocket	* WServerSocket::myaccept(void * sockType)
         std::cerr << "accept failed with error: " << WSAGetLastError() << std::endl;
         return NULL;
     }
+	char * ipPtr = inet_ntoa(_saClient.sin_addr);
+	std::cout << ipPtr << std::endl;
+
 	ISocket * ret = new WSocket();
 	ret->connectFromAcceptedFd(&acceptSock);
 	return ret;
@@ -177,7 +179,7 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
     }
 
   // ========== UDP =========
-  memset((char *) &(this->_servAddr), 0, sizeof(this->_servAddr));
+/*  memset((char *) &(this->_servAddr), 0, sizeof(this->_servAddr));
   this->_servAddr.sin_family = AF_INET;
   this->_servAddr.sin_addr.s_addr = INADDR_ANY;
   this->_servAddr.sin_port = htons(port + 1);
@@ -196,64 +198,21 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
     }
 
   return true;
-//	struct addrinfo hints;
-//	WSADATA			wsd;
-//	int				i;
-//	struct addrinfo *result = NULL;
-//
-//	if ((i = WSAStartup(MAKEWORD(2, 2), &wsd)))
-//	{
-//        std::cerr << "Unable to load Winsock: " << i << std::endl;
-//        return false;
-//    }
-//	ZeroMemory(&hints, sizeof(hints));
-//    hints.ai_family = AF_INET;
-//    hints.ai_socktype = SOCK_STREAM;
-//    hints.ai_protocol = IPPROTO_TCP;
-//    hints.ai_flags = AI_PASSIVE;
-//
-//    // Resolve the server address and port
-//	i = getaddrinfo(NULL, listenPort.c_str(), &hints, &result);
-////	i = getaddrinfo(listenHost.c_str(), listenPort.c_str(), &hints, &result);
-//    if ( i != 0 ) {
-//        std::cerr << "getaddrinfo failed with error: " << i << std::endl;
-//        return false;
-//    }
-//
-//    this->_listenSocket = WSASocket(result->ai_family, result->ai_socktype, result->ai_protocol, NULL, 0, 0);
-//    if (this->_listenSocket == INVALID_SOCKET) {
-//        printf("socket failed with error: %ld\n", WSAGetLastError());
-//        freeaddrinfo(result);
-//        return false;
-//    }
-//
-//    // Setup the TCP listening socket
-//    i = bind( this->_listenSocket, result->ai_addr, (int)result->ai_addrlen);
-//    if (i == SOCKET_ERROR) {
-//        printf("bind failed with error: %d\n", WSAGetLastError());
-//        freeaddrinfo(result);
-//        closesocket(this->_listenSocket);
-//        return false;
-//    }
-//    if (listen(_listenSocket, 1) == SOCKET_ERROR) {
-//        std::cerr << "listen failed with error: " << WSAGetLastError() << std::endl;
-//        return false;
-//    }
-//	return true;
+*/
 }
 
 WServerSocket::~WServerSocket()
 {
 	if (this->_listenSocketTcp != INVALID_SOCKET)
 		closesocket(this->_listenSocketTcp);
-	if (this->_listenSocketUdp != INVALID_SOCKET)
+/*	if (this->_listenSocketUdp != INVALID_SOCKET)
 		closesocket(this->_listenSocketUdp);
-	WSACleanup();
+*/	WSACleanup();
 }
 
 WServerSocket::WServerSocket(Server * s)
 {
 	this->_interPckg = new InterpretPackage(s);
 	this->_listenSocketTcp = INVALID_SOCKET;
-	this->_listenSocketUdp = INVALID_SOCKET;
+//	this->_listenSocketUdp = INVALID_SOCKET;
 }
