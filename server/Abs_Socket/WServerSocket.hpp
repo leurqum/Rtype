@@ -19,7 +19,7 @@
 
 #include "IServerSocket.hpp"
 #include "./../../protocol.h"
-#include "InterpretPackage.hpp"
+#include "../src/include/InterpretPackage.hpp"
 
 class WServerSocket : public IServerSocket
 {
@@ -33,16 +33,17 @@ public:
 private:
 	void						addNewPeer(void * peer);
 	SOCKET						getSocketTcp() { return _listenSocketTcp; }
-	SOCKET						getSocketUdp() { return _listenSocketUdp; }
+//	SOCKET						getSocketUdp() { return _listenSocketUdp; }
 	int							selectSockets();
 	void						callBack(std::list<SOCKET>::iterator & it);
 
 	SOCKET						_listenSocketTcp;
-	SOCKET						_listenSocketUdp;
+//	SOCKET						_listenSocketUdp;
 	std::list<SOCKET>			_clientsList;
 	std::map<SOCKET, ISocket *>	_clientsSocksMap;
 	fd_set						_readFd;
 	InterpretPackage *			_interPckg;
 	struct sockaddr_in			_servAddr;
+	struct sockaddr_in			_saClient;
 };
 
