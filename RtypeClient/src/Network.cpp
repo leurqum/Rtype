@@ -27,6 +27,7 @@ Protocol::drawable					Network::GetPieceWorld(bool& isReceived) const
 	sf::IpAddress sender;
 	unsigned short port;
 	status = this->socketUDP->receive((void*)&draw, sizeof(Protocol::drawable), received, sender, port);
+	std::cout << "pos x : " << draw.xPosition << " pos y : " <<  draw.yPosition << std::endl;
 	if (status == sf::Socket::Status::Done)
 		isReceived = true;
 	else
