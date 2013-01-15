@@ -52,15 +52,12 @@ typedef	struct
 enum type_drawable
 {
   SHIP,
-  OBSTACLE,
+  ENEMY_EASY,
+  ENEMY_HARD,
+  BOSS,
+  BULLET_LINEAR,
+  BULLET_RAYON,
   BONUS
-};
-
-enum type_enemie
-{
-  EASY,
-  HARD,
-  BOSS
 };
 
 enum patern_enemie
@@ -72,41 +69,13 @@ enum patern_enemie
   LINEDOWN
 };
 
-enum type_bullet
-{
-  LINEAR, //bullet qui se deplace lineraiement
-  RAYON_LINEAR // rayon lineaire
-};
-
 typedef	struct
 {
   int  id;
-  int  type;
+  type_drawable  type;
   float  xPosition;
   float  yPosition;
 }	drawable;
-
-typedef	struct
-{
-  int		id;
-  float		xPosition;
-  float		yPosition;
-  type_bullet	bullet;
-}		drawable_bullet;
-
-typedef	struct
-{
-  int		id;
-  float		xPosition;
-  float		yPosition;
-  type_enemie	enemie;
-}		drawable_enemie;
-
-
-/* typedef	struct */
-/* { */
-/*   int	id; */
-/* }	player; */
 
 //------------------------------------------------
 
