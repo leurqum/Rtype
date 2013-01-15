@@ -17,15 +17,20 @@ Network::~Network(void)
 }
 
 
-Protocol::drawable					Network::GetPieceWorld() const
+Protocol::drawable					Network::GetPieceWorld(bool& isReceived) const
 {
 	Protocol::drawable draw;
-	
+	sf::Socket::Status status;
+
 	// TODO: fill world properly
 	std::size_t received = 0;
 	sf::IpAddress sender;
 	unsigned short port;
-	this->socketUDP->receive((void*)&draw, sizeof(Protocol::drawable), received, sender, port);
+	status = this->socketUDP->receive((void*)&draw, sizeof(Protocol::drawable), received, sender, port);
+	if (status == sf::Socket::Status::Done)
+		isReceived = true;
+	else
+		isReceived = false;
 	return draw;
 }
 

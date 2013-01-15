@@ -15,7 +15,7 @@
  	~Network(void); 
 
  	//udp communication 
- 	Protocol::drawable GetPieceWorld() const; 
+ 	Protocol::drawable GetPieceWorld(bool&) const; 
 
  	//tcp communication */
  	Protocol::reponse_type				Register(std::string name, std::string pwd) const; 
