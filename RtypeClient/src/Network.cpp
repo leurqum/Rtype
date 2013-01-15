@@ -1,13 +1,13 @@
 #include "Network.h"
 
-Network::Network(const std::string& host, const std::string& portTCP, const std::string& portUDP)
+Network::Network(const std::string& host, int portTCP, int portUDP) :
+	host(host), portTCP(portTCP), portUDP(portUDP)
 {
-	this->socketTCP = new MySocket();
-	this->socketTCP->connectToServer(host, portTCP);
-	
-	this->socketUDP = new MySocket();
-	this->socketUDP->setUDP(true);
-	this->socketUDP->connectToServer(host, portUDP);
+	this->socketTCP = new sf::TcpSocket();
+	this->socketUDP = new sf::UdpSocket();
+
+	this->socketTCP->connect(host, portTCP);
+	this->socketUDP->bind(portUDP);
 }
 
 
@@ -18,14 +18,13 @@ Network::~Network(void)
 
 Protocol::drawable					Network::GetPieceWorld() const
 {
-	void* received;
 	Protocol::drawable draw;
 	
 	// TODO: fill world properly
-	void * header = new int[2];
-	((int*)header)[1] = sizeof(Protocol::drawable);
-	this->socketUDP->recv(&header, &received);
-	draw = (Protocol::drawable)draw;
+	std::size_t received = 0;
+	sf::IpAddress sender;
+	unsigned short port;
+	this->socketUDP->receive((void*)&draw, sizeof(Protocol::drawable), received, sender, port);
 	return draw;
 }
 
@@ -40,20 +39,16 @@ Protocol::reponse_type				Network::Register(std::string name, std::string pwd) c
 	memcpy(reg.login, name.c_str(), 50);
 	memcpy(reg.passwd, pwd.c_str(), 50);
 
-	Protocol::response			rep;
-
 	// send header + reg
 	package = new char[sizeof(header) + sizeof(reg)];
 	memcpy(package, &header, sizeof(header));
 	memcpy((&package + sizeof(header)), &reg, sizeof(reg));
-	this->socketTCP->sendv(sizeof(header) + sizeof(reg), package);
+	this->socketTCP->send(package, sizeof(header) + sizeof(reg));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
-
+	Protocol::response rep;
+	std::size_t received = 0;
+	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
 	return rep.response;
 }
 
@@ -68,19 +63,16 @@ Protocol::reponse_type				Network::Login(std::string name, std::string pwd) cons
 	memcpy(login.login, name.c_str(), 50);
 	memcpy(login.passwd, pwd.c_str(), 50);
 
-	Protocol::response			rep;
-
 	// send header + login
 	package = new char[sizeof(header) + sizeof(login)];
 	memcpy(package, &header, sizeof(header));
 	memcpy((&package + sizeof(header)), &login, sizeof(login));
-	this->socketTCP->sendv(sizeof(header) + sizeof(login), package);
+	this->socketTCP->send(package, sizeof(header) + sizeof(login));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
+	Protocol::response rep;
+	std::size_t received = 0;
+	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
 	return rep.response;
 }
 
@@ -90,19 +82,14 @@ Protocol::reponse_type				Network::Create()
 	Protocol::package			header;
 	header.id = Protocol::CREATE_GAME;
 	header.size = 0;
-	Protocol::response			rep;
 
 	// send header
-	package = new char[sizeof(header)];
-	memcpy(package, &header, sizeof(header));
-	this->socketTCP->sendv(sizeof(header), package);
-
+	this->socketTCP->send(package, sizeof(header));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
+	Protocol::response rep;
+	std::size_t received = 0;
+	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
 	return rep.response;
 }
 
@@ -114,19 +101,17 @@ Protocol::reponse_type				Network::Join(int id)
 	header.size = sizeof(Protocol::join_game);
 	Protocol::join_game				game;
 	game.id = id;
-	Protocol::response			rep;
 
 	// send header + party_name
 	package = new char[sizeof(header) + sizeof(game)];
 	memcpy(package, &header, sizeof(header));
 	memcpy((&package + sizeof(header)), &game, sizeof(game));
-	this->socketTCP->sendv(sizeof(header) + sizeof(game), package);
+	this->socketTCP->send(package, sizeof(header) + sizeof(game));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
+	Protocol::response rep;
+	std::size_t received = 0;
+	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
 	return rep.response;
 }
 
@@ -143,12 +128,12 @@ std::list<Protocol::party>			Network::GetGameList() const
 	// send header
 	package = new char[sizeof(header)];
 	memcpy(package, &header, sizeof(header));
-	this->socketTCP->sendv(sizeof(header), package);
+	this->socketTCP->send(package, sizeof(header));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
+	void*	game_list;
+	std::size_t received = 0;
+	//this->socketTCP->receive(game_list, sizeof(rep), received);
 	//rep = *(Protocol::response*)data_reponse;
 	//header_reponse =  (Protocol::response)(header_reponse);
 	//for (int i = 0; i < )
@@ -160,7 +145,7 @@ std::list<Protocol::party>			Network::GetGameList() const
 
 void								Network::Move(Protocol::cmd_client *cmd) const
 {
-	this->socketUDP->sendv(sizeof(Protocol::cmd_client), (void**)(&cmd));
+	this->socketUDP->send(cmd, sizeof(Protocol::cmd_client) + 1, this->host, this->portUDP);
 }
 
 void								Network::Fire() const
@@ -173,6 +158,6 @@ void								Network::Fire() const
 	cmd->right = false;
 	cmd->fire = true;
 
-	this->socketUDP->sendv(sizeof(Protocol::cmd_client), (void**)(&cmd));
+	this->socketUDP->send(cmd, sizeof(Protocol::cmd_client) + 1, this->host, this->portUDP);
 	delete cmd;
 }

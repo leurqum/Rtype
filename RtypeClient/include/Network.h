@@ -3,17 +3,7 @@
 #include "Drawable.h" 
 #include "../../protocol.h" 
 
-#ifdef __unix__
-
-#include "../../server/Abs_Socket/USocket.hpp"
-typedef USocket MySocket;
-
-#elif _WIN32
-
-#include "../../server/Abs_Socket/WSocket.hpp"
-typedef WSocket MySocket;
-
-#endif // __unix__
+#include <SFML/Network.hpp>
 
  #include <string.h> 
  #include <list> 
@@ -21,7 +11,7 @@ typedef WSocket MySocket;
  class Network 
  { 
  public: 
- 	Network(const std::string& host, const std::string& portTCP, const std::string& portUDP);
+ 	Network(const std::string& host, int portTCP, int portUDP);
  	~Network(void); 
 
  	//udp communication 
@@ -38,7 +28,10 @@ typedef WSocket MySocket;
 
  private: 
  	// TODO: ajouter class Isocket une fois qu'elle seras au bon endroit 
-	 ISocket*			socketTCP;
-	 ISocket*			socketUDP;
+	std::string     host;
+	int			    portUDP;
+	int				portTCP;
+	sf::TcpSocket*	 socketTCP;
+	sf::UdpSocket*	 socketUDP;
  }; 
 
