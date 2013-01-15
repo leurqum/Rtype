@@ -13,7 +13,6 @@
 Server::Server()
 {
   server_socket = new MyServerSocket(this);
-  //sock->setUDP(true); //Problem avec l'udp ...
   if (server_socket->init("", "4242") == true)
     server_socket->launch();
 }
@@ -65,7 +64,7 @@ void Server::eraseGame(int id)
     }
 }  
  
-Player* Server::createPlayerWaiting(int id, std::string name, int life, ISocket *socket_tcp, ISocket *socket_udp)
+Player* Server::createPlayerWaiting(int id, std::string name, ISocket *socket_tcp, ISocket *socket_udp)
 {
   Player* p = new Player(id, name, socket_tcp, socket_udp);
 
