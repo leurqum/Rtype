@@ -7,7 +7,7 @@ IAUnit::~IAUnit(void)
 
 
 
-Protocol::type_enemie IAUnit::getType()const
+Protocol::type_drawable IAUnit::getType()const
 {
   return (_type);
 }

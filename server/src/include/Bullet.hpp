@@ -8,12 +8,12 @@ class Bullet : public MovingObstacle
 {
 protected : 
   int _unit;
-  Protocol::type_bullet _type;
+  Protocol::type_drawable _type;
 public:
-  Bullet(int unit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_bullet type);
+  Bullet(int unit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable type);
   int getUnit()const;
   void update(double time);
-  Protocol::type_bullet getType()const;
+  Protocol::type_drawable getType()const;
 
 };
 

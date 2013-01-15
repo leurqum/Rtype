@@ -11,6 +11,11 @@ Player *HumainUnit::getPlayer()const
 
 void HumainUnit::update(double time)
 {
-  if (this->getHealth() == 0)
-    _game->eraseHumain(this->getId());
+  if (this->getHealth() <= 0)
+    this->_type = Protocol::DEAD;
+}
+
+Protocol::type_drawable HumainUnit::getType()const
+{
+  return (_type);
 }
