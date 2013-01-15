@@ -17,13 +17,33 @@ InterpretPackage::InterpretPackage(Server *s)
   _funcMap[Protocol::GET_GAME_LIST] = &InterpretPackage::execGetGameList;
   _funcMap[Protocol::JOIN_GAME] = &InterpretPackage::execJoinGame;
   _funcMap[Protocol::CREATE_GAME] = &InterpretPackage::execCreateGame;
-  _funcMap[Protocol::MOVE] = &InterpretPackage::execMove;
-  _funcMap[Protocol::FIRE] = &InterpretPackage::execFire;
+  //_funcMap[Protocol::MOVE] = &InterpretPackage::execMove;
+  //_funcMap[Protocol::FIRE] = &InterpretPackage::execFire;
   _server = s;
 }
 
 void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
+	if (sock->isUDP() == true)
+	{
+		Protocol::cmd_client * cmd = ((Protocol::cmd_client*)data);
+		if (cmd->fire == true)
+			this->execFire(data, sock);
+		else
+		{
+			Protocol::move * m = new Protocol::move;
+			if (cmd->top == true)
+				m->top = 1;
+			else if (cmd->down == true)
+				m->down = 1;
+			else if (cmd->left == true)
+				m->left = 1;
+			else if (cmd->right == true)
+				m->right = 1;
+			this->execMove(m, sock);
+		}
+		return ;
+	}
   std::cout << "executeCmd" << std::endl;
   int hdTmp[2];
   
