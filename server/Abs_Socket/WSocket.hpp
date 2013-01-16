@@ -33,22 +33,22 @@ public:
 	int					recv(void ** header, void ** data);
 	int					sendv(std::string const & data);
 	int					sendv(int size, void * data);
+	SOCKET				getSocket() const { return _connectSocket; }
 	void				setUDP(bool val);
 	bool				isUDP() { return _udp; }
 	void				setHost(std::string const & ip);
 	std::string const & getHost();
 
-	SOCKET				getSocket() const { return _connectSocket; }
 private:
 	struct hostent		* _server;
+
 	std::string			_host;
 	std::string			_port;
 	struct sockaddr_in	_hints;
-	struct addrinfo		* _results;
+//	struct addrinfo		* _results;
 	SOCKET				_connectSocket;
 	bool				_WSAClose;
 	bool				_udp;
-	//int					_sizeReadUdp;
 };
 
 
