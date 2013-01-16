@@ -1,14 +1,15 @@
 #pragma once
 
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
+#ifndef win32_lean_and_mean
+#define win32_lean_and_mean
 #endif
-
-#include <Windows.h>
-# include <string>
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
+
+//#include <windows.h>
+# include <string>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <list>

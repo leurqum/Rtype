@@ -5,11 +5,12 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#include <Windows.h>
-# include <string>
-
 #include <winsock2.h>
 #include <ws2tcpip.h>
+
+//#include <Windows.h>
+# include <string>
+
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
