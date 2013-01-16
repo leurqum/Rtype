@@ -85,6 +85,9 @@ public:
   void createRandomObs(double time);
   void createRandomBonus(double time);
   void createRandomEnemie(double time);
+  void CreateEnemiePaternVFLY(Protocol::type_drawable type, int);
+  void CreateEnemiePaternLine(Protocol::type_drawable type, int);
+  void CreateEnemiePaternOneToThree(Protocol::type_drawable type, int);
 
   int getIaSize()const;
   int getHumainSize()const;
