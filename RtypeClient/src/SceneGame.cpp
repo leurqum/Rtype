@@ -59,6 +59,25 @@ IScene* SceneGame::update(float elapsedTime)
 	    }
 	  ship[0]->setUpdate(d);
 	}
+      else if (recved && d.type == Protocol::type_drawable::ENEMY_EASY)
+	{
+	  bool found = false;
+	  // seek right enemy
+	  for (DrawerEnemyBasic& e : enemy)
+	    {
+	      if (e.getId() == d.id)
+		{
+		  e.setUpdate(d);
+		  found = true;
+		}
+	    }
+	  if (!found)
+	    {
+	      //create new enemy
+	      enemy.push_back(DrawerEnemyBasic());
+	      enemy.back().setUpdate(d);
+	    }
+	}
     }
 // #define pos(x) ((x) > 0 ? (x) : -(x))
 //   drawer_2bars.setBar1(pos(x - 500));
@@ -86,6 +105,8 @@ IScene* SceneGame::update(float elapsedTime)
 //   enemy.update(elapsedTime);
   if (ship[0])
     ship[0]->update(elapsedTime);
+  for (DrawerEnemyBasic& e : enemy)
+    e.update(elapsedTime);
   drawer_2bars.update(elapsedTime);
 
 
@@ -100,8 +121,10 @@ void SceneGame::draw()
 
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
 
-  enemy.drawTo(gm);
+  for (DrawerEnemyBasic& e : enemy)
+    e.drawTo(gm);
 
+  // drawer_2bars.drawTo(gm);
   if (ship[0] != nullptr)
     ship[0]->drawTo(gm);
   if (ship[1] != nullptr)
@@ -110,7 +133,6 @@ void SceneGame::draw()
     ship[0]->drawTo(gm);
   if (ship[3] != nullptr)
     ship[0]->drawTo(gm);
-  // drawer_2bars.drawTo(gm);
 }
 
 void SceneGame::load()

@@ -33,7 +33,7 @@ public ASceneHover
 IScene* manageInput();
 
   DrawerShip* ship[4]; // these are drawables updatable from a protocol::drawable.
-  DrawerEnemyBasic enemy;
+  std::list<DrawerEnemyBasic> enemy;
   Drawer2Bars drawer_2bars;
   Network*		network;
 };
