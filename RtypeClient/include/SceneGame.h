@@ -12,6 +12,7 @@
 #include "DrawerShip.h"
 #include "DrawerEnemyBasic.h"
 #include "Drawer2Bars.h"
+#include "DrawerBullet.h"
 #include "SceneHoverMenu.h"
 #include "SceneHoverConfirmLeave.h"
 
@@ -34,6 +35,7 @@ IScene* manageInput();
 
   DrawerShip* ship[4]; // these are drawables updatable from a protocol::drawable.
   std::list<DrawerEnemyBasic> enemy;
+  std::list<DrawerBullet> bullets;
   Drawer2Bars drawer_2bars;
   Network*		network;
 };

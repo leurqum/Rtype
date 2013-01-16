@@ -124,6 +124,28 @@ SpriteSheetFactory::SpriteSheetFactory()
 
   animList[0] = new Animation<ValueDrawable>(singleAnim, 250, false);
   spriteSheets[6]->setAnimations(animList);
+  
+  // BULLETS BASIC
+  spriteSheets[7] = new SpriteSheet();
+  spriteSheets[7]->setFilename("sprites/r-typesheet1.gif");
+
+  singleAnim.clear();
+
+  singleAnim.push_back(ValueDrawable(18, 18, 230, 101));
+  singleAnim.push_back(ValueDrawable(18, 18, 249, 101));
+
+  animList[0] = new Animation<ValueDrawable>(singleAnim, 250, false);
+
+  singleAnim.clear();
+
+  singleAnim.push_back(ValueDrawable(18, 18, 266, 101));
+  singleAnim.push_back(ValueDrawable(18, 18, 284, 101));
+
+  animList[1] = new Animation<ValueDrawable>(singleAnim, 250, false);
+  spriteSheets[7]->setAnimations(animList);
+
+  
+
 }
 
 SpriteSheetFactory* SpriteSheetFactory::instance = nullptr;

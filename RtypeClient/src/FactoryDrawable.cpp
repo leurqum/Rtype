@@ -49,6 +49,11 @@ DrawableGeneric* FactoryDrawable::createBarContainer() const
   return fromSpriteSheet(6);
 }
 
+DrawableGeneric* FactoryDrawable::createBullet() const
+{
+  return fromSpriteSheet(7);
+}
+
 DrawableGeneric* FactoryDrawable::fromSpriteSheet(int id) const
 {
   SpriteSheet* s = SpriteSheetFactory::getInstance()->getSpriteSheet(id);

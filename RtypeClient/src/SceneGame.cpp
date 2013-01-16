@@ -8,6 +8,16 @@ SceneGame::SceneGame(IScene& decoratedScene, Network* net) :
   ship[2] = nullptr;
   ship[3] = nullptr;
   drawer_2bars.setBar1(100);
+  enemy.push_back(DrawerEnemyBasic());
+  Protocol::drawable d;
+  d.xPosition = 150;
+  d.yPosition = 150;
+  d.id = -1;
+  d.type = Protocol::type_drawable::ENEMY_EASY;
+  enemy.back().setUpdate(d);
+  bullets.push_back(DrawerBullet());
+  d.xPosition += 30;
+  bullets.back().setUpdate(d);
 }
 
 SceneGame::~SceneGame(void)
@@ -21,23 +31,6 @@ IScene* SceneGame::update(float elapsedTime)
     // FIXME: I don't know if the following scenario would be safe...
     return ret; // some decorated scene have changed the scene :(
 
-  //std::cout << "scenegame update" << std::endl;
-
-  // TODO: update the scene depending on network data received.
-  // Protocol::drawable d;
-  // d.id = 0;
-  // d.type = Protocol::SHIP;
-  // static int x = 490;
-  // static int incr = 5;
-
-  // d.xPosition = x;
-  //  x += incr;
-  //  if (x > 500)
-  //    incr = -5;
-  //  if (x <= 400)
-  //    incr = 5;
-  // d.yPosition = 123;
-
 
   // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
   
@@ -48,11 +41,12 @@ IScene* SceneGame::update(float elapsedTime)
       i++;
       Protocol::drawable d = network->GetPieceWorld(recved);
       // std::cout << "new update !" << std::endl;
-      std::cout << "received: " << recved << std::endl;
+      // std::cout << "received: " << recved << std::endl;
       if (recved && d.type == Protocol::type_drawable::SHIP)
 	{
-	  std::cout << "i'ts a ship !" << std::endl;
-	  std::cout << d.xPosition << ";" << d.yPosition << std::endl;
+	  // TODO: find right ship.
+	  // std::cout << "i'ts a ship !" << std::endl;
+	  // std::cout << d.xPosition << ";" << d.yPosition << std::endl;
 	  if (ship[0] == nullptr)
 	    {
 	      ship[0] = new DrawerShip(0);
@@ -67,46 +61,48 @@ IScene* SceneGame::update(float elapsedTime)
 	    {
 	      if (e.getId() == d.id)
 		{
+		  std::cout << "update enemy: " << d.xPosition << ";" << d.yPosition << std::endl;
 		  e.setUpdate(d);
 		  found = true;
 		}
 	    }
 	  if (!found)
 	    {
+	      std::cout << "NEW Enemy ! " << d.xPosition << ";" << d.yPosition << std::endl;
 	      //create new enemy
 	      enemy.push_back(DrawerEnemyBasic());
 	      enemy.back().setUpdate(d);
 	    }
 	}
+      else if (recved && d.type == Protocol::type_drawable::BULLET_LINEAR)
+	{
+	  bool found = false;
+	  // seek right enemy
+	  for (DrawerBullet& b : bullets)
+	    {
+	      if (b.getId() == d.id)
+		{
+		  std::cout << "update bullet: " << d.xPosition << ";" << d.yPosition << std::endl;
+		  b.setUpdate(d);
+		  found = true;
+		}
+	    }
+	  if (!found)
+	    {
+	      std::cout << "NEW bullet ! " << d.xPosition << ";" << d.yPosition << std::endl;
+	      //create new enemy
+	      bullets.push_back(DrawerBullet());
+	      bullets.back().setUpdate(d);
+	    }
+	}
     }
-// #define pos(x) ((x) > 0 ? (x) : -(x))
-//   drawer_2bars.setBar1(pos(x - 500));
 
-//   d.id = 0;
-//   d.type = Protocol::SHIP;
-//   static int _x = 480;
-//   static int _y = 223;
-//   static int _incr = 2;
-
-//   drawer_2bars.setBar2(pos(_x - 400));
-//   // drawer_2bars.setBar2(100);
-
-//   d.xPosition = _x;
-//   _x += _incr;
-//   _y += _incr;
-//    if (_x > 500)
-//      _incr = -3;
-//    if (_x <= 400)
-//      _incr = 3;
-
-//   d.yPosition = _y;
-//   enemy.setUpdate(d);
-
-//   enemy.update(elapsedTime);
   if (ship[0])
     ship[0]->update(elapsedTime);
   for (DrawerEnemyBasic& e : enemy)
     e.update(elapsedTime);
+  for (DrawerBullet& b : bullets)
+    b.update(elapsedTime);
   drawer_2bars.update(elapsedTime);
 
 
@@ -121,6 +117,8 @@ void SceneGame::draw()
 
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
 
+  for (DrawerBullet& b : bullets)
+    b.drawTo(gm);
   for (DrawerEnemyBasic& e : enemy)
     e.drawTo(gm);
 

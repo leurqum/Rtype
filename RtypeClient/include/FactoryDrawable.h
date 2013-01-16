@@ -16,6 +16,7 @@ class FactoryDrawable
   DrawableGeneric* createShip() const;
   DrawableGeneric* createEnemyBasic() const;
   DrawableGeneric* createBarContainer() const;
+  DrawableGeneric* createBullet() const;
   
  private:
   static FactoryDrawable* instance;
