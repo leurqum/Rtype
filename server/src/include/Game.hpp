@@ -51,6 +51,7 @@ public:
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitHumanByPlayer(int id)const;
   HumainUnit* addHumainUnitByPlayer(int id);
+  void moveIa(int id, Protocol::move *m);
   IAUnit *getUnitAI(int id)const;
   MovingObstacle *getObs(int id)const;
   LifePowerUp *getLifePowerUp(int id)const;
