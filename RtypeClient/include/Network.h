@@ -15,7 +15,7 @@
  	~Network(void); 
 
  	//udp communication 
- 	Protocol::drawable GetPieceWorld(bool&) const; 
+ 	Protocol::drawable GetPieceWorld(bool&);
 
  	//tcp communication */
  	Protocol::reponse_type				Register(std::string name, std::string pwd) const; 
@@ -33,5 +33,6 @@
 	int				portTCP;
 	sf::TcpSocket*	 socketTCP;
 	sf::UdpSocket*	 socketUDP;
+	sf::UdpSocket*	 socketUDPRead;
  }; 
 

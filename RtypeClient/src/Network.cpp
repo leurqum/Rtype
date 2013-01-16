@@ -7,8 +7,19 @@ Network::Network(const std::string& host, int portTCP, int portUDP) :
 	this->socketUDP = new sf::UdpSocket();
 
 	this->socketTCP->connect(host, portTCP);
-	this->socketUDP->bind(portUDP);
+	if (this->socketUDP->bind(portUDP) != sf::Socket::Status::Done)
+	  std::cout << "fail bind on port (writing)" << std::endl;
+	else
+	  std::cout << "success bind (writing)" << std::endl;
 	this->socketUDP->setBlocking(false);
+
+	
+	this->socketUDPRead = new sf::UdpSocket();
+	this->socketUDPRead->setBlocking(false);
+	if (this->socketUDPRead->bind(4246) != sf::Socket::Status::Done)
+	  std::cout << "fail bind on port (reading)" << std::endl;
+	else
+	  std::cout << "success bind (reading)" << std::endl;
 }
 
 
@@ -17,7 +28,7 @@ Network::~Network(void)
 }
 
 
-Protocol::drawable					Network::GetPieceWorld(bool& isReceived) const
+Protocol::drawable					Network::GetPieceWorld(bool& isReceived)
 {
 	Protocol::drawable draw;
 	memset(&draw, 0, sizeof(draw));
@@ -27,7 +38,7 @@ Protocol::drawable					Network::GetPieceWorld(bool& isReceived) const
 	std::size_t received = 0;
 	sf::IpAddress sender;
 	unsigned short port;
-	status = this->socketUDP->receive((void*)&draw, sizeof(Protocol::drawable), received, sender, port);
+	status = this->socketUDPRead->receive((void*)&draw, sizeof(Protocol::drawable), received, sender, port);
 	// std::cout << "pos x : " << draw.xPosition << " pos y : " <<  draw.yPosition << std::endl;
 	// if (status != sf::Socket::Status::Done)
 	//   std::cout << "socket fail" << std::endl;
@@ -155,7 +166,11 @@ std::list<Protocol::party>			Network::GetGameList() const
 
 void								Network::Move(Protocol::cmd_client *cmd) const
 {
-	this->socketUDP->send(cmd, sizeof(Protocol::cmd_client), this->host, this->portUDP);
+  // std::cout << this->host << ";" << this->portUDP << std::endl;
+  if (this->socketUDP->send(cmd, sizeof(Protocol::cmd_client), this->host, this->portUDP) != sf::Socket::Status::Done)
+    std::cout << "fail send move" << std::endl;
+  // else
+  //   std::cout << "send move" << std::endl;
 }
 
 void								Network::Fire() const
@@ -168,6 +183,11 @@ void								Network::Fire() const
 	cmd->right = false;
 	cmd->fire = true;
 
-	this->socketUDP->send(cmd, sizeof(Protocol::cmd_client), this->host, this->portUDP);
+	
+	std::cout << this->host << ";" << this->portUDP << std::endl;
+	if (this->socketUDP->send(cmd, sizeof(Protocol::cmd_client), this->host, this->portUDP) != sf::Socket::Status::Done)
+	std::cout << "fail send fire" << std::endl;
+	else
+	  std::cout << "send fire" << std::endl;
 	delete cmd;
 }

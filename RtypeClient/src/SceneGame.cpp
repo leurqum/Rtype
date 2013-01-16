@@ -48,8 +48,8 @@ IScene* SceneGame::update(float elapsedTime)
       // std::cout << "new update !" << std::endl;
       if (recved && d.type == Protocol::type_drawable::SHIP)
 	{
-	  // std::cout << "i'ts a ship !" << std::endl;
-	  // std::cout << d.xPosition << ";" << d.yPosition << std::endl;
+	  std::cout << "i'ts a ship !" << std::endl;
+	  std::cout << d.xPosition << ";" << d.yPosition << std::endl;
 	  if (ship[0] == nullptr)
 	    {
 	      ship[0] = new DrawerShip(0);
@@ -161,10 +161,10 @@ IScene* SceneGame::manageInput()
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Space).y == true)
     {
-      // network->Fire();
+      network->Fire();
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Escape).y == true)
     return new SceneHoverConfirmLeave(*this);
-  // network->Move(&c);
+  network->Move(&c);
   return this;
 }
