@@ -13,9 +13,11 @@ class DrawerEnemyBasic : public ADrawer // NOTE: I do not inherit from DrawableD
   virtual void drawTo(IGraphicsManager*) const override;
   virtual void drawTo(IGraphicsManager*, const ValueDrawer&) const override;
 
+  int getId() const;
   virtual void update(float ms) override;
   virtual void setUpdate(const Protocol::drawable& u);
  private:
   DrawableGeneric* drawable;
   Protocol::drawable updater;
+  int id;
 };

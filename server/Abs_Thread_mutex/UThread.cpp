@@ -1,19 +1,12 @@
 #include "UThread.hpp"
 #include "Game.hpp"
 
-void	*callHandle(void * data)
-{
-  Server * s = static_cast<Server *>(data);
-  s->launchGame(s->gameList.size());
-  return 0;
-}
-
-UThread::UThread(const pthread_attr_t *parameter, void *(*function)(void *), void *ret, Server *s)
+UThread::UThread(const pthread_attr_t *parameter, void *(*function)(void *), void *ret,void *s)
 {
   int res = 0;
   //(*(Game *)(function))(NULL);
   // res = pthread_create(&this->_thread, parameter, (*(Game *)(function)), ret);
-  res = pthread_create(&this->_thread, 0, callHandle, static_cast<void*>(s));
+  res = pthread_create(&this->_thread, 0, function, s);
   if (res != 0)
     {
       std::cout<<"Erreur start on thread !"<<std::endl;

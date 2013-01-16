@@ -19,13 +19,16 @@ class IAUnit;
 class HumainUnit;
 class Game
 {
+
+public:
+ std::list<Player*>		playerList;
 private:
   int _id;
   std::list<IAUnit*>		iaList;
   std::list<HumainUnit*>	humainList;
 
   MyMutex *mutexPlayers;
-  std::list<Player*>		playerList;
+ 
 
 
   std::list<Bullet*>		bulletList;
@@ -46,11 +49,9 @@ public:
  
   void addPlayer(Player *p);
   Bullet *getBullet(int id)const;
-  HumainUnit *getUnitByPlayer(Player *p)const;
-  HumainUnit *getUnitHuman(int id)const;
-  HumainUnit* addHumainUnitByPlayer(Player *p);
+  HumainUnit *getUnitHumanByPlayer(int id)const;
+  HumainUnit* addHumainUnitByPlayer(int id);
   IAUnit *getUnitAI(int id)const;
-  Unit *getUnit(int id)const;
   MovingObstacle *getObs(int id)const;
   LifePowerUp *getLifePowerUp(int id)const;
   Player *getPlayer(int id)const;
@@ -59,7 +60,6 @@ public:
   Player *getPlayerBySockTcp(ISocket *socket_tcp)const;
   Player *getPlayerBySockUdp(ISocket *socket_udp)const;
   int getId()const;
-
   void eraseBullet(int id);
   void eraseBulletsPlayer(int idPlayer);
   void erasePlayer(int id);

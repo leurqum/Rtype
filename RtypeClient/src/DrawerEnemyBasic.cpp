@@ -6,8 +6,14 @@ DrawerEnemyBasic::DrawerEnemyBasic()
   drawable->animate(0);
 }
 
+int DrawerEnemyBasic::getId() const
+{
+  return id;
+}
+
 void DrawerEnemyBasic::update(float ms)
 {
+  id = updater.id;
   initialValue.position.x = updater.xPosition;
   initialValue.position.y = updater.yPosition;
   drawable->update(ms);

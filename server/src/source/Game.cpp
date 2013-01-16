@@ -30,10 +30,10 @@ void Game::loop()
       time = 10 * (double)(clock() - init) / (double)CLOCKS_PER_SEC;
       sendGame();
 	#ifdef __unix__
-		usleep(100);
+		usleep(20000);
 	#endif
 	#ifdef _WIN32
-		Sleep(100);
+		Sleep(20000);
 	#endif
     }  
 }
@@ -51,8 +51,14 @@ void Game::checkPlayer()
   // std::cout<<"humain : " << humainList.size() << " player : "<< playerList.size()<<std::endl;
   if (humainList.size() < playerList.size())
     {
-      // std::cout<<"pass"<<std::endl;
-      addHumainUnitByPlayer(*(playerList.end()));
+      std::cout<<"pass"<<std::endl;
+      
+      if (playerList.back() == NULL)
+	{
+	  std::cout<<"fail"<<std::endl;
+	  exit(0);
+	}
+      addHumainUnitByPlayer(playerList.back()->getId());
     }
   mutexPlayers->MUnlock();
 }
@@ -113,7 +119,7 @@ HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int he
 {
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
-  HumainUnit *h = new HumainUnit(speed, p, id, coll, health, strength, isDestroyable, this);
+  HumainUnit *h = new HumainUnit(speed, p->getId(), id, coll, health, strength, isDestroyable, this);
 
   humainList.push_back(h);
   return (h);
@@ -165,23 +171,29 @@ Bullet *Game::getBullet(int id)const
   return NULL;
 }
 
-HumainUnit *Game::getUnitByPlayer(Player *p)const
-{
-    for (std::list<HumainUnit*>::const_iterator it = humainList.begin(); it != humainList.end(); it++)
-    {
-      if ((*it)->getPlayer() == p)
-	return (*it);
-    }
-  return NULL;
-}
+// HumainUnit *Game::getUnitByPlayer(Player *p)const
+// {
+//     for (std::list<HumainUnit*>::const_iterator it = humainList.begin(); it != humainList.end(); it++)
+//     {
+//       if ((*it)->getPlayer() == p)
+// 	return (*it);
+//     }
+//   return NULL;
+// }
  
-HumainUnit *Game::getUnitHuman(int id)const
+HumainUnit *Game::getUnitHumanByPlayer(int id)const
 {
+  mutexPlayers->MLock();
   for (std::list<HumainUnit*>::const_iterator it = humainList.begin(); it != humainList.end(); it++)
     {
-      if ((*it)->getId() == id)
-	return (*it);
+      if ((*it)->getPlayerId() == id)
+	{
+	  std::cout<<"PASSSSSSSSSSSs"<<std::endl;
+	  mutexPlayers->MUnlock();
+	  return (*it);
+	}
     }
+  mutexPlayers->MUnlock();
   return NULL;
 }
 
@@ -195,16 +207,16 @@ IAUnit *Game::getUnitAI(int id)const
   return NULL;
 }
 
-Unit *Game::getUnit(int id)const
-{
-  Unit *u;
+// Unit *Game::getUnit(int id)const
+// {
+//   Unit *u;
 
-  if ((u = getUnitHuman(id)) != NULL)
-    return (u);
-  else if ((u = getUnitAI(id)) != NULL)
-    return (u);
-  return (NULL);
-}
+//   if ((u = getUnitHuman(id)) != NULL)
+//     return (u);
+//   else if ((u = getUnitAI(id)) != NULL)
+//     return (u);
+//   return (NULL);
+// }
 
 MovingObstacle *Game::getObs(int id)const
 {
@@ -248,12 +260,12 @@ void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
   createHumainUnit(humainList.size(), std::pair<float, float>(1, 1), 3, 1, true, p);
 }
 
-HumainUnit* Game::addHumainUnitByPlayer(Player *p)
+HumainUnit* Game::addHumainUnitByPlayer(int idPlayer)
 {
-  std::pair<float, float> pos(20, 20);
+  std::pair<float, float> pos(50, 50);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
  
-  HumainUnit *h = new HumainUnit(std::pair<float, float> (1, 1), p, humainList.size(), coll, 3, 1, true, this);
+  HumainUnit *h = new HumainUnit(std::pair<float, float> (1, 1), idPlayer, humainList.size(), coll, 3, 1, true, this);
   
   humainList.push_back(h);
   return (h);
@@ -433,7 +445,7 @@ void Game::resetGame(double *time)
 
 bool Game::isFriendlyBullet(Bullet *b)
 {
-  if (getUnitHuman(b->getUnit()) != NULL)
+  if (getUnitHumanByPlayer(b->getUnit()) != NULL)
     return (true);
   return (false);
 }
@@ -564,7 +576,7 @@ bool Game::collisionWithBonus(HumainUnit *u)
 
 void Game::fire(int id)
 {
-  Unit *u = getUnit(id);
+  Unit *u = getUnitHumanByPlayer(id);
   
   if (u == NULL)
     return;
@@ -599,12 +611,14 @@ void Game::fire_ia(int id)
 
 void Game::move(int id, Protocol::move *m)
 {
-  Unit *u = getUnit(id);
+  std::cout<<"move : id : "<<id<<std::endl;
+  Unit *u = getUnitHumanByPlayer(id);
   
   if (u == NULL)
     return;
-  if (collisionUWithObs(u) == false)
-    u->getDefinition()->move(m);
+  std::cout << "je move vraiment un player" << std::endl;
+  //  if (collisionUWithObs(u) == false)
+  u->getDefinition()->move(m);
 }
 
 int Game::getIaSize()const
@@ -880,7 +894,6 @@ void Game::sendShip()const
       d->yPosition = (*it)->getPositionY();
       d->type = (*it)->getType();
       mutexPlayers->MLock();
-      printf("%f, %f\n", d->yPosition, d->xPosition);
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
       mutexPlayers->MUnlock();

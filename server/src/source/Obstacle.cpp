@@ -50,7 +50,7 @@ float Obstacle::getPositionX()const
 
 float Obstacle::getPositionY()const
 {
-  return (_rectangle->getPosition().first);
+  return (_rectangle->getPosition().second);
 }
 
 std::pair<float, float> Obstacle::getPosition()const

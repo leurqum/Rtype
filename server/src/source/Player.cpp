@@ -8,7 +8,7 @@ Player::Player(int id, std::string name, ISocket *socket_tcp, ISocket *socket_ud
 {
   _id = id;
   _name = name;
-  _socket_tcp= socket_tcp;
+  _socket_tcp = socket_tcp;
   _socket_udp = socket_udp;
 }
 

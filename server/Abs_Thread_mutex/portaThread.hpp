@@ -3,10 +3,13 @@
 #ifdef __unix__
 
 # include "UThread.hpp"
+# include "UMutex.hpp"
 
+// class UMutex;
+//  class UThread;
 
-class UThread;
 typedef UThread MyThread;
+typedef UMutex MyMutex;
 
 
 //-------------------
@@ -14,10 +17,13 @@ typedef UThread MyThread;
 #elif defined _WIN32
 
 # include "CWThread.h"
-# include "WServerSocket.hpp"
+# include "WMutex.h"
+//# include "WServerSocket.hpp"
 
+class CWMutex;
 class CWThread;
-typedef CWThread MyThread;
 
+typedef CWThread MyThread;
+typedef CWMutex MyMutex;
 
 #endif

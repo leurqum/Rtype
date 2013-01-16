@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Tue Jan 15 22:25:26 2013 mathieu leurquin
+// Last update Wed Jan 16 16:00:25 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -26,14 +26,15 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
   if (sock->isUDP() == true)
     {
-      std::cout<<"receive something"<<std::endl;
+      std::cout<<"receive something Udp"<<std::endl;
       Protocol::cmd_client * cmd = ((Protocol::cmd_client*)data);
       if (cmd->fire == true)
 	this->execFire(data, sock);
       else
 	{
-	  std::cout<<"move"<<std::endl;
+	  // std::cout<<"move"<<std::endl;
 	  Protocol::move * m = new Protocol::move;
+	  memset(m, 0, sizeof(*m));
 	  if (cmd->top == true)
 	    m->top = 1;
 	  else if (cmd->down == true)
@@ -46,7 +47,7 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 	}
       return ;
     }
-  std::cout << "executeCmd" << std::endl;
+  std::cout << "executeCmdTcp" << std::endl;
   int hdTmp[2];
   
   memcpy(hdTmp, header, 2 * sizeof(int));
@@ -117,7 +118,7 @@ void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
 	{
 	  Player *p = (*it)->getPlayerBySockUdp(sock);
 	  
-	  (*it)->addHumainUnitByPlayer(p);
+	  (*it)->addHumainUnitByPlayer(p->getId());
 	  _server->erasePlayerWaiting(p->getId());
 	  rep->response = Protocol::VALIDE;
 	  sock->sendv(sizeof(Protocol::response*), (void*)rep);
@@ -135,23 +136,20 @@ void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
 
 }
 
-void	InterpretPackage::execMove(void * data, ISocket * sock)
+void	InterpretPackage::execMove(Protocol::move * data, ISocket * sock)
 {
   Player *p;
-  std::list <Game*> listGameCpy = _server->gameList;
   
-  Protocol::move *m= (Protocol::move*)data;
-  for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
+  for (std::list<Game*>::iterator it = _server->gameList.begin(); it != _server->gameList.end(); it++)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	{
-	  if ((*it)->getUnitByPlayer(p)->getHealth() > 0)
-	    {
-	      (*it)->move(p->getId(), m);
-	      Protocol::response *rep = new Protocol::response();
-	      rep->response = Protocol::VALIDE;
-	      sock->sendv(sizeof(Protocol::response*), (void*)rep);
-	    }
+	  std::cout << "je move un player list size : "<<(*it)->playerList.size() << std::endl;
+	  (*it)->move(p->getId(), data);
+	  // Protocol::response *rep = new Protocol::response();
+	  // rep->response = Protocol::VALIDE;
+	  // sock->sendv(sizeof(Protocol::response*), (void*)rep)
+	  ;
 	}
     }
 }
@@ -165,13 +163,10 @@ void	InterpretPackage::execFire(void * data, ISocket * sock)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	{
-	  if ((*it)->getUnitByPlayer(p)->getHealth() > 0)
-	    {
-	      (*it)->fire(p->getId());
-	      Protocol::response *rep = new Protocol::response();
-	      rep->response = Protocol::VALIDE;
-	      sock->sendv(sizeof(Protocol::response*), (void*)rep);
-	    }
+	  (*it)->fire(p->getId());
+	  Protocol::response *rep = new Protocol::response();
+	  rep->response = Protocol::VALIDE;
+	  sock->sendv(sizeof(Protocol::response*), (void*)rep);
 	}
     }
 }

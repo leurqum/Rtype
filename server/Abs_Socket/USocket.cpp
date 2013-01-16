@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Tue Jan 15 16:56:33 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan 16 12:26:27 2013 mathieu leurquin
 //
 
 #include "USocket.hpp"
@@ -90,13 +90,16 @@ bool	USocket::connectFromAcceptedFd(void * fd)
   return true;
 }
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 int		USocket::recv(void ** header, void ** data)
 {
   ssize_t	ret;
-  *header = new int[2];
 
   if (_udp == false)
     {
+      *header = new int[2];
       if ((ret = ::recv(this->_connectSocket, *header, 2 * sizeof(int), 0)) <= 0)
 	return ret;
       *data = new char[((int *)(*header))[1]];
@@ -111,6 +114,8 @@ int		USocket::recv(void ** header, void ** data)
   memset(*data, 0, ((int *)(*header))[1]);
   if ((ret = ::recvfrom(this->_connectSocket, *data, ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
     return ret;
+  _host = inet_ntoa(_hints.sin_addr);
+  std::cout << "recvfrom:" << _host << std::endl;
   return 1;
 }
 
