@@ -42,10 +42,13 @@ IScene* SceneGame::update(float elapsedTime)
   // NOTE: we assume d.type is the right type for old, if it's a wrong type, then it's messed up earlier. (but this class doesn't care, it's Drawable who will handle (or not) the matter.)
   
   bool recved = true;
-  while (recved)
+  int i = 0;
+  while (recved && i < 100) // FIXME: it is done so we dont wait forever, but it makes a delay...
     {
+      i++;
       Protocol::drawable d = network->GetPieceWorld(recved);
       // std::cout << "new update !" << std::endl;
+      std::cout << "received: " << recved << std::endl;
       if (recved && d.type == Protocol::type_drawable::SHIP)
 	{
 	  std::cout << "i'ts a ship !" << std::endl;
