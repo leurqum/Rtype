@@ -10,7 +10,7 @@ private:
 	DWORD _dwWaitResult;
 public:
 	CWMutex();
-	virtual bool		MUnLock();
+	virtual bool		MUnlock();
 	virtual bool		MLock();
 	virtual bool		MDestroy();
 	virtual bool		MTryLock();
