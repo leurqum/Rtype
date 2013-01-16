@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Tue Jan 15 15:40:48 2013 mathieu leurquin
+// Last update Tue Jan 15 22:25:26 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -24,26 +24,28 @@ InterpretPackage::InterpretPackage(Server *s)
 
 void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
-	if (sock->isUDP() == true)
+  if (sock->isUDP() == true)
+    {
+      std::cout<<"receive something"<<std::endl;
+      Protocol::cmd_client * cmd = ((Protocol::cmd_client*)data);
+      if (cmd->fire == true)
+	this->execFire(data, sock);
+      else
 	{
-		Protocol::cmd_client * cmd = ((Protocol::cmd_client*)data);
-		if (cmd->fire == true)
-			this->execFire(data, sock);
-		else
-		{
-			Protocol::move * m = new Protocol::move;
-			if (cmd->top == true)
-				m->top = 1;
-			else if (cmd->down == true)
-				m->down = 1;
-			else if (cmd->left == true)
-				m->left = 1;
-			else if (cmd->right == true)
-				m->right = 1;
-			this->execMove(m, sock);
-		}
-		return ;
+	  std::cout<<"move"<<std::endl;
+	  Protocol::move * m = new Protocol::move;
+	  if (cmd->top == true)
+	    m->top = 1;
+	  else if (cmd->down == true)
+	    m->down = 1;
+	  else if (cmd->left == true)
+	    m->left = 1;
+	  else if (cmd->right == true)
+	    m->right = 1;
+	  this->execMove(m, sock);
 	}
+      return ;
+    }
   std::cout << "executeCmd" << std::endl;
   int hdTmp[2];
   
@@ -90,7 +92,7 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
   memcpy(&res + position, pa, sizeof(Protocol::parties*));
   position = sizeof(Protocol::parties*);
 
-  std::list <Game*> listGameCpy = _server->getGameList();
+  std::list <Game*> listGameCpy = _server->gameList;
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
     {
       Protocol::party *pa = new Protocol::party();
@@ -103,7 +105,7 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
 
 void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
 {
-  std::list <Game*> listGameCpy = _server->getGameList();
+  std::list <Game*> listGameCpy = _server->gameList;
   Protocol::join_game *game = new Protocol::join_game();
 
   memset(game, 0, sizeof(Protocol::join_game *));
@@ -136,7 +138,7 @@ void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
 void	InterpretPackage::execMove(void * data, ISocket * sock)
 {
   Player *p;
-  std::list <Game*> listGameCpy = _server->getGameList();
+  std::list <Game*> listGameCpy = _server->gameList;
   
   Protocol::move *m= (Protocol::move*)data;
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
@@ -157,7 +159,7 @@ void	InterpretPackage::execMove(void * data, ISocket * sock)
 void	InterpretPackage::execFire(void * data, ISocket * sock)
 {
   Player *p;
-  std::list <Game*> listGameCpy = _server->getGameList();
+  std::list <Game*> listGameCpy = _server->gameList;
   
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
     {
