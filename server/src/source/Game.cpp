@@ -1,5 +1,5 @@
 #include "../include/Game.hpp"
-
+#include <stdio.h>
 #ifdef __unix__
 	#include <unistd.h>
 #endif
@@ -13,13 +13,7 @@
 Game::Game(int id)
 {
   _id = id;
-}
-
-void* Game::operator()(void*)
-{
-  std::cout<<"salut"<<std::endl;
-  //this->loop();
-  return NULL;
+  mutexPlayers = new MyMutex();
 }
 
 void Game::loop()
@@ -31,10 +25,10 @@ void Game::loop()
   while (1)
     {
       //      collision();
+      checkPlayer();
       update(time);
       time = 10 * (double)(clock() - init) / (double)CLOCKS_PER_SEC;
       sendGame();
-      std::cout<<time<<std::endl;
 	#ifdef __unix__
 		usleep(100);
 	#endif
@@ -42,6 +36,25 @@ void Game::loop()
 		Sleep(100);
 	#endif
     }  
+}
+
+void Game::addPlayer(Player *p)
+{
+  mutexPlayers->MLock();
+  playerList.push_back(p);
+  mutexPlayers->MUnlock();
+}
+
+void Game::checkPlayer()
+{
+  mutexPlayers->MLock();
+  // std::cout<<"humain : " << humainList.size() << " player : "<< playerList.size()<<std::endl;
+  if (humainList.size() < playerList.size())
+    {
+      // std::cout<<"pass"<<std::endl;
+      addHumainUnitByPlayer(*(playerList.end()));
+    }
+  mutexPlayers->MUnlock();
 }
 
 bool Game::allDead()
@@ -118,7 +131,10 @@ Player* Game::createPlayer(int id, std::string name, ISocket *tcp, ISocket *udp)
 {
   Player* p = new Player(id, name, tcp, udp);
 
+  mutexPlayers->MLock();
   playerList.push_back(p);
+  mutexPlayers->MUnlock();
+
   return (p);
 }
 
@@ -212,11 +228,16 @@ LifePowerUp *Game::getLifePowerUp(int id)const
 
 Player *Game::getPlayer(int id)const
 {
+  mutexPlayers->MLock();
   for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end(); it++)
     {
       if ((*it)->getId() == id)
-	return (*it);
+	{
+	  mutexPlayers->MUnlock();
+	  return (*it);
+	}
     }
+  mutexPlayers->MUnlock();
   return NULL;
 }
 
@@ -229,12 +250,12 @@ void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
 
 HumainUnit* Game::addHumainUnitByPlayer(Player *p)
 {
-  std::pair<float, float> pos(0, 0);
+  std::pair<float, float> pos(20, 20);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
+ 
   HumainUnit *h = new HumainUnit(std::pair<float, float> (1, 1), p, humainList.size(), coll, 3, 1, true, this);
-
+  
   humainList.push_back(h);
-  playerList.push_back(p);
   return (h);
 }
 
@@ -245,21 +266,31 @@ int Game::getNbPlayer()const
 
 Player *Game::getPlayerBySockTcp(ISocket *sock)const
 {
+  mutexPlayers->MLock();
   for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end(); it++)
     {
       if ((*it)->getSocketTcp() == sock)
-	return (*it);
+	{
+	  mutexPlayers->MUnlock();
+	  return (*it);
+	}
     }
+  mutexPlayers->MUnlock();
   return (NULL);
 }
 
 Player *Game::getPlayerBySockUdp(ISocket *sock)const
 {
+  mutexPlayers->MLock();
   for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end(); it++)
     {
       if ((*it)->getSocketUdp() == sock)
-	return (*it);
+	{
+	  mutexPlayers->MUnlock();
+	  return (*it);
+	}
     }
+  mutexPlayers->MUnlock();
   return (NULL);
 }
 
@@ -294,16 +325,19 @@ void Game::eraseBulletsPlayer(int idPlayer)
 
 void Game::erasePlayer(int id)
 {
+  mutexPlayers->MLock();
   for (std::list<Player*>::iterator it = playerList.begin(); it != playerList.end();)
     {
       if ((*it)->getId() == id)
 	{
 	  playerList.erase(it);
+	  mutexPlayers->MUnlock();
 	  return;
 	}
       else
 	it++;
     }
+  mutexPlayers->MUnlock();
 }
 
 void Game::eraseHumain(int id)
@@ -767,10 +801,10 @@ void Game::createRandomEnemie(double time)
 
 void Game::sendGame()const
 {
-  sendBullet();
-  sendObs();
-  sendIA();
-  sendBonus();
+    // sendBullet();
+  // sendObs();
+  // sendIA();
+  // sendBonus();
   sendShip();
 }
 
@@ -782,10 +816,12 @@ void Game::sendBullet()const
       memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();
+      d->yPosition = (*it)->getPositionY();
       d->type = (*it)->getType();
+      mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
+      mutexPlayers->MUnlock();
     }
 }
 
@@ -797,10 +833,12 @@ void Game::sendObs()const
       memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();
+      d->yPosition = (*it)->getPositionY();
       d->type = Protocol::OBSTACLE;
+      mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof( *d), d);
+      mutexPlayers->MUnlock();
     }
 }
 
@@ -812,10 +850,12 @@ void Game::sendIA()const
       memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();
+      d->yPosition = (*it)->getPositionY();
       d->type = (*it)->getType();
+      mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
+      mutexPlayers->MUnlock();
     }
 }
 
@@ -827,10 +867,12 @@ void Game::sendBonus()const
       memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();
+      d->yPosition = (*it)->getPositionY();
       d->type = Protocol::BONUS;
+      mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
+      mutexPlayers->MUnlock();
     }
 }
 
@@ -838,13 +880,17 @@ void Game::sendShip()const
 {
   for (std::list<HumainUnit*>::const_iterator it = humainList.begin(); it != humainList.end(); it++)
     {
+      // std::cout<<"send ship"<<std::endl;
       Protocol::drawable * d = new Protocol::drawable(); 
       memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
       d->xPosition = (*it)->getPositionX();
-      d->xPosition = (*it)->getPositionY();
+      d->yPosition = (*it)->getPositionY();
       d->type = (*it)->getType();
+      mutexPlayers->MLock();
+      printf("%f, %f\n", d->yPosition, d->xPosition);
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
+      mutexPlayers->MUnlock();
     }
 }

@@ -23,7 +23,7 @@ int main()
       // FIXME: use real milliseconds..
       if (timer.getElapsedTime().asMilliseconds() > LOOP_UPDATE_DRAW) // around 60 updates and draw per second
 	{
-	  std::cout << "update: " << timer.getElapsedTime().asMilliseconds() << std::endl;
+	  // std::cout << "update: " << timer.getElapsedTime().asMilliseconds() << std::endl;
 	  sm->update(timer.getElapsedTime().asMilliseconds());
 	  timer.restart();
 	  sm->getGraphicsManager()->clear();

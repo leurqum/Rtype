@@ -19,7 +19,7 @@ public:
   Protocol::patern_enemie getPatern() const;
   void paternPack(int time);
   void paternSolo(int time);
-  void IAUnit::paternLineToDiago(int time);
+  void paternLineToDiago(int time);
 protected:
   Game *_game;
   Protocol::type_drawable _type;

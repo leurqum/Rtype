@@ -1,13 +1,25 @@
 #include "Network.h"
 
-Network::Network(const std::string& host, const std::string& portTCP, const std::string& portUDP)
+Network::Network(const std::string& host, int portTCP, int portUDP) :
+	host(host), portUDP(portUDP), portTCP(portTCP)
 {
-	this->socketTCP = new MySocket();
-	this->socketTCP->connectToServer(host, portTCP);
+	this->socketTCP = new sf::TcpSocket();
+	this->socketUDP = new sf::UdpSocket();
+
+	this->socketTCP->connect(host, portTCP);
+	if (this->socketUDP->bind(portUDP) != sf::Socket::Status::Done)
+	  std::cout << "fail bind on port (writing)" << std::endl;
+	else
+	  std::cout << "success bind (writing)" << std::endl;
+	this->socketUDP->setBlocking(false);
+
 	
-	this->socketUDP = new MySocket();
-	this->socketUDP->setUDP(true);
-	this->socketUDP->connectToServer(host, portUDP);
+	this->socketUDPRead = new sf::UdpSocket();
+	this->socketUDPRead->setBlocking(false);
+	if (this->socketUDPRead->bind(4246) != sf::Socket::Status::Done)
+	  std::cout << "fail bind on port (reading)" << std::endl;
+	else
+	  std::cout << "success bind (reading)" << std::endl;
 }
 
 
@@ -16,16 +28,25 @@ Network::~Network(void)
 }
 
 
-Protocol::drawable					Network::GetPieceWorld() const
+Protocol::drawable					Network::GetPieceWorld(bool& isReceived)
 {
-	void* received;
 	Protocol::drawable draw;
-	
+	memset(&draw, 0, sizeof(draw));
+	sf::Socket::Status status;
+
 	// TODO: fill world properly
-	void * header = new int[2];
-	((int*)header)[1] = sizeof(Protocol::drawable);
-	this->socketUDP->recv(&header, &received);
-	draw = (Protocol::drawable)draw;
+	std::size_t received = 0;
+	sf::IpAddress sender;
+	unsigned short port;
+	status = this->socketUDPRead->receive((void*)&draw, sizeof(Protocol::drawable), received, sender, port);
+	// std::cout << "pos x : " << draw.xPosition << " pos y : " <<  draw.yPosition << std::endl;
+	// if (status != sf::Socket::Status::Done)
+	//   std::cout << "socket fail" << std::endl;
+	if (received != 0)
+	  isReceived = true;
+	else
+	  isReceived = false;
+	// std::cout << "isReceived: " << isReceived << " " << received << std::endl; 
 	return draw;
 }
 
@@ -40,20 +61,16 @@ Protocol::reponse_type				Network::Register(std::string name, std::string pwd) c
 	memcpy(reg.login, name.c_str(), 50);
 	memcpy(reg.passwd, pwd.c_str(), 50);
 
-	Protocol::response			rep;
-
 	// send header + reg
 	package = new char[sizeof(header) + sizeof(reg)];
 	memcpy(package, &header, sizeof(header));
 	memcpy((&package + sizeof(header)), &reg, sizeof(reg));
-	this->socketTCP->sendv(sizeof(header) + sizeof(reg), package);
+	this->socketTCP->send(package, sizeof(header) + sizeof(reg));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
-
+	Protocol::response rep;
+	std::size_t received = 0;
+	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
 	return rep.response;
 }
 
@@ -68,41 +85,32 @@ Protocol::reponse_type				Network::Login(std::string name, std::string pwd) cons
 	memcpy(login.login, name.c_str(), 50);
 	memcpy(login.passwd, pwd.c_str(), 50);
 
-	Protocol::response			rep;
-
 	// send header + login
 	package = new char[sizeof(header) + sizeof(login)];
 	memcpy(package, &header, sizeof(header));
 	memcpy((&package + sizeof(header)), &login, sizeof(login));
-	this->socketTCP->sendv(sizeof(header) + sizeof(login), package);
+	this->socketTCP->send(package, sizeof(header) + sizeof(login));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
+	Protocol::response rep;
+	std::size_t received = 0;
+	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
 	return rep.response;
 }
 
 Protocol::reponse_type				Network::Create()
 {
-	void*						package;
 	Protocol::package			header;
 	header.id = Protocol::CREATE_GAME;
 	header.size = 0;
-	Protocol::response			rep;
 
 	// send header
-	package = new char[sizeof(header)];
-	memcpy(package, &header, sizeof(header));
-	this->socketTCP->sendv(sizeof(header), package);
-
+	this->socketTCP->send(&header, sizeof(header));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
+	Protocol::response rep;
+	std::size_t received = 0;
+	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
 	return rep.response;
 }
 
@@ -114,19 +122,17 @@ Protocol::reponse_type				Network::Join(int id)
 	header.size = sizeof(Protocol::join_game);
 	Protocol::join_game				game;
 	game.id = id;
-	Protocol::response			rep;
 
 	// send header + party_name
 	package = new char[sizeof(header) + sizeof(game)];
 	memcpy(package, &header, sizeof(header));
 	memcpy((&package + sizeof(header)), &game, sizeof(game));
-	this->socketTCP->sendv(sizeof(header) + sizeof(game), package);
+	this->socketTCP->send(package, sizeof(header) + sizeof(game));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
-	rep = *(Protocol::response*)data_reponse;
+	Protocol::response rep;
+	std::size_t received = 0;
+	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
 	return rep.response;
 }
 
@@ -143,12 +149,12 @@ std::list<Protocol::party>			Network::GetGameList() const
 	// send header
 	package = new char[sizeof(header)];
 	memcpy(package, &header, sizeof(header));
-	this->socketTCP->sendv(sizeof(header), package);
+	this->socketTCP->send(package, sizeof(header));
 
 	// get reponse
-	void*			header_reponse;
-	void*			data_reponse;
-	this->socketTCP->recv(&header_reponse, &data_reponse);
+	void*	game_list;
+	std::size_t received = 0;
+	//this->socketTCP->receive(game_list, sizeof(rep), received);
 	//rep = *(Protocol::response*)data_reponse;
 	//header_reponse =  (Protocol::response)(header_reponse);
 	//for (int i = 0; i < )
@@ -160,7 +166,11 @@ std::list<Protocol::party>			Network::GetGameList() const
 
 void								Network::Move(Protocol::cmd_client *cmd) const
 {
-	this->socketUDP->sendv(sizeof(Protocol::cmd_client), (void**)(&cmd));
+  // std::cout << this->host << ";" << this->portUDP << std::endl;
+  if (this->socketUDP->send(cmd, sizeof(Protocol::cmd_client), this->host, this->portUDP) != sf::Socket::Status::Done)
+    std::cout << "fail send move" << std::endl;
+  // else
+  //   std::cout << "send move" << std::endl;
 }
 
 void								Network::Fire() const
@@ -173,6 +183,11 @@ void								Network::Fire() const
 	cmd->right = false;
 	cmd->fire = true;
 
-	this->socketUDP->sendv(sizeof(Protocol::cmd_client), (void**)(&cmd));
+	
+	std::cout << this->host << ";" << this->portUDP << std::endl;
+	if (this->socketUDP->send(cmd, sizeof(Protocol::cmd_client), this->host, this->portUDP) != sf::Socket::Status::Done)
+	std::cout << "fail send fire" << std::endl;
+	else
+	  std::cout << "send fire" << std::endl;
 	delete cmd;
 }
