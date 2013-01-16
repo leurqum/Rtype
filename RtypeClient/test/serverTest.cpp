@@ -1,10 +1,12 @@
+
+#include "../../protocol.h"
 #include <SFML/Network.hpp>
 
 
 int main(int ac, char** av)
 {
   sf::UdpSocket s;
-  sf::IpAdress ip = sf::IpAdress::getLocalAdress();
+  sf::IpAddress ip = sf::IpAddress::getLocalAddress();
 
   s.bind(4243);
   
