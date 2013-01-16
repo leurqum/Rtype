@@ -17,5 +17,5 @@ class DrawerShip : public ADrawer // NOTE: I do not inherit from DrawableDrawer 
   virtual void setUpdate(const Protocol::drawable& u);
  private:
   DrawableGeneric* drawable;
-  Protocol::drawable updater;
+  Protocol::drawable* updater;
 };

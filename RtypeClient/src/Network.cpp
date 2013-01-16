@@ -20,6 +20,7 @@ Network::~Network(void)
 Protocol::drawable					Network::GetPieceWorld(bool& isReceived) const
 {
 	Protocol::drawable draw;
+	memset(&draw, 0, sizeof(draw));
 	sf::Socket::Status status;
 
 	// TODO: fill world properly
@@ -27,11 +28,14 @@ Protocol::drawable					Network::GetPieceWorld(bool& isReceived) const
 	sf::IpAddress sender;
 	unsigned short port;
 	status = this->socketUDP->receive((void*)&draw, sizeof(Protocol::drawable), received, sender, port);
-	std::cout << "pos x : " << draw.xPosition << " pos y : " <<  draw.yPosition << std::endl;
-	if (status == sf::Socket::Status::Done)
-		isReceived = true;
+	// std::cout << "pos x : " << draw.xPosition << " pos y : " <<  draw.yPosition << std::endl;
+	// if (status != sf::Socket::Status::Done)
+	//   std::cout << "socket fail" << std::endl;
+	if (received != 0)
+	  isReceived = true;
 	else
-		isReceived = false;
+	  isReceived = false;
+	// std::cout << "isReceived: " << isReceived << " " << received << std::endl; 
 	return draw;
 }
 
@@ -151,7 +155,7 @@ std::list<Protocol::party>			Network::GetGameList() const
 
 void								Network::Move(Protocol::cmd_client *cmd) const
 {
-	this->socketUDP->send(cmd, sizeof(Protocol::cmd_client) + 1, this->host, this->portUDP);
+	this->socketUDP->send(cmd, sizeof(Protocol::cmd_client), this->host, this->portUDP);
 }
 
 void								Network::Fire() const
@@ -164,6 +168,6 @@ void								Network::Fire() const
 	cmd->right = false;
 	cmd->fire = true;
 
-	this->socketUDP->send(cmd, sizeof(Protocol::cmd_client) + 1, this->host, this->portUDP);
+	this->socketUDP->send(cmd, sizeof(Protocol::cmd_client), this->host, this->portUDP);
 	delete cmd;
 }

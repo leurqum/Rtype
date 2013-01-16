@@ -2,6 +2,7 @@
 
 DrawerShip::DrawerShip(int id)
 {
+  updater = nullptr;
   drawable = FactoryDrawable::getInstance()->createShip();
   // WONTFIX: if id incorrect, might crash
   // wont fix cuz learn to call correct constructor.
@@ -10,8 +11,13 @@ DrawerShip::DrawerShip(int id)
 
 void DrawerShip::update(float ms)
 {
-  initialValue.position.x = updater.xPosition;
-  initialValue.position.y = updater.yPosition;
+  if (updater)
+    {
+      initialValue.position.x = updater->xPosition;
+      initialValue.position.y = updater->yPosition;
+      delete updater;
+      updater = nullptr;
+    }
   drawable->update(ms);
 
   // to call last because it stores the computed value and modify it when we call next update.
@@ -30,5 +36,6 @@ void DrawerShip::drawTo(IGraphicsManager* gm, const ValueDrawer& v) const
 
 void DrawerShip::setUpdate(const Protocol::drawable& u)
 {
-  updater = u;
+  delete updater;
+  updater = new Protocol::drawable(u);
 }
