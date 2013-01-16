@@ -90,9 +90,10 @@ public:
   void createRandomObs(double time);
   void createRandomBonus(double time);
   void createRandomEnemie(double time);
-  void CreateEnemiePaternVFLY(Protocol::type_drawable type, int);
-  void CreateEnemiePaternLine(Protocol::type_drawable type, int);
-  void CreateEnemiePaternOneToThree(Protocol::type_drawable type, int);
+  void CreateEnemiePaternVFLY(Protocol::type_drawable type, int,std::pair<float,float> newSpeed, int, int);
+  void CreateEnemiePaternLine(Protocol::type_drawable type, int,std::pair<float,float> newSpeed, int, int);
+  void CreateEnemiePaternSolo(Protocol::type_drawable type, int, std::pair<float,float> newSpeed, int, int);
+  void CreateEnemiePack(Protocol::type_drawable type, int, std::pair<float,float> newSpeed, int, int);
 
   int getIaSize()const;
   int getHumainSize()const;

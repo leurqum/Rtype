@@ -53,7 +53,7 @@ void IAUnit::update(double time)
 
 void IAUnit::paternSolo(int time)
 {
-
+	
 }
 
 void IAUnit::paternPack(int time)

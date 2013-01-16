@@ -572,7 +572,7 @@ void Game::fire(int id)
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
  
-  createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
+  createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
 }
 
 void Game::fire_ia(int id)
@@ -678,32 +678,32 @@ void Game::createRandomBonus(double time)
       createBonus(life, this->bonusList.size(), Col, false, 0);
     }
 }
+void Game::CreateEnemiePack(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
+{
+		float x = XMAX + 1;
+		float y = rand() % (YMAX - 15) + 5;
+		std::pair<float, float> pos(x,y);
+		std::pair<float, float> pos1(x, y - 1);
+		std::pair<float, float> pos2(x, y + 1);
+		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
+		ICollisionDefinition *Col1 = new RectangleCollisionDefinition(pos1, 1, 2);
+		ICollisionDefinition *Col2 = new RectangleCollisionDefinition(pos2, 1, 2);
 
-void Game::CreateEnemiePaternOneToThree(Protocol::type_drawable type, int patern)
+		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
+					true, type, Protocol::PACKV);
+		createAIUnit(this->iaList.size() + 1,newSpeed, Col1, life, strength, 
+					true, type, Protocol::PACKV);
+		createAIUnit(this->iaList.size() + 1,newSpeed, Col2, life, strength, 
+					true, type, Protocol::PACKV);
+}
+
+void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
 {
 		float x = XMAX + 1;
 		float y = rand() % YMAX + 1;
-		int life;
-		int i;
-		int strength;
-		std::pair<float, float> newSpeed;
 		std::pair<float, float> pos(x,y);
 		Protocol::patern_enemie pat;
-		
-		if (type == 1)
-		{
-			newSpeed.first = 1;
-			newSpeed.second = 1;
-			life = 1;
-			strength = 1;
-		}
-		else
-		{
-			newSpeed.first = 1.5;
-			newSpeed.second = 1.5;
-			life = 2;
-			strength = 2;
-		}
+
 		if (patern == 0)
 			pat = Protocol::STATIC;
 		else
@@ -712,45 +712,15 @@ void Game::CreateEnemiePaternOneToThree(Protocol::type_drawable type, int patern
 		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
 		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
 						true, type, pat);
-		if (patern == 2)
-		{
-			pat = Protocol::PACKV;
-			std::pair<float, float> pos1(x, y - 1);
-			std::pair<float, float> pos2(x, y + 1);
-			ICollisionDefinition *Col1 = new RectangleCollisionDefinition(pos1, 1, 2);
-			ICollisionDefinition *Col2 = new RectangleCollisionDefinition(pos2, 1, 2);
-			createAIUnit(this->iaList.size() + 1,newSpeed, Col1, life, strength, 
-						true, type, pat);
-			createAIUnit(this->iaList.size() + 1,newSpeed, Col2, life, strength, 
-						true, type, pat);
-		}
 }
 
-void Game::CreateEnemiePaternLine(Protocol::type_drawable type, int patern)
+void Game::CreateEnemiePaternLine(Protocol::type_drawable type, int patern, std::pair<float,float> newSpeed, int strength, int life)
 {
 		float x = XMAX + 1;
 		float y = rand() % YMAX + 1;
-		int life;
 		int i;
-		int strength;
-		std::pair<float, float> newSpeed;
 		std::pair<float, float> pos(x,y);
 		Protocol::patern_enemie pat;
-		
-		if (type == 1)
-		{
-			newSpeed.first = 1;
-			newSpeed.second = 1;
-			life = 1;
-			strength = 1;
-		}
-		else
-		{
-			newSpeed.first = 1.5;
-			newSpeed.second = 1.5;
-			life = 2;
-			strength = 2;
-		}
 
 		if (patern == 4)
 			pat = Protocol::LINEUP;
@@ -761,14 +731,14 @@ void Game::CreateEnemiePaternLine(Protocol::type_drawable type, int patern)
 
 		for (i = 0; i < 4; i++)
 		{
-			std::pair<float, float> pos(x - (2 * i),y);
+			std::pair<float, float> pos(x - (2 * i), y);
 			ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
 			createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
 							true, type, pat);
 		}
 }
 
-void Game::CreateEnemiePaternVFLY(Protocol::type_drawable type, int patern)
+void Game::CreateEnemiePaternVFLY(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strenght, int life)
 {
 }
 
@@ -778,8 +748,12 @@ void Game::createRandomEnemie(double time)
 	{
 		int difficult;
 		int patern;
+		int life;
+		int strength;
+		std::pair<float, float> newSpeed;
 		Protocol::type_drawable type;
 		Protocol::patern_enemie pat;
+
 		srand(time);
 		difficult = rand() % 2;
 		patern = rand() % 7;
@@ -788,13 +762,31 @@ void Game::createRandomEnemie(double time)
 			type = Protocol::ENEMY_EASY;
 		else
 			type = Protocol::ENEMY_HARD;
-		if (patern <= 3)
-			CreateEnemiePaternOneToThree(type,patern);
+
+		if (type == 1)
+		{
+			newSpeed.first = 1;
+			newSpeed.second = 1;
+			life = 1;
+			strength = 1;
+		}
+		else
+		{
+			newSpeed.first = 1.5;
+			newSpeed.second = 1.5;
+			life = 2;
+			strength = 2;
+		}
+
+		if (patern < 2)
+			CreateEnemiePaternSolo(type, patern, newSpeed, strength, life);
+		else if (patern == 2)
+			CreateEnemiePack(type, patern, newSpeed, strength, life);
 		else if (patern >= 4)
-			CreateEnemiePaternLine(type, patern);
+			CreateEnemiePaternLine(type, patern, newSpeed, strength, life);
 		
 		else
-			CreateEnemiePaternVFLY(type, patern);
+			CreateEnemiePaternVFLY(type, patern, newSpeed, strength, life);
 	}
 }
 
