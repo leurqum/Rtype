@@ -6,6 +6,7 @@
 #include "./../../Abs_Socket/ISocket.hpp"
 #include "Player.hpp"
 #include "Bullet.hpp"
+#include "../../Abs_Thread_mutex/portaThread.hpp"
 #include "RectangleCollisionDefinition.hpp"
 #include "./../../../protocol.h"
 #include "MovingObstacle.hpp"
@@ -22,14 +23,17 @@ private:
   int _id;
   std::list<IAUnit*>		iaList;
   std::list<HumainUnit*>	humainList;
+
+  MyMutex *mutexPlayers;
   std::list<Player*>		playerList;
+
+
   std::list<Bullet*>		bulletList;
   std::list<MovingObstacle*>	obsList;
   std::list<LifePowerUp*>	bonusList;
 public:
   Game(int id);
-  void* operator()(void*);
-  // TODO operator for win
+  void checkPlayer();
   void loop();
   void update(double time);
   void collision();
@@ -40,6 +44,7 @@ public:
   LifePowerUp* createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength);
   Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable);
  
+  void addPlayer(Player *p);
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitByPlayer(Player *p)const;
   HumainUnit *getUnitHuman(int id)const;
