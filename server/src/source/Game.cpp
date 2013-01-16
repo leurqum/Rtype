@@ -75,7 +75,7 @@ void Game::update(double time)
 {
   // createRandomObs(time);
   // createRandomBonus(time);
-  // createRandomEnemie(time);
+  createRandomEnemie(time);
 
   for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
@@ -596,16 +596,15 @@ void Game::fire_ia(int id)
   
   ICollisionDefinition *coll;
 
-  if (u->getType() == Protocol::EASY)
+  if (u->getType() == Protocol::ENEMY_EASY)
      {
        coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
-       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true//,  Protocol::LINEAR
-   		   );
+       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true,  Protocol::BULLET_LINEAR);
      }    
-   else if (u->getType() == Protocol::HARD)
+  else if (u->getType() == Protocol::ENEMY_HARD)
      {
        coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
-       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
+       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true, Protocol::BULLET_RAYON);
      }
 }
 
@@ -770,7 +769,7 @@ void Game::createRandomEnemie(double time)
 
 		srand(time);
 		difficult = rand() % 2;
-		patern = rand() % 7;
+		patern = rand() % 2;
 
 		if (difficult == 0)
 			type = Protocol::ENEMY_EASY;
@@ -807,10 +806,10 @@ void Game::createRandomEnemie(double time)
 
 void Game::sendGame()const
 {
-    // sendBullet();
-  // sendObs();
-  // sendIA();
-  // sendBonus();
+  sendBullet();
+  //sendObs();
+  sendIA();
+  //sendBonus();
   sendShip();
 }
 
