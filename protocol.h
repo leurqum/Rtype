@@ -69,7 +69,8 @@ enum patern_enemie
   PACKV,
   VFLY,
   LINEUP,
-  LINEDOWN
+  LINEDOWN,
+  LINE
 };
 
 #define XMAX 800
