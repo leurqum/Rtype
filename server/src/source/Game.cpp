@@ -572,7 +572,7 @@ void Game::fire(int id)
   std::pair<float, float> pos(0, 0);
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
  
-  createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
+  createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
 }
 
 void Game::fire_ia(int id)
@@ -584,17 +584,17 @@ void Game::fire_ia(int id)
   
   ICollisionDefinition *coll;
 
-  // if (u->getType() == Protocol::EASY)
-  //   {
-  //     coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
-  //     createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true//,  Protocol::LINEAR
-  // 		   );
-  //   }    
-  // else if (u->getType() == Protocol::HARD)
-  //   {
-  //     coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
-  //     createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
-  //   }
+  if (u->getType() == Protocol::EASY)
+     {
+       coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
+       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true//,  Protocol::LINEAR
+   		   );
+     }    
+   else if (u->getType() == Protocol::HARD)
+     {
+       coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
+       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
+     }
 }
 
 void Game::move(int id, Protocol::move *m)

@@ -122,7 +122,7 @@ void IAUnit::takeDecision(double time)
 void IAUnit::executeDecision()
 {
 	if (this->_toShoot == true)
-		this->_game->fire(this->getId());
+		this->_game->fire_ia(this->getId());
 	else
 		this->_game->move(this->getId(),&(this->_direction));
 
