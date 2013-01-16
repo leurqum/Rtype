@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Tue Jan 15 17:04:16 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan 16 15:12:50 2013 mathieu leurquin
 //
 
 #include "UServerSocket.hpp"
@@ -13,18 +13,21 @@
 void	UServerSocket::addNewPeer(void * peer)
 {
   std::cout << "new Client !" << std::endl;
+  static int id = 0;
   ISocket * acc = this->myaccept(peer);
   ISocket * sockUdp = new USocket();
   sockUdp->setUDP(true);
-  sockUdp->connectToServer(acc->getHost(), "4243");
-  this->_server->createPlayerWaiting(this->_server->getGameList().size(), acc->getHost(), acc, sockUdp);
+  sockUdp->connectToServer(acc->getHost(), "4246");
+  this->_server->createPlayerWaiting(id, acc->getHost(), acc, sockUdp);
 
   this->_clientsList.push_back(((USocket *)(acc))->getSocket());
   this->_clientsSocksMap[((USocket *)(acc))->getSocket()] = acc;
 
-	// TODO : voir si select sur l'udp est clean
-	this->_clientsList.push_back(((USocket *)(sockUdp))->getSocket());
-	this->_clientsSocksMap[((USocket *)(sockUdp))->getSocket()] = sockUdp;
+  // TODO : voir si select sur l'udp est clean
+  this->_clientsList.push_back(((USocket *)(sockUdp))->getSocket());
+  this->_clientsSocksMap[((USocket *)(sockUdp))->getSocket()] = sockUdp;
+   this->_clientsSocksUdpMap[sockUdp->getHost()] = sockUdp;
+   id++;
 }
 
 int		UServerSocket::selectSockets()
@@ -57,6 +60,7 @@ void	UServerSocket::callBack(std::list<int>::iterator & it)
 
   if (tmp->isUDP() == true)
     {
+      std::cout << "udp" << std::endl;
       header = new int[2];
       ((int*)header)[1] = sizeof(Protocol::cmd_client);
     }
@@ -70,36 +74,18 @@ void	UServerSocket::callBack(std::list<int>::iterator & it)
       std::cout << "end callBack" << std::endl;
       return ;
     }
+
+  if (tmp->isUDP() == true)
+    tmp = this->_clientsSocksUdpMap[tmp->getHost()];
   this->_interPckg->executeCmd(header, data, tmp);
-  if (data)
-    delete (char *)data;
-  if (header)
-    delete (int *)header;
   std::cout << "end callBack" << std::endl;
-  // std::cout << "start callBack" << std::endl;
-
-  // ISocket * tmp = _clientsSocksMap[*it];
-  // void	* data = 0;
-  // void	* header = 0;
-
-  // if (!tmp->recv(&header, &data))
-  //   {
-  //     std::cout << "client disconnected" << std::endl;
-  //     it = _clientsList.erase(it);
-  //     _clientsSocksMap.erase(((USocket*)(tmp))->getSocket());
-  //     delete tmp;
-  //     it--;
-  //     std::cout << "end callBack" << std::endl;
-  //     return ;
-  //   }
-  // this->_interPckg->executeCmd(header, data, tmp);
-  // std::cout << "end callBack" << std::endl;
 }
 
 void	UServerSocket::launch()
 {
   std::cout << "server launched !" << std::endl;
   _clientsList.push_back(_listenSocketTcp);
+  _clientsList.push_back(_listenSocketUdp);
 
   while (true)
     {
@@ -167,6 +153,28 @@ bool	UServerSocket::init(std::string const & listenHost, std::string const & lis
       std::cerr << "listen failed with error (TCP): " << std::endl;
       return false;
     }
+
+
+  this->_servAddr.sin_port = htons(4245);
+
+  this->_listenSocketUdp = socket(AF_INET, SOCK_DGRAM, 0);
+  if (this->_listenSocketUdp <= 0)
+    {
+      std::cerr << "socket failed with error (TCP)" << std::endl;
+      return false;
+    }
+  i = bind( this->_listenSocketUdp, (struct sockaddr *) &this->_servAddr, sizeof(this->_servAddr));
+  if (i < 0)
+    {
+      std::cerr << "bind failed with error (TCP): " << std::endl;
+      close(this->_listenSocketUdp);
+      return false;
+    }
+  ISocket *udp = new USocket();
+  udp->setUDP(true);
+  udp->connectFromAcceptedFd(&_listenSocketUdp);
+  this->_clientsSocksMap[((USocket *)(udp))->getSocket()] = udp;
+  
   return true;
 }
 
@@ -180,4 +188,6 @@ UServerSocket::UServerSocket(Server *s)
 {
   _interPckg = new InterpretPackage(s);
   this->_listenSocketTcp = INVALID_SOCKET;
+  this->_listenSocketUdp = INVALID_SOCKET;
+  _server = s;
 }

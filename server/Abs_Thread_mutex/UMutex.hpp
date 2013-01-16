@@ -1,5 +1,5 @@
-#ifndef __UTHREAD__
-# define __UTHREAD__
+#ifndef __UMUTEX__
+# define __UMUTEX__
 
 #include <pthread.h>
 
@@ -14,5 +14,6 @@ public:
   virtual bool MUnlock();
   virtual bool MTrylock();
 };
+
 
 #endif

@@ -4,11 +4,15 @@ HumainUnit::~HumainUnit(void)
 {
 }
 
-Player *HumainUnit::getPlayer()const
-{
-  return (_p);
-}
+// Player *HumainUnit::getPlayer()const
+// {
+//   return (_p);
+// }
 
+int HumainUnit::getPlayerId()const
+{
+  return (_idPlayer);
+}
 void HumainUnit::update(double time)
 {
   if (this->getHealth() <= 0)

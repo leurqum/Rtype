@@ -5,7 +5,7 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Wed Jan 16 10:17:24 2013 mathieu leurquin
+// Last update Wed Jan 16 10:22:41 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
@@ -139,7 +139,7 @@ void Server::createGame(int id)
 void Server::launchGame(int id)
 {
   Game *g = new Game(id);
-
+  
   std::cout<<"new game"<<std::endl;
   gameList.push_back(g);
   g->loop();

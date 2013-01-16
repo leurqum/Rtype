@@ -23,7 +23,7 @@ void	WServerSocket::addNewPeer(void * peer)
 	ISocket * sockUdp = new WSocket();
 	sockUdp->setUDP(true);
 	sockUdp->connectToServer(acc->getHost(), "4243");
-	this->_server->createPlayerWaiting(this->_server->getGameList().size(), acc->getHost(), acc, sockUdp);
+	this->_server->createPlayerWaiting(this->_server->gameList.size(), acc->getHost(), acc, sockUdp);
 
 	this->_clientsList.push_back(((WSocket *)(acc))->getSocket());
 	this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;

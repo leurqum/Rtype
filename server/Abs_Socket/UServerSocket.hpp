@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:46 2013 marche_m (Maxime Marchès)
-// Last update Tue Jan 15 16:58:49 2013 marche_m (Maxime Marchès)
+// Last update Wed Jan 16 13:54:11 2013 mathieu leurquin
 //
 
 #ifndef __U_SERVER_SOCKET__
@@ -39,8 +39,10 @@ private:
   void		callBack(std::list<int>::iterator & it);
 
   int				_listenSocketTcp;
+  int				_listenSocketUdp;
   std::list<int>		_clientsList;
   std::map<int, ISocket *>	_clientsSocksMap;
+  std::map<std::string, ISocket *>	_clientsSocksUdpMap;
   fd_set			_readFd;
   InterpretPackage*		_interPckg;
   struct sockaddr_in		_servAddr;
