@@ -24,7 +24,6 @@ WSocket::WSocket()
 	_connectSocket = INVALID_SOCKET;
 	_WSAClose = true;
 	_udp = false;
-	//_sizeReadUdp = sizeof(Protocol::drawable);
 	_host = "";
 }
 
@@ -92,10 +91,10 @@ bool WSocket::connectFromAcceptedFd(void * fd)
 int WSocket::recv(void ** header, void ** data)
 {
 	int	ret;
-	*header = new int[2];
 
 	if (_udp == false)
     {
+		*header = new int[2];
 		if ((ret = ::recv(this->_connectSocket, (char*)(*header), 2 * sizeof(int), 0)) <= 0)
 		return ret;
 		*data = new char[((int *)(*header))[1]];
@@ -106,13 +105,12 @@ int WSocket::recv(void ** header, void ** data)
 	}
 	socklen_t tosize = sizeof(_hints);
 
-	//*data = new char[this->_sizeReadUdp];
-	//memset(*data, 0, this->_sizeReadUdp);
-	//if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), this->_sizeReadUdp, 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
 	*data = new char[((int *)(*header))[1]];
 	memset(*data, 0, ((int *)(*header))[1]);
 	if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
 		return ret;
+	_host = inet_ntoa(_hints.sin_addr);
+	std::cout << "recvfrom:" << _host << std::endl;
 	return 1;
 }
 
@@ -159,6 +157,6 @@ WSocket::~WSocket()
 	if (this->_WSAClose == true)
 	{
 		WSACleanup();
-		freeaddrinfo(this->_results);
+		//freeaddrinfo(this->_results);
 	}
 }

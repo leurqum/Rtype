@@ -19,11 +19,12 @@ int CALLBACK conditionAcceptFunc(
 void	WServerSocket::addNewPeer(void * peer)
 {
 	std::cout << "new Client !" << std::endl;
+	static int id = 0;
 	ISocket * acc = this->myaccept(peer);
 	ISocket * sockUdp = new WSocket();
 	sockUdp->setUDP(true);
-	sockUdp->connectToServer(acc->getHost(), "4243");
-	this->_server->createPlayerWaiting(this->_server->gameList.size(), acc->getHost(), acc, sockUdp);
+	sockUdp->connectToServer(acc->getHost(), "4246");
+	this->_server->createPlayerWaiting(id, acc->getHost(), acc, sockUdp);
 
 	this->_clientsList.push_back(((WSocket *)(acc))->getSocket());
 	this->_clientsSocksMap[((WSocket *)(acc))->getSocket()] = acc;
@@ -31,6 +32,8 @@ void	WServerSocket::addNewPeer(void * peer)
 	// TODO : voir si select sur l'udp est clean
 	this->_clientsList.push_back(((WSocket *)(sockUdp))->getSocket());
 	this->_clientsSocksMap[((WSocket *)(sockUdp))->getSocket()] = sockUdp;
+	this->_clientsSocksUdpMap[sockUdp->getHost()] = sockUdp;
+	id++;
 }
 
 int		WServerSocket::selectSockets()
@@ -72,11 +75,10 @@ void	WServerSocket::callBack(std::list<SOCKET>::iterator & it)
 		  std::cout << "end callBack" << std::endl;
 		  return ;
 	}
+
+	if (tmp->isUDP() == true)
+		tmp = this->_clientsSocksUdpMap[tmp->getHost()];
   this->_interPckg->executeCmd(header, data, tmp);
-  if (data)
-    delete (char *)data;
-  if (header)
-    delete (int *)header;
   std::cout << "end callBack" << std::endl;
 }
 
@@ -84,6 +86,7 @@ void	WServerSocket::launch()
 {
 	std::cout << "server launched !" << std::endl;
 	_clientsList.push_back(_listenSocketTcp);
+	_clientsList.push_back(_listenSocketUdp);
 
 	while (true)
 	{
@@ -173,7 +176,28 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
       std::cerr << "listen failed with error (TCP): " << std::endl;
       return false;
     }
-  return true;
+
+
+	this->_servAddr.sin_port = htons(4245);
+
+	this->_listenSocketUdp = socket(AF_INET, SOCK_DGRAM, 0);
+  if (this->_listenSocketUdp <= 0)
+    {
+      std::cerr << "socket failed with error (TCP)" << std::endl;
+      return false;
+    }
+  i = bind( this->_listenSocketUdp, (struct sockaddr *) &this->_servAddr, sizeof(this->_servAddr));
+  if (i < 0)
+    {
+      std::cerr << "bind failed with error (TCP): " << std::endl;
+      closesocket(this->_listenSocketUdp);
+      return false;
+    }
+  ISocket *udp = new WSocket();
+  udp->setUDP(true);
+  udp->connectFromAcceptedFd(&_listenSocketUdp);
+  this->_clientsSocksMap[((WSocket *)(udp))->getSocket()] = udp;
+	return true;
 }
 
 WServerSocket::~WServerSocket()
@@ -186,6 +210,7 @@ WServerSocket::~WServerSocket()
 WServerSocket::WServerSocket(Server * s)
 {
 	this->_interPckg = new InterpretPackage(s);
-	this->_server = s;
 	this->_listenSocketTcp = INVALID_SOCKET;
+	this->_listenSocketUdp = INVALID_SOCKET;
+	this->_server = s;
 }

@@ -75,7 +75,7 @@ void Game::update(double time)
 {
   // createRandomObs(time);
   // createRandomBonus(time);
-  // createRandomEnemie(time);
+  createRandomEnemie(time);
 
   for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
@@ -596,17 +596,16 @@ void Game::fire_ia(int id)
   
   ICollisionDefinition *coll;
 
-  // if (u->getType() == Protocol::EASY)
-  //   {
-  //     coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
-  //     createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true//,  Protocol::LINEAR
-  // 		   );
-  //   }    
-  // else if (u->getType() == Protocol::HARD)
-  //   {
-  //     coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
-  //     createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
-  //   }
+  if (u->getType() == Protocol::ENEMY_EASY)
+     {
+       coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
+       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true,  Protocol::BULLET_LINEAR);
+     }    
+  else if (u->getType() == Protocol::ENEMY_HARD)
+     {
+       coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
+       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true, Protocol::BULLET_RAYON);
+     }
 }
 
 void Game::move(int id, Protocol::move *m)
@@ -649,11 +648,10 @@ int Game::getBonusSize()const
 void Game::createRandomObs(double time)
 {
   std::pair<float, float> newSpeed(1,1);
-  // j ai mis -1 en en attendant
-  float x = -1;
+  float x = XMAX + 1;
   float y;
   srand(time);
-  y = rand() % 30;
+  y = rand() %  YMAX + 1;
   std::pair<float,float> pos(x,y);
   int strength = rand() % 3 + 1;
   int Des = rand() % 2;
@@ -661,29 +659,21 @@ void Game::createRandomObs(double time)
   if (Des == 0)
     Destroy = false;
   
+  ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
   if (time >= 10 && time <= 50)
     {
       if ((int)time % 5 == 0)
-	{
-	  ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
-	  createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
-	}
+		createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
     }
   else if (time > 50 && time <= 90)
     {
       if ((int)time % 3 == 0)
-	{
-	  ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
-	  createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
-	}
+		createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
     }
   else if (time > 90)
     {
       if ((int)time % 2 == 0)
-	{
-	  ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
-	  createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
-	}
+		createLinearMovingObstacle((this->obsList.size() + 1), newSpeed, Col, strength, Destroy);
     }
 }
 
@@ -691,28 +681,135 @@ void Game::createRandomBonus(double time)
 {
   if ((int)time % 15 == 0)
     {	
-      // j ai mis -1 en en attendant
-      float x = -1;
+      float x = XMAX + 1;
       float y;
       srand(time);
-      y = rand() % 30;
+      y = rand() % YMAX + 1;
       std::pair<float,float> pos(x, y);
       int life = rand() % 3 + 1;
-      ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 2, 2);
+      ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 1);
       createBonus(life, this->bonusList.size(), Col, false, 0);
     }
+}
+void Game::CreateEnemiePack(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
+{
+		float x = XMAX + 1;
+		float y = rand() % (YMAX - 15) + 5;
+		std::pair<float, float> pos(x,y);
+		std::pair<float, float> pos1(x, y - 1);
+		std::pair<float, float> pos2(x, y + 1);
+		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
+		ICollisionDefinition *Col1 = new RectangleCollisionDefinition(pos1, 1, 2);
+		ICollisionDefinition *Col2 = new RectangleCollisionDefinition(pos2, 1, 2);
+
+		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
+					true, type, Protocol::PACKV);
+		createAIUnit(this->iaList.size() + 1,newSpeed, Col1, life, strength, 
+					true, type, Protocol::PACKV);
+		createAIUnit(this->iaList.size() + 1,newSpeed, Col2, life, strength, 
+					true, type, Protocol::PACKV);
+}
+
+void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
+{
+		float x = XMAX + 1;
+		float y = rand() % YMAX + 1;
+		std::pair<float, float> pos(x,y);
+		Protocol::patern_enemie pat;
+
+		if (patern == 0)
+			pat = Protocol::STATIC;
+		else
+			pat = Protocol::SOLO;
+
+		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
+		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
+						true, type, pat);
+}
+
+void Game::CreateEnemiePaternLine(Protocol::type_drawable type, int patern, std::pair<float,float> newSpeed, int strength, int life)
+{
+		float x = XMAX + 1;
+		float y = rand() % YMAX + 1;
+		int i;
+		std::pair<float, float> pos(x,y);
+		Protocol::patern_enemie pat;
+
+		if (patern == 4)
+			pat = Protocol::LINEUP;
+		else if (patern == 5)
+			pat = Protocol::LINEDOWN;
+		else
+			pat = Protocol::LINE;
+
+		for (i = 0; i < 4; i++)
+		{
+			std::pair<float, float> pos(x - (2 * i), y);
+			ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
+			createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
+							true, type, pat);
+		}
+}
+
+void Game::CreateEnemiePaternVFLY(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strenght, int life)
+{
 }
 
 void Game::createRandomEnemie(double time)
 {
+	if (time > 15)
+	{
+		int difficult;
+		int patern;
+		int life;
+		int strength;
+		std::pair<float, float> newSpeed;
+		Protocol::type_drawable type;
+		Protocol::patern_enemie pat;
+
+		srand(time);
+		difficult = rand() % 2;
+		patern = rand() % 2;
+
+		if (difficult == 0)
+			type = Protocol::ENEMY_EASY;
+		else
+			type = Protocol::ENEMY_HARD;
+
+		if (type == 1)
+		{
+			newSpeed.first = 1;
+			newSpeed.second = 1;
+			life = 1;
+			strength = 1;
+		}
+		else
+		{
+			newSpeed.first = 1.5;
+			newSpeed.second = 1.5;
+			life = 2;
+			strength = 2;
+		}
+
+		if (patern < 2)
+			CreateEnemiePaternSolo(type, patern, newSpeed, strength, life);
+		else if (patern == 2)
+			CreateEnemiePack(type, patern, newSpeed, strength, life);
+		else if (patern >= 4)
+			CreateEnemiePaternLine(type, patern, newSpeed, strength, life);
+		
+		else
+			CreateEnemiePaternVFLY(type, patern, newSpeed, strength, life);
+	}
 }
+
 
 void Game::sendGame()const
 {
-    // sendBullet();
-  // sendObs();
-  // sendIA();
-  // sendBonus();
+  sendBullet();
+  //sendObs();
+  sendIA();
+  //sendBonus();
   sendShip();
 }
 

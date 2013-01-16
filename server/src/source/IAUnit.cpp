@@ -1,6 +1,34 @@
 #include "../include/IAUnit.hpp"
 
 
+IAUnit::IAUnit(std::pair<float, float> speed, Protocol::type_drawable type, int id, ICollisionDefinition *rec
+	  , int health, int strength, bool isDestroyable, Game *game, Protocol::patern_enemie patern)
+    : Unit(speed, id, rec, health, strength, isDestroyable)
+  { 
+    _game = game;
+    _type = type; 
+    _patern = patern; 
+    _toShoot = false;
+	_canShoot = false;
+
+	if (patern != 4 && patern != 5)
+	{
+		this->_direction.left = 1;
+		this->_direction.top = 0;
+		this->_direction.down = 0;
+		this->_direction.right = 0;
+		if (patern != 6)
+			this->_canShoot = true;
+	}
+	else
+	{
+		this->_direction.left = 0;
+		this->_direction.top = 0;
+		this->_direction.down = 1;
+		this->_direction.right = 0;
+	}
+  };
+
 IAUnit::~IAUnit(void)
 {
 }
@@ -25,7 +53,7 @@ void IAUnit::update(double time)
 
 void IAUnit::paternSolo(int time)
 {
-
+	
 }
 
 void IAUnit::paternPack(int time)
@@ -48,7 +76,15 @@ void IAUnit::paternPack(int time)
 
 void IAUnit::paternLineToDiago(int time)
 {
+	if (this->getPositionX() < XMAX / 2)
+	{
+		if (this->_patern == 5)
+			this->_direction.down = 1;
+		else
+			this->_direction.top = 1;
 
+		this->_canShoot = true;
+	}
 }
 
 void IAUnit::chooseDirection(double time)
@@ -60,6 +96,7 @@ void IAUnit::chooseDirection(double time)
 	else if (this->_patern == 4 || this->_patern == 5)
 		paternLineToDiago(time);
 }
+
 void IAUnit::takeDecision(double time)
 {
 	int		cadence = 3;
@@ -72,7 +109,7 @@ void IAUnit::takeDecision(double time)
 	
 	else
 		{
-			if ((int)time % cadence == 0)
+			if ((int)time % cadence == 0 && this->_canShoot == true)
 				this->_toShoot = true;
 			else
 			{
@@ -85,7 +122,7 @@ void IAUnit::takeDecision(double time)
 void IAUnit::executeDecision()
 {
 	if (this->_toShoot == true)
-		this->_game->fire(this->getId());
+		this->_game->fire_ia(this->getId());
 	else
 		this->_game->move(this->getId(),&(this->_direction));
 

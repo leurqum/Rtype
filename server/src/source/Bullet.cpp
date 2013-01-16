@@ -21,9 +21,15 @@ Protocol::type_drawable Bullet::getType()const
 void Bullet::update(double time)
 {
   Protocol::move *m = new Protocol::move();
-  m->right = 1;
+  if (this->getSpeed().first > 0)
+    m->right = 1;
+  else
+    m->right = 0;
   m->top = 0;
-  m->left = 0;
+  if (this->getSpeed().first < 0)
+    m->left = 1;
+  else
+    m->left = 0;
   m->down = 0;
   
   if (this->getType() == Protocol::BULLET_LINEAR) 

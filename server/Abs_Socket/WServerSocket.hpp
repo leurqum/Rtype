@@ -37,8 +37,10 @@ private:
 	void						callBack(std::list<SOCKET>::iterator & it);
 
 	SOCKET						_listenSocketTcp;
+	SOCKET						_listenSocketUdp;
 	std::list<SOCKET>			_clientsList;
 	std::map<SOCKET, ISocket *>	_clientsSocksMap;
+	std::map<std::string, ISocket *>	_clientsSocksUdpMap;
 	fd_set						_readFd;
 	InterpretPackage *			_interPckg;
 	struct sockaddr_in			_servAddr;
