@@ -25,7 +25,7 @@ bool UMutex::MLock()
   return (true);
 }
 
-bool UMutex::MUnlock()
+bool UMutex::MUnLock()
 {
   int res = 0;
 
@@ -35,7 +35,7 @@ bool UMutex::MUnlock()
   return (true);
 }
 
-bool UMutex::MTrylock()
+bool UMutex::MTryLock()
 {
   int res = 0;
 

@@ -16,7 +16,7 @@ CWMutex::CWMutex()
 	_mutex = mutex;
 }
 
-bool		CWMutex::MUnlock()
+bool		CWMutex::MUnLock()
 {
 	if (!ReleaseMutex(this->_mutex))
 		return (false);

@@ -4,8 +4,9 @@
 #include <pthread.h>
 #include <iostream>
 #include <stdlib.h>
+#include "IThread.h"
 
-class UThread
+class UThread : public IThread
 {
 private:
   pthread_t _thread;

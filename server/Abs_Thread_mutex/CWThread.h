@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <string>
 #include <iostream>
+
 class CWThread : public IThread
 {
 private:

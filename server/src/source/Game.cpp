@@ -42,7 +42,7 @@ void Game::addPlayer(Player *p)
 {
   mutexPlayers->MLock();
   playerList.push_back(p);
-  mutexPlayers->MUnlock();
+  mutexPlayers->MUnLock();
 }
 
 void Game::checkPlayer()
@@ -59,7 +59,7 @@ void Game::checkPlayer()
       addHumainUnitByPlayer(playerList.back()->getId());
       createRandomEnemie(1);
     }
-  mutexPlayers->MUnlock();
+  mutexPlayers->MUnLock();
 }
 
 bool Game::allDead()
@@ -138,7 +138,7 @@ Player* Game::createPlayer(int id, std::string name, ISocket *tcp, ISocket *udp)
 
   mutexPlayers->MLock();
   playerList.push_back(p);
-  mutexPlayers->MUnlock();
+  mutexPlayers->MUnLock();
 
   return (p);
 }
@@ -187,11 +187,11 @@ HumainUnit *Game::getUnitHumanByPlayer(int id)const
     {
       if ((*it)->getPlayerId() == id)
 	{
-	  mutexPlayers->MUnlock();
+	  mutexPlayers->MUnLock();
 	  return (*it);
 	}
     }
-  mutexPlayers->MUnlock();
+  mutexPlayers->MUnLock();
   return NULL;
 }
 
@@ -243,11 +243,11 @@ Player *Game::getPlayer(int id)const
     {
       if ((*it)->getId() == id)
 	{
-	  mutexPlayers->MUnlock();
+	  mutexPlayers->MUnLock();
 	  return (*it);
 	}
     }
-  mutexPlayers->MUnlock();
+  mutexPlayers->MUnLock();
   return NULL;
 }
 
@@ -281,11 +281,11 @@ Player *Game::getPlayerBySockTcp(ISocket *sock)const
     {
       if ((*it)->getSocketTcp() == sock)
 	{
-	  mutexPlayers->MUnlock();
+	  mutexPlayers->MUnLock();
 	  return (*it);
 	}
     }
-  mutexPlayers->MUnlock();
+  mutexPlayers->MUnLock();
   return (NULL);
 }
 
@@ -296,11 +296,11 @@ Player *Game::getPlayerBySockUdp(ISocket *sock)const
     {
       if ((*it)->getSocketUdp() == sock)
 	{
-	  mutexPlayers->MUnlock();
+	  mutexPlayers->MUnLock();
 	  return (*it);
 	}
     }
-  mutexPlayers->MUnlock();
+  mutexPlayers->MUnLock();
   return (NULL);
 }
 
@@ -341,13 +341,13 @@ void Game::erasePlayer(int id)
       if ((*it)->getId() == id)
 	{
 	  playerList.erase(it);
-	  mutexPlayers->MUnlock();
+	  mutexPlayers->MUnLock();
 	  return;
 	}
       else
 	it++;
     }
-  mutexPlayers->MUnlock();
+  mutexPlayers->MUnLock();
 }
 
 void Game::eraseHumain(int id)
@@ -838,7 +838,7 @@ void Game::sendBullet()const
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
-      mutexPlayers->MUnlock();
+      mutexPlayers->MUnLock();
     }
 }
 
@@ -855,7 +855,7 @@ void Game::sendObs()const
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof( *d), d);
-      mutexPlayers->MUnlock();
+      mutexPlayers->MUnLock();
     }
 }
 
@@ -873,7 +873,7 @@ void Game::sendIA()const
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
-      mutexPlayers->MUnlock();
+      mutexPlayers->MUnLock();
     }
 }
 
@@ -890,7 +890,7 @@ void Game::sendBonus()const
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
-      mutexPlayers->MUnlock();
+      mutexPlayers->MUnLock();
     }
 }
 
@@ -908,6 +908,6 @@ void Game::sendShip()const
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
-      mutexPlayers->MUnlock();
+      mutexPlayers->MUnLock();
     }
 }
