@@ -714,7 +714,7 @@ void Game::sendBullet()const
       d->type = (*it)->getType();
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
       mutexPlayers->MUnlock();
     }
 }
@@ -731,7 +731,7 @@ void Game::sendObs()const
       d->type = Protocol::OBSTACLE;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof( *d), d);
       mutexPlayers->MUnlock();
     }
 }
@@ -748,7 +748,7 @@ void Game::sendIA()const
       d->type = (*it)->getType();
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
       mutexPlayers->MUnlock();
     }
 }
@@ -765,7 +765,7 @@ void Game::sendBonus()const
       d->type = Protocol::BONUS;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
       mutexPlayers->MUnlock();
     }
 }
@@ -784,7 +784,7 @@ void Game::sendShip()const
       mutexPlayers->MLock();
       printf("%f, %f\n", d->yPosition, d->xPosition);
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(sizeof(Protocol::drawable *)), d);
+	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
       mutexPlayers->MUnlock();
     }
 }
