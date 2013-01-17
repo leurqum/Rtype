@@ -136,7 +136,7 @@ Protocol::reponse_type				Network::Join(int id)
 	return rep.response;
 }
 
-std::list<Protocol::party>			Network::GetGameList() const
+std::list<Protocol::party*>			Network::GetGameList() const
 {
 	void*						package;
 	Protocol::package			header;
@@ -144,7 +144,7 @@ std::list<Protocol::party>			Network::GetGameList() const
 	header.size = 0;
 
 	//Protocol::response			rep;
-	std::list<Protocol::party> partys;
+	std::list<Protocol::party*> partys;
 
 	// send header
 	package = new char[sizeof(header)];
@@ -152,14 +152,24 @@ std::list<Protocol::party>			Network::GetGameList() const
 	this->socketTCP->send(package, sizeof(header));
 
 	// get reponse
-	void*	game_list;
-	std::size_t received = 0;
-	//this->socketTCP->receive(game_list, sizeof(rep), received);
-	//rep = *(Protocol::response*)data_reponse;
-	//header_reponse =  (Protocol::response)(header_reponse);
-	//for (int i = 0; i < )
-	//{
-	//}
+	void*			data;
+	std::size_t		received;
+	this->socketTCP->receive(data, 1024, received);
+	// get header;
+	Protocol::response* rep = (Protocol::response*)data;
+	data = &data + sizeof(Protocol::response);
+	Protocol::parties* nb_partie = (Protocol::parties*)(data);
+	data = &data + sizeof(Protocol::parties);
+	if (rep->response == Protocol::VALIDE)
+	{
+		for (int i = 0; i < nb_partie->nb_parties; i++)
+		{
+			Protocol::party* temp = new Protocol::party;;
+			temp = (Protocol::party*)&data;
+			partys.push_back(temp);
+			data = &data + sizeof(Protocol::party);
+		}
+	}
 
 	return partys;
 }
