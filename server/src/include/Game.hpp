@@ -1,7 +1,6 @@
 #ifndef __GAME__
 #define __GAME__
 
-#include <sys/time.h>
 #include <list>
 #include <map>
 #include <iostream>
