@@ -10,32 +10,58 @@
 #include <string>
 #include <time.h>
 
+long t;
+
 Game::Game(int id)
 {
   _id = id;
   mutexPlayers = new MyMutex();
 }
 
+static long myclock()
+{
+  struct timeval tv; 
+  gettimeofday(&tv, NULL);
+  return (tv.tv_sec * 1000000) + tv.tv_usec;
+}
+
 void Game::loop()
 {
   clock_t init;
-  double time = 0;
 
-  init = clock();
+  init = myclock();
+  t = 0;
   while (1)
     {
       collision();
       checkPlayer();
-      update(time);
-      time = 10 * (double)(clock() - init) / (double)CLOCKS_PER_SEC;
+      update(t);
       sendGame();
-	#ifdef __unix__
-		usleep(20000);
-	#endif
-	#ifdef _WIN32
-		Sleep(20000);
-	#endif
+      eraseBulletOut();
+      
+#ifdef __unix__
+      usleep(20000);
+#endif
+#ifdef _WIN32
+      Sleep(20000);
+#endif
+      t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC);
     }  
+}
+
+void Game::eraseBulletOut()
+{
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    {
+      if (((*it)->getPositionX() > XMAX &&
+	   (*it)->getPositionY() > YMAX) || 
+	  ((*it)->getPositionX() < 0 &&
+	   (*it)->getPositionY() < 0))
+	{
+	  it = bulletList.erase(it);
+	  it--;
+	}
+    }
 }
 
 void Game::addPlayer(Player *p)
@@ -575,15 +601,19 @@ bool Game::collisionWithBonus(HumainUnit *u)
 
 void Game::fire(int id)
 {
-  Unit *u = getUnitHumanByPlayer(id);
+  HumainUnit *u = getUnitHumanByPlayer(id);
   
   if (u == NULL)
     return;
-  
+  double time  = u->getTimeBullet();
+  if (t - time < 1)
+      return;
   std::pair<float, float> pos = u->getPosition();
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
- 
+  
+  std::cout<<"FIREEE"<<std::endl;
   createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
+  u->setTimeBullet(t);
 }
 
 void Game::fire_ia(int id)

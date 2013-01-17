@@ -1,8 +1,12 @@
 #ifndef __GAME__
 #define __GAME__
 
+#include <sys/time.h>
 #include <list>
 #include <map>
+#include <iostream>
+#include <string.h>
+#include <cstdlib>
 #include "./../../Abs_Socket/ISocket.hpp"
 #include "Player.hpp"
 #include "Bullet.hpp"
@@ -11,9 +15,6 @@
 #include "./../../../protocol.h"
 #include "MovingObstacle.hpp"
 #include "LifePowerUp.hpp"
-#include <iostream>
-#include <string.h>
-#include <cstdlib>
 
 class IAUnit;
 class HumainUnit;
@@ -47,6 +48,7 @@ public:
   LifePowerUp* createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength);
   Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable);
  
+  void eraseBulletOut();
   void addPlayer(Player *p);
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitHumanByPlayer(int id)const;
