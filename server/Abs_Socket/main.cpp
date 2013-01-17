@@ -12,7 +12,12 @@
 
 int	main(int ac, char ** av)
 {
-  Server *s = new Server();
-  system("PAUSE");
-  return 0;
+	if (ac != 2)
+	{
+		std::cerr << "USAGE: " << av[0] << " PORT" << std::endl;
+		return 0;
+	}
+
+  Server *s = new Server(av[1]);
+  return 1;
 }

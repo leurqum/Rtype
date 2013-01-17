@@ -21,9 +21,23 @@ void	WServerSocket::addNewPeer(void * peer)
 	std::cout << "new Client !" << std::endl;
 	static int id = 0;
 	ISocket * acc = this->myaccept(peer);
+
 	ISocket * sockUdp = new WSocket();
 	sockUdp->setUDP(true);
-	sockUdp->connectToServer(acc->getHost(), "4246");
+	std::ostringstream convert;
+	convert << this->_portUdpPeer;
+	sockUdp->connectToServer(acc->getHost(), convert.str());
+	int * header = new int[2];
+	Protocol::portUdp portNo;
+	portNo.port = this->_portUdpPeer;
+	header[0] = Protocol::PORT_UDP;
+	header[1] = sizeof(portNo);
+	void * pckg = new char[(2 * sizeof(int)) + sizeof(portNo)];
+	memcpy(pckg, header, (2 * sizeof(int)));
+	memcpy(((char *)pckg) + (2 * sizeof(int)), &portNo, sizeof(portNo));
+	acc->sendv((2 * sizeof(int)) + sizeof(portNo), pckg);
+	this->_portUdpPeer++;
+
 	this->_server->createPlayerWaiting(id, acc->getHost(), acc, sockUdp);
 
 	this->_clientsList.push_back(((WSocket *)(acc))->getSocket());
@@ -142,6 +156,7 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
 	}
 	ss << listenPort;
 	ss >> port;
+	this->_portUdpPeer = port + 1;
 	ss.str("");
 	ss.clear();
 	// ========= TCP =========
@@ -178,8 +193,8 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
     }
 
 
-	this->_servAddr.sin_port = htons(4245);
-
+  this->_servAddr.sin_port = htons(this->_portUdpPeer);
+  this->_portUdpPeer++;
 	this->_listenSocketUdp = socket(AF_INET, SOCK_DGRAM, 0);
   if (this->_listenSocketUdp <= 0)
     {

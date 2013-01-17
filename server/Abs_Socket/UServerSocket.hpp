@@ -47,6 +47,7 @@ private:
   InterpretPackage*		_interPckg;
   struct sockaddr_in		_servAddr;
   Server			* _server;
+  int							_portUdpPeer;
 };
 
 #endif
