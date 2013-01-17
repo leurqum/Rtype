@@ -39,8 +39,8 @@ void Game::loop()
       sendGame();
       eraseBulletOut();
       eraseIaOut();
-      eraseBonusOut();
-      eraseObsOut();
+      //eraseBonusOut();
+      // eraseObsOut();
 
 #ifdef __unix__
       usleep(20000);
@@ -58,8 +58,8 @@ void Game::eraseBulletOut()
     {
       if ((*it)->getPositionX() > XMAX ||
 	   (*it)->getPositionY() > YMAX || 
-	  (*it)->getPositionX() < 0 ||
-	  (*it)->getPositionY() < 0)
+	  (*it)->getPositionX() < -15 ||
+	  (*it)->getPositionY() < -15)
 	{
 	  it = bulletList.erase(it);
 	  it--;
@@ -69,14 +69,12 @@ void Game::eraseBulletOut()
 
 void Game::eraseIaOut()
 {
-  for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
+  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     {
-      if ((*it)->getPositionX() > XMAX ||
-	   (*it)->getPositionY() > YMAX || 
-	  (*it)->getPositionX() < 0 ||
-	  (*it)->getPositionY() < 0)
+      if ((*it)->getPositionX() < -15)
 	{
-	  it = humainList.erase(it);
+	  std::cout<<"PASSSSSSSS ERRRRAAASSEE"<<std::endl;
+	  it = iaList.erase(it);
 	  it--;
 	}
     }
@@ -86,10 +84,7 @@ void Game::eraseObsOut()
 {
   for (std::list<MovingObstacle*>::iterator it = obsList.begin(); it != obsList.end(); it++)
     {
-      if ((*it)->getPositionX() > XMAX ||
-	   (*it)->getPositionY() > YMAX || 
-	  (*it)->getPositionX() < 0 ||
-	  (*it)->getPositionY() < 0)
+      if ((*it)->getPositionX() < -15)
 	{
 	  it = obsList.erase(it);
 	  it--;
@@ -101,10 +96,7 @@ void Game::eraseBonusOut()
 {
   for (std::list<LifePowerUp*>::iterator it = bonusList.begin(); it != bonusList.end(); it++)
     {
-      if ((*it)->getPositionX() > XMAX ||
-	   (*it)->getPositionY() > YMAX || 
-	  (*it)->getPositionX() < 0 ||
-	  (*it)->getPositionY() < 0)
+      if ((*it)->getPositionX() < -15)
 	{
 	  it = bonusList.erase(it);
 	  it--;
@@ -169,7 +161,6 @@ void Game::sendBulletErase(Bullet *b)
   d->xPosition = b->getPositionX();
   d->yPosition = b->getPositionY();
   d->type = b->getType();
-  d->dead = true;
   d->life = 0;
   mutexPlayers->MLock();
   for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -185,7 +176,6 @@ void Game::sendObsErase(MovingObstacle *b)
   d->xPosition = b->getPositionX();
   d->yPosition = b->getPositionY();
   d->type = Protocol::OBSTACLE;
-  d->dead = true;
   d->life = 0;
   mutexPlayers->MLock();
   for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -201,7 +191,6 @@ void Game::sendIaErase(IAUnit *b)
   d->xPosition = b->getPositionX();
   d->yPosition = b->getPositionY();
   d->type = b->getType();
-  d->dead = true;
   d->life = 0;
   mutexPlayers->MLock();
   for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -217,7 +206,6 @@ void Game::sendBonusErase(LifePowerUp *b)
   d->xPosition = b->getPositionX();
   d->yPosition = b->getPositionY();
   d->type = Protocol::BONUS;
-  d->dead = true;
   d->life = 0;
   mutexPlayers->MLock();
   for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -233,7 +221,6 @@ void Game::sendShipErase(HumainUnit *b)
   d->xPosition = b->getPositionX();
   d->yPosition = b->getPositionY();
   d->type = Protocol::SHIP;
-  d->dead = true;
   d->life = 0;
   mutexPlayers->MLock();
   for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -254,8 +241,8 @@ void Game::collision()
   // for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
   //   collisionHumainWithBullet((*it));
   
-  // for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
-  //   collisionWithEnemie((*it));
+  for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
+    collisionWithEnemie((*it));
 
   // for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
   //   if (collisionBWithObs((*it)) == true)
@@ -424,7 +411,7 @@ void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
 HumainUnit* Game::addHumainUnitByPlayer(int idPlayer)
 {
   std::pair<float, float> pos(50, 50);
-  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
+  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 33, 17);
  
   HumainUnit *h = new HumainUnit(std::pair<float, float> (1, 1), idPlayer, humainList.size(), coll, 3, 1, true, this);
   
@@ -751,7 +738,7 @@ void Game::fire(int id)
   if (t - time < 1)
       return;
   std::pair<float, float> pos = u->getPosition();
-  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
+  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 18, 18);
   
   // std::cout<<"FIREEE"<<std::endl;
   createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
@@ -905,7 +892,7 @@ void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::
  		else
 			pat = Protocol::SOLO;
 
-		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 3, 3);
+		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 28, 36);
 		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
 			     true, Protocol::ENEMY_EASY, Protocol::SOLO);
 }
@@ -1007,7 +994,6 @@ void Game::sendBullet()const
       d->xPosition = (*it)->getPositionX();
       d->yPosition = (*it)->getPositionY();
       d->type = (*it)->getType();
-      d->dead = false;
       d->life = 1;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -1026,7 +1012,6 @@ void Game::sendObs()const
       d->xPosition = (*it)->getPositionX();
       d->yPosition = (*it)->getPositionY();
       d->type = Protocol::OBSTACLE;
-      d->dead = false;
       d->life = 1;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -1045,7 +1030,6 @@ void Game::sendIA()const
       d->xPosition = (*it)->getPositionX();
       d->yPosition = (*it)->getPositionY();
       d->type = (*it)->getType();
-      d->dead = false;
       d->life = 1;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -1064,7 +1048,6 @@ void Game::sendBonus()const
       d->xPosition = (*it)->getPositionX();
       d->yPosition = (*it)->getPositionY();
       d->type = Protocol::BONUS;
-      d->dead = false;
       d->life = 1;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
@@ -1084,8 +1067,7 @@ void Game::sendShip()const
 	  d->id = (*it)->getId();
 	  d->xPosition = (*it)->getPositionX();
 	  d->yPosition = (*it)->getPositionY();
-	  d->type = Protocol::SHIP;;
-	  d->dead = false;
+	  d->type = Protocol::SHIP;
 	  d->life = (*it)->getHealth();
 	  mutexPlayers->MLock();
 	  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)

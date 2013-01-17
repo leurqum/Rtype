@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
-** Last update Thu Jan 17 14:33:31 2013 mathieu leurquin
+** Last update Thu Jan 17 15:38:42 2013 mathieu leurquin
 */
 
 #ifndef __PROTOCOOL__
@@ -82,7 +82,6 @@ typedef	struct
   type_drawable	type;
   float		xPosition;
   float		yPosition;
-  bool		dead;
   int		life;
 }	drawable;
 
