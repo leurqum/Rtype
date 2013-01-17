@@ -1,14 +1,30 @@
-#include "../include/Game.hpp"
+#include <string>
+#include <time.h>
 #include <stdio.h>
+#include "../include/Game.hpp"
 #ifdef __unix__
 	#include <unistd.h>
+	#include <sys/time.h>
 #endif
 #ifdef _WIN32
 	#include <Windows.h>
-#endif
+	#include <sys/timeb.h>
 
-#include <string>
-#include <time.h>
+	struct timeval
+	{
+        long    tv_sec; 
+        long    tv_usec;
+	};
+
+	int gettimeofday (struct timeval *tp, void *tz)
+	{
+		struct _timeb timebuffer;
+		_ftime (&timebuffer);
+		tp->tv_sec = timebuffer.time;
+		tp->tv_usec = timebuffer.millitm * 1000;
+		return 0;
+	}
+#endif
 
 long t;
 
@@ -39,16 +55,17 @@ void Game::loop()
       sendGame();
       eraseBulletOut();
       eraseIaOut();
-      //eraseBonusOut();
-      // eraseObsOut();
+      eraseBonusOut();
+       eraseObsOut();
 
 #ifdef __unix__
       usleep(20000);
+      t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC);
 #endif
 #ifdef _WIN32
-      Sleep(20000);
+      Sleep(20);
+      t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC) / 1000;
 #endif
-      t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC);
     }  
 }
 
