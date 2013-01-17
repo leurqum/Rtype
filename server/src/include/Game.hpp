@@ -48,7 +48,11 @@ public:
   LifePowerUp* createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength);
   Bullet *createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable);
  
+  void eraseIaOut();
   void eraseBulletOut();
+  void eraseBonusOut();
+  void eraseObsOut();
+
   void addPlayer(Player *p);
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitHumanByPlayer(int id)const;
@@ -63,6 +67,14 @@ public:
   Player *getPlayerBySockTcp(ISocket *socket_tcp)const;
   Player *getPlayerBySockUdp(ISocket *socket_udp)const;
   int getId()const;
+
+  void sendBulletErase(Bullet *b);
+  void sendObsErase(MovingObstacle *b);
+  void sendIaErase(IAUnit *b);
+  void sendBonusErase(LifePowerUp *b);
+  void sendShipErase(HumainUnit *b);
+
+
   void eraseBullet(int id);
   void eraseBulletsPlayer(int idPlayer);
   void erasePlayer(int id);

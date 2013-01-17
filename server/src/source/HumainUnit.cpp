@@ -4,11 +4,6 @@ HumainUnit::~HumainUnit(void)
 {
 }
 
-// Player *HumainUnit::getPlayer()const
-// {
-//   return (_p);
-// }
-
 int HumainUnit::getPlayerId()const
 {
   return (_idPlayer);
@@ -16,10 +11,20 @@ int HumainUnit::getPlayerId()const
 void HumainUnit::update(double time)
 {
   if (this->getHealth() <= 0)
-    this->_type = Protocol::DEAD;
+    _game->sendShipErase(this);
 }
 
 Protocol::type_drawable HumainUnit::getType()const
 {
   return (_type);
+}
+
+double HumainUnit::getTimeBullet()const
+{
+  return _lastBullet;
+}
+
+void HumainUnit::setTimeBullet(double time)
+{
+  _lastBullet = time;
 }

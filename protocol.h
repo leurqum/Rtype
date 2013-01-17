@@ -5,7 +5,7 @@
 ** Login   <marche_m@epitech.net>
 ** 
 ** Started on  Sun Dec 16 16:18:13 2012 marche_m (Maxime Marchès)
-** Last update Tue Jan 15 18:03:54 2013 mathieu leurquin
+** Last update Thu Jan 17 14:33:31 2013 mathieu leurquin
 */
 
 #ifndef __PROTOCOOL__
@@ -73,15 +73,17 @@ enum patern_enemie
   LINE
 };
 
-#define XMAX 800
+#define XMAX 700
 #define YMAX 600
 
 typedef	struct
 {
-  int  id;
-  type_drawable  type;
-  float  xPosition;
-  float  yPosition;
+  int		id;
+  type_drawable	type;
+  float		xPosition;
+  float		yPosition;
+  bool		dead;
+  int		life;
 }	drawable;
 
 //------------------------------------------------

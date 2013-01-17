@@ -38,7 +38,10 @@ void Game::loop()
       update(t);
       sendGame();
       eraseBulletOut();
-      
+      eraseIaOut();
+      eraseBonusOut();
+      eraseObsOut();
+
 #ifdef __unix__
       usleep(20000);
 #endif
@@ -53,16 +56,62 @@ void Game::eraseBulletOut()
 {
   for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
     {
-      if (((*it)->getPositionX() > XMAX &&
-	   (*it)->getPositionY() > YMAX) || 
-	  ((*it)->getPositionX() < 0 &&
-	   (*it)->getPositionY() < 0))
+      if ((*it)->getPositionX() > XMAX ||
+	   (*it)->getPositionY() > YMAX || 
+	  (*it)->getPositionX() < 0 ||
+	  (*it)->getPositionY() < 0)
 	{
 	  it = bulletList.erase(it);
 	  it--;
 	}
     }
 }
+
+void Game::eraseIaOut()
+{
+  for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
+    {
+      if ((*it)->getPositionX() > XMAX ||
+	   (*it)->getPositionY() > YMAX || 
+	  (*it)->getPositionX() < 0 ||
+	  (*it)->getPositionY() < 0)
+	{
+	  it = humainList.erase(it);
+	  it--;
+	}
+    }
+}
+
+void Game::eraseObsOut()
+{
+  for (std::list<MovingObstacle*>::iterator it = obsList.begin(); it != obsList.end(); it++)
+    {
+      if ((*it)->getPositionX() > XMAX ||
+	   (*it)->getPositionY() > YMAX || 
+	  (*it)->getPositionX() < 0 ||
+	  (*it)->getPositionY() < 0)
+	{
+	  it = obsList.erase(it);
+	  it--;
+	}
+    }
+}
+
+void Game::eraseBonusOut()
+{
+  for (std::list<LifePowerUp*>::iterator it = bonusList.begin(); it != bonusList.end(); it++)
+    {
+      if ((*it)->getPositionX() > XMAX ||
+	   (*it)->getPositionY() > YMAX || 
+	  (*it)->getPositionX() < 0 ||
+	  (*it)->getPositionY() < 0)
+	{
+	  it = bonusList.erase(it);
+	  it--;
+	}
+    }
+}
+
 
 void Game::addPlayer(Player *p)
 {
@@ -74,7 +123,6 @@ void Game::addPlayer(Player *p)
 void Game::checkPlayer()
 {
   mutexPlayers->MLock();
-  // std::cout<<"humain : " << humainList.size() << " player : "<< playerList.size()<<std::endl;
   if (humainList.size() < playerList.size())
     {
       if (playerList.back() == NULL)
@@ -100,7 +148,7 @@ void Game::update(double time)
 {
   // createRandomObs(time);
   // createRandomBonus(time);
-  //  createRandomEnemie(time);
+  //createRandomEnemie(time);
 
   for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
@@ -112,11 +160,96 @@ void Game::update(double time)
     (*it)->update(time);
 }
 
+void Game::sendBulletErase(Bullet *b)
+{
+  Protocol::drawable * d = new Protocol::drawable(); 
+ 
+  memset(d, 0, sizeof(Protocol::drawable *));
+  d->id = b->getId();
+  d->xPosition = b->getPositionX();
+  d->yPosition = b->getPositionY();
+  d->type = b->getType();
+  d->dead = true;
+  d->life = 0;
+  mutexPlayers->MLock();
+  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+    (*it)->getSocketUdp()->sendv(sizeof(*d), d);
+  mutexPlayers->MUnLock();
+}
+
+void Game::sendObsErase(MovingObstacle *b)
+{
+  Protocol::drawable * d = new Protocol::drawable(); 
+  memset(d, 0, sizeof(Protocol::drawable *));
+  d->id = b->getId();
+  d->xPosition = b->getPositionX();
+  d->yPosition = b->getPositionY();
+  d->type = Protocol::OBSTACLE;
+  d->dead = true;
+  d->life = 0;
+  mutexPlayers->MLock();
+  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+    (*it)->getSocketUdp()->sendv(sizeof( *d), d);
+  mutexPlayers->MUnLock();
+}
+
+void Game::sendIaErase(IAUnit *b)
+{
+  Protocol::drawable * d = new Protocol::drawable(); 
+  memset(d, 0, sizeof(Protocol::drawable *));
+  d->id = b->getId();
+  d->xPosition = b->getPositionX();
+  d->yPosition = b->getPositionY();
+  d->type = b->getType();
+  d->dead = true;
+  d->life = 0;
+  mutexPlayers->MLock();
+  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+    (*it)->getSocketUdp()->sendv(sizeof(*d), d);
+  mutexPlayers->MUnLock();
+}
+
+void Game::sendBonusErase(LifePowerUp *b)
+{
+  Protocol::drawable * d = new Protocol::drawable(); 
+  memset(d, 0, sizeof(Protocol::drawable *));
+  d->id = b->getId();
+  d->xPosition = b->getPositionX();
+  d->yPosition = b->getPositionY();
+  d->type = Protocol::BONUS;
+  d->dead = true;
+  d->life = 0;
+  mutexPlayers->MLock();
+  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+    (*it)->getSocketUdp()->sendv(sizeof(*d), d);
+  mutexPlayers->MUnLock();
+}
+
+void Game::sendShipErase(HumainUnit *b)
+{
+  Protocol::drawable * d = new Protocol::drawable(); 
+  memset(d, 0, sizeof(Protocol::drawable *));
+  d->id = b->getId();
+  d->xPosition = b->getPositionX();
+  d->yPosition = b->getPositionY();
+  d->type = Protocol::SHIP;
+  d->dead = true;
+  d->life = 0;
+  mutexPlayers->MLock();
+  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+    (*it)->getSocketUdp()->sendv(sizeof(*d), d);
+  mutexPlayers->MUnLock();
+}
+
 void Game::collision()
 {
   for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     if (collisionIaWithBullet((*it)) == true)
-      eraseIa((*it)->getId());
+      {
+	sendIaErase(*it);
+	it = iaList.erase(it);
+	it--;
+      }
   
   // for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
   //   collisionHumainWithBullet((*it));
@@ -126,8 +259,12 @@ void Game::collision()
 
   // for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
   //   if (collisionBWithObs((*it)) == true)
-  //     eraseBullet((*it)->getId());
-  
+  //     {
+  // 	sendBulletErase(*it);
+  // 	it = bulletList.erase(it);
+  // 	it--;
+  //     }
+
   // for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
   //   collisionWithBonus((*it));
 }
@@ -490,7 +627,8 @@ bool Game::collisionHumainWithBullet(HumainUnit *u)
 	   x < obsX + (*it)->getWidth()))
 	{
 	  u->setHealth(u->getHealth() - 1);
-	  eraseBullet((*it)->getId());
+	  sendBulletErase(*it);
+	  bulletList.erase(it);
 	  return (true);
 	}
     }
@@ -501,8 +639,8 @@ bool Game::collisionIaWithBullet(IAUnit *u)
 {
   for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
     {
-      // if (isFriendlyBullet(*it) != true)
-      // 	return (false);
+      if (isFriendlyBullet(*it) != true)
+       	return (false);
       float y = u->getPositionY();
       float x = u->getPositionX();
       float obsY = (*it)->getPositionY();
@@ -513,7 +651,8 @@ bool Game::collisionIaWithBullet(IAUnit *u)
 	   x < obsX + (*it)->getWidth()))
 	{
 	  std::cout<<"COLLISIONNNNNN"<<std::endl;
-	  eraseBullet((*it)->getId());
+	  sendBulletErase(*it);
+	  bulletList.erase(it);
 	  return (true);
 	}
     }
@@ -534,7 +673,8 @@ bool Game::collisionWithEnemie(HumainUnit *u)
 	   x < iaX + (*it)->getWidth()))
 	{
 	  u->setHealth(0);
-	  eraseIa((*it)->getId());
+	  sendIaErase(*it);
+	  iaList.erase(it);
 	  return (true);
 	}
     }
@@ -551,7 +691,7 @@ bool Game::collisionUWithObs(Unit *u)
       float mObsX = (*it)->getPositionX();
       if ((y + u->getHeight() > mObsY
 	   && y < mObsY + (*it)->getHeight()) &&
-	  (x + u->getWidth() > mObsX &&
+ 	  (x + u->getWidth() > mObsX &&
 	   x < mObsX + (*it)->getWidth()))
 	return (true);
     }
@@ -560,7 +700,7 @@ bool Game::collisionUWithObs(Unit *u)
 
 bool Game::collisionBWithObs(Bullet *b)
 {
-  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+  for (std::list<LifePowerUp*>::iterator it = bonusList.begin(); it != bonusList.end(); it++)
     {
       float y = b->getPositionY();
       float x = b->getPositionX();
@@ -571,7 +711,8 @@ bool Game::collisionBWithObs(Bullet *b)
 	  (x + b->getWidth() > mObsX &&
 	   x < mObsX + (*it)->getWidth()))
 	{
-	  eraseObs((*it)->getId());
+	  sendBonusErase(*it);
+	  bonusList.erase(it);
 	  return (true);
 	}
     }
@@ -592,7 +733,8 @@ bool Game::collisionWithBonus(HumainUnit *u)
 	   x < bX + (*it)->getWidth()))
 	{
 	  (*it)->applyToUnit(u);
-	  eraseBonus((*it)->getId());
+	  sendBonusErase(*it);
+	  bonusList.erase(it);
 	  return true;
 	}
     }
@@ -611,7 +753,7 @@ void Game::fire(int id)
   std::pair<float, float> pos = u->getPosition();
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 2, 2);
   
-  std::cout<<"FIREEE"<<std::endl;
+  // std::cout<<"FIREEE"<<std::endl;
   createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
   u->setTimeBullet(t);
 }
@@ -755,7 +897,7 @@ void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::
   //std::cout << "sa cree une ia " << patern << std::endl;
 		float x = XMAX + 1;
 		float y = rand() % YMAX + 1;
-		std::pair<float, float> pos(x,y);
+		std::pair<float, float> pos(500, 50);
 		Protocol::patern_enemie pat;
 
 		if (patern == 0)
@@ -865,6 +1007,8 @@ void Game::sendBullet()const
       d->xPosition = (*it)->getPositionX();
       d->yPosition = (*it)->getPositionY();
       d->type = (*it)->getType();
+      d->dead = false;
+      d->life = 1;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
@@ -882,6 +1026,8 @@ void Game::sendObs()const
       d->xPosition = (*it)->getPositionX();
       d->yPosition = (*it)->getPositionY();
       d->type = Protocol::OBSTACLE;
+      d->dead = false;
+      d->life = 1;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof( *d), d);
@@ -893,13 +1039,14 @@ void Game::sendIA()const
 {
   for (std::list<IAUnit*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
     {
-      //std::cout<<"send ia"<<std::endl;
       Protocol::drawable * d = new Protocol::drawable(); 
       memset(d, 0, sizeof(Protocol::drawable *));
       d->id = (*it)->getId();
       d->xPosition = (*it)->getPositionX();
       d->yPosition = (*it)->getPositionY();
       d->type = (*it)->getType();
+      d->dead = false;
+      d->life = 1;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
@@ -917,6 +1064,8 @@ void Game::sendBonus()const
       d->xPosition = (*it)->getPositionX();
       d->yPosition = (*it)->getPositionY();
       d->type = Protocol::BONUS;
+      d->dead = false;
+      d->life = 1;
       mutexPlayers->MLock();
       for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
 	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
@@ -927,17 +1076,21 @@ void Game::sendBonus()const
 void Game::sendShip()const
 {
   for (std::list<HumainUnit*>::const_iterator it = humainList.begin(); it != humainList.end(); it++)
-    {
-      
-      Protocol::drawable * d = new Protocol::drawable(); 
-      memset(d, 0, sizeof(Protocol::drawable *));
-      d->id = (*it)->getId();
-      d->xPosition = (*it)->getPositionX();
-      d->yPosition = (*it)->getPositionY();
-      d->type = (*it)->getType();
-      mutexPlayers->MLock();
-      for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	(*it)->getSocketUdp()->sendv(sizeof(*d), d);
-      mutexPlayers->MUnLock();
+    {      
+      if ((*it)->getHealth() > 0)
+	{
+	  Protocol::drawable * d = new Protocol::drawable(); 
+	  memset(d, 0, sizeof(Protocol::drawable *));
+	  d->id = (*it)->getId();
+	  d->xPosition = (*it)->getPositionX();
+	  d->yPosition = (*it)->getPositionY();
+	  d->type = Protocol::SHIP;;
+	  d->dead = false;
+	  d->life = (*it)->getHealth();
+	  mutexPlayers->MLock();
+	  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
+	    (*it)->getSocketUdp()->sendv(sizeof(*d), d);
+	  mutexPlayers->MUnLock();
+	}
     }
 }

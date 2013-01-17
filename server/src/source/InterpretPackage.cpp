@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan 16 16:00:25 2013 mathieu leurquin
+// Last update Thu Jan 17 13:11:16 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -26,7 +26,7 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
   if (sock->isUDP() == true)
     {
-      std::cout<<"receive something Udp"<<std::endl;
+      // std::cout<<"receive something Udp"<<std::endl;
       Protocol::cmd_client * cmd = ((Protocol::cmd_client*)data);
       if (cmd->fire == true)
 	this->execFire(data, sock);
@@ -51,8 +51,8 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
   int hdTmp[2];
   
   memcpy(hdTmp, header, 2 * sizeof(int));
-  std::cout << "id:" << hdTmp[0] << std::endl;
-  std::cout << "size:" << hdTmp[1] << std::endl;
+  // std::cout << "id:" << hdTmp[0] << std::endl;
+  // std::cout << "size:" << hdTmp[1] << std::endl;
   void (InterpretPackage::*pMethod)(void *, ISocket *) = (this->_funcMap[((Protocol::type_cmd)hdTmp[0])]);
   (this->*pMethod)(data, sock);
 }
@@ -144,7 +144,7 @@ void	InterpretPackage::execMove(Protocol::move * data, ISocket * sock)
     {
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	{
-	  std::cout << "je move un player list size : "<<(*it)->playerList.size() << std::endl;
+	  // std::cout << "je move un player list size : "<<(*it)->playerList.size() << std::endl;
 	  (*it)->move(p->getId(), data);
 	  // Protocol::response *rep = new Protocol::response();
 	  // rep->response = Protocol::VALIDE;
@@ -164,9 +164,9 @@ void	InterpretPackage::execFire(void * data, ISocket * sock)
       if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
 	{
 	  (*it)->fire(p->getId());
-	  Protocol::response *rep = new Protocol::response();
-	  rep->response = Protocol::VALIDE;
-	  sock->sendv(sizeof(Protocol::response*), (void*)rep);
+ 	  // Protocol::response *rep = new Protocol::response();
+	  // rep->response = Protocol::VALIDE;
+	  // sock->sendv(sizeof(*rep), (void*)rep);
 	}
     }
 }
