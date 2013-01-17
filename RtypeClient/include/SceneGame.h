@@ -30,13 +30,16 @@ public ASceneHover
   void unload();
   void setToBackground();
   void setToForeground();
+
+  template<typename T>
+    void updateList(std::list<T>& l, Protocol::drawable&);
  private:
 IScene* manageInput();
 
-  DrawerShip* ship[4]; // these are drawables updatable from a protocol::drawable.
-  std::list<DrawerEnemyBasic> enemy;
-  std::list<DrawerBullet> bullets;
-  Drawer2Bars drawer_2bars;
-  Network*		network;
+ std::list<DrawerShip> ships;
+ std::list<DrawerEnemyBasic> enemy;
+ std::list<DrawerBullet> bullets;
+ Drawer2Bars drawer_2bars;
+ Network*		network;
 };
 

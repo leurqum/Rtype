@@ -18,9 +18,9 @@ void DrawerBullet::update(float ms)
       if (initialValue.position.x < updater->xPosition)
 	drawable->animate(0);
       else if (initialValue.position.x > updater->xPosition)
-	drawable->animate(0);
-      initialValue.position.x = updater->xPosition;
-      initialValue.position.y = updater->yPosition;
+	drawable->animate(1);
+      initialValue.position.x = updater->xPosition - drawable->getModifiedValue().dimension.x / 2;;
+      initialValue.position.y = updater->yPosition - drawable->getModifiedValue().dimension.y / 2;;
       delete updater;
       updater = nullptr;
     }
@@ -42,6 +42,7 @@ void DrawerBullet::drawTo(IGraphicsManager* gm, const ValueDrawer& v) const
 
 void DrawerBullet::setUpdate(const Protocol::drawable& u)
 {
+  id = u.id;
   delete updater;
   updater = new Protocol::drawable(u);
 }

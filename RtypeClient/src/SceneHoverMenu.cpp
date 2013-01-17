@@ -24,7 +24,8 @@ IScene* SceneHoverMenu::update(float elapsedTime)
       if (menu.getSelectedId() == 0 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
 	  {
 		Network*	network = new Network(std::string("10.18.206.115"), 4242, 4245);
-		return new SceneGame(this->decoratedScene, network);
+		return new SceneGame(this->decoratedScene, network
+				     );
 	  }
       if (menu.getSelectedId() == 1 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
 	{

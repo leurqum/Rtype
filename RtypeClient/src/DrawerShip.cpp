@@ -1,27 +1,35 @@
 #include "DrawerShip.h"
 
-DrawerShip::DrawerShip(int id)
+DrawerShip::DrawerShip()
 {
+  id = -1;
   updater = nullptr;
   drawable = FactoryDrawable::getInstance()->createShip();
-  // WONTFIX: if id incorrect, might crash
-  // wont fix cuz learn to call correct constructor.
-  drawable->animate(id);
 }
 
 void DrawerShip::update(float ms)
 {
   if (updater)
     {
-      initialValue.position.x = updater->xPosition;
-      initialValue.position.y = updater->yPosition;
+      drawable->animate(id % 5); // there are only 5 animations/colors.
+      drawable->update(ms); // we do it here because otherwise the initial (and modified) value would be 0, we then couldn't center the sprite.
+      initialValue.position.x = updater->xPosition - drawable->getModifiedValue().dimension.x / 2;
+      initialValue.position.y = updater->yPosition - drawable->getModifiedValue().dimension.y / 2;
+      std::cout << drawable->getModifiedValue().dimension.x << std::endl;
+      
+      life = updater->life;
+
+      // FIXME: doing this each update is redundant.
+
       delete updater;
       updater = nullptr;
     }
-  drawable->update(ms);
-
-  // to call last because it stores the computed value and modify it when we call next update.
-  ADrawer::update(ms); // Don't know if I should call Modifiable::update(ms) rather..?
+  else
+    drawable->update(ms);
+  ADrawer::update(ms);
+ 
+  
+  
 }
 
 void DrawerShip::drawTo(IGraphicsManager* gm) const
@@ -36,6 +44,17 @@ void DrawerShip::drawTo(IGraphicsManager* gm, const ValueDrawer& v) const
 
 void DrawerShip::setUpdate(const Protocol::drawable& u)
 {
+  id = u.id;
   delete updater;
   updater = new Protocol::drawable(u);
+}
+
+int DrawerShip::getId() const
+{
+  return id;
+}
+
+int DrawerShip::getLife() const
+{
+  return life;
 }

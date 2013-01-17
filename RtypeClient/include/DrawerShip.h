@@ -8,14 +8,18 @@
 class DrawerShip : public ADrawer // NOTE: I do not inherit from DrawableDrawer because I might be interested in linking other drawers to my ship (explosions... bonuses..); and neither from DrawerLayer because... well, I want to have explicit verbose control over my attributes (maintenance stuff)
 {
  public:
-  DrawerShip(int id);
+  DrawerShip();
 
   virtual void drawTo(IGraphicsManager*) const override;
   virtual void drawTo(IGraphicsManager*, const ValueDrawer&) const override;
 
   virtual void update(float ms) override;
   virtual void setUpdate(const Protocol::drawable& u);
+  int getId() const;
+  int getLife() const;
  private:
   DrawableGeneric* drawable;
   Protocol::drawable* updater;
+  int id;
+  int life;
 };

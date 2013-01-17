@@ -1,23 +1,19 @@
 #include "SceneGame.h"
 
 SceneGame::SceneGame(IScene& decoratedScene, Network* net) :
-	ASceneHover(decoratedScene), network(net)
+  ASceneHover(decoratedScene), network(net)
 {
-  ship[0] = nullptr;
-  ship[1] = nullptr;
-  ship[2] = nullptr;
-  ship[3] = nullptr;
-  drawer_2bars.setBar1(100);
-  enemy.push_back(DrawerEnemyBasic());
-  Protocol::drawable d;
-  d.xPosition = 150;
-  d.yPosition = 150;
-  d.id = -1;
-  d.type = Protocol::type_drawable::ENEMY_EASY;
-  enemy.back().setUpdate(d);
-  bullets.push_back(DrawerBullet());
-  d.xPosition += 30;
-  bullets.back().setUpdate(d);
+  drawer_2bars.setBar1(0);
+  // enemy.push_back(DrawerEnemyBasic());
+  // Protocol::drawable d;
+  // d.xPosition = 150;
+  // d.yPosition = 150;
+  // d.id = -1;
+  // d.type = Protocol::type_drawable::ENEMY_EASY;
+  // enemy.back().setUpdate(d);
+  // bullets.push_back(DrawerBullet());
+  // d.xPosition += 30;
+  // bullets.back().setUpdate(d);
 }
 
 SceneGame::~SceneGame(void)
@@ -40,65 +36,35 @@ IScene* SceneGame::update(float elapsedTime)
     {
       i++;
       Protocol::drawable d = network->GetPieceWorld(recved);
+      // Protocol::drawable d;
+      // d.type = Protocol::type_drawable::SHIP;
+      // static float y = 3;
+      // if (y < -1)
+      // 	y = 3;
+      // d.life = (y -= 0.0002);
+      // d.id = 0;
+      // d.xPosition = 50;
+      // d.yPosition = 50;
+      // std::cout << d.life << std::endl;
       // std::cout << "new update !" << std::endl;
       // std::cout << "received: " << recved << std::endl;
-      if (recved && d.type == Protocol::type_drawable::SHIP)
+      if (recved)
 	{
-	  // TODO: find right ship.
-	  // std::cout << "i'ts a ship !" << std::endl;
-	  // std::cout << d.xPosition << ";" << d.yPosition << std::endl;
-	  if (ship[0] == nullptr)
-	    {
-	      ship[0] = new DrawerShip(0);
-	    }
-	  ship[0]->setUpdate(d);
-	}
-      else if (recved && d.type == Protocol::type_drawable::ENEMY_EASY)
-	{
-	  bool found = false;
-	  // seek right enemy
-	  for (DrawerEnemyBasic& e : enemy)
-	    {
-	      if (e.getId() == d.id)
-		{
-		  std::cout << "update enemy: " << d.xPosition << ";" << d.yPosition << std::endl;
-		  e.setUpdate(d);
-		  found = true;
-		}
-	    }
-	  if (!found)
-	    {
-	      std::cout << "NEW Enemy ! " << d.xPosition << ";" << d.yPosition << std::endl;
-	      //create new enemy
-	      enemy.push_back(DrawerEnemyBasic());
-	      enemy.back().setUpdate(d);
-	    }
-	}
-      else if (recved && d.type == Protocol::type_drawable::BULLET_LINEAR)
-	{
-	  bool found = false;
-	  // seek right enemy
-	  for (DrawerBullet& b : bullets)
-	    {
-	      if (b.getId() == d.id)
-		{
-		  std::cout << "update bullet: " << d.xPosition << ";" << d.yPosition << std::endl;
-		  b.setUpdate(d);
-		  found = true;
-		}
-	    }
-	  if (!found)
-	    {
-	      std::cout << "NEW bullet ! " << d.xPosition << ";" << d.yPosition << std::endl;
-	      //create new enemy
-	      bullets.push_back(DrawerBullet());
-	      bullets.back().setUpdate(d);
-	    }
+	  if (d.type == Protocol::type_drawable::SHIP)
+	    updateList(ships, d);
+	  else if (d.type == Protocol::type_drawable::ENEMY_EASY)
+	    updateList(enemy, d);
+	  else if (d.type == Protocol::type_drawable::BULLET_LINEAR)
+	    updateList(bullets, d);
 	}
     }
 
-  if (ship[0])
-    ship[0]->update(elapsedTime);
+  if (ships.size() > 0)
+    drawer_2bars.setBar1(ships.front().getLife() * 100 / 3);
+  else
+    drawer_2bars.setBar1(0);
+  for (DrawerShip& s : ships)
+    s.update(elapsedTime);
   for (DrawerEnemyBasic& e : enemy)
     e.update(elapsedTime);
   for (DrawerBullet& b : bullets)
@@ -108,6 +74,42 @@ IScene* SceneGame::update(float elapsedTime)
 
   // std::cout << "scenegame END update" << std::endl;
   return manageInput(); // manage input before updates would improve responsiveness if we take it into account for our drawings, but we don't do this for the moment, so it would add unnessecary complexity.
+}
+
+template<typename T>
+void SceneGame::updateList(std::list<T>& l, Protocol::drawable& d)
+{
+  // TODO: Use a map ??? (the ship must know its color though. (color might be set at first update...)
+  bool found = false;
+  // seek right T
+  typename std::list<T>::iterator i = l.begin();
+  while (i != l.end() && !found)
+    {
+      if (i->getId() == d.id)
+	{
+	  found = true;
+	}
+      else
+	i++;
+    }
+
+  if (found) // we know the thing
+    {
+      if (d.life <= 0)
+	{
+	  l.erase(i);
+	  // TODO: create explosion !!!
+	}
+      else
+	i->setUpdate(d);
+    }
+  else if (d.life > 0) // we don't know it, but no reason to create it if it's dead
+    {
+      std::cout << "NEW thing ! " << d.xPosition << ";" << d.yPosition << std::endl;
+      //create new thing
+      l.push_back(T());
+      l.back().setUpdate(d);
+    }
 }
 
 void SceneGame::draw()
@@ -122,15 +124,9 @@ void SceneGame::draw()
   for (DrawerEnemyBasic& e : enemy)
     e.drawTo(gm);
 
-  // drawer_2bars.drawTo(gm);
-  if (ship[0] != nullptr)
-    ship[0]->drawTo(gm);
-  if (ship[1] != nullptr)
-    ship[0]->drawTo(gm);
-  if (ship[2] != nullptr)
-    ship[0]->drawTo(gm);
-  if (ship[3] != nullptr)
-    ship[0]->drawTo(gm);
+  drawer_2bars.drawTo(gm);
+  for (DrawerShip& s : ships)
+    s.drawTo(gm);
 }
 
 void SceneGame::load()
