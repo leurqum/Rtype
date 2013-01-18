@@ -47,8 +47,8 @@ Protocol::patern_enemie IAUnit::getPatern()const
 
 void IAUnit::update(double time)
 {
-		takeDecision(time);
-		executeDecision();
+  takeDecision(time);
+  executeDecision();
 }
 
 void IAUnit::paternSolo(int time)

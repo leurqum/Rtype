@@ -43,6 +43,7 @@ static long myclock()
 
 void Game::loop()
 {
+  srand(time(NULL));
   clock_t init;
 
   init = myclock();
@@ -56,8 +57,8 @@ void Game::loop()
       eraseBulletOut();
       eraseIaOut();
       eraseBonusOut();
-       eraseObsOut();
-
+      eraseObsOut();
+      
 #ifdef __unix__
       usleep(20000);
       t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC);
@@ -78,6 +79,7 @@ void Game::eraseBulletOut()
 	  (*it)->getPositionX() < -15 ||
 	  (*it)->getPositionY() < -15)
 	{
+	  sendBulletErase(*it);
 	  it = bulletList.erase(it);
 	  it--;
 	}
@@ -86,11 +88,11 @@ void Game::eraseBulletOut()
 
 void Game::eraseIaOut()
 {
-  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+  for (std::list<IIa*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     {
       if ((*it)->getPositionX() < -15)
 	{
-	  std::cout<<"PASSSSSSSS ERRRRAAASSEE"<<std::endl;
+	  sendIaErase(*it);
 	  it = iaList.erase(it);
 	  it--;
 	}
@@ -103,6 +105,7 @@ void Game::eraseObsOut()
     {
       if ((*it)->getPositionX() < -15)
 	{
+	  sendObsErase(*it);
 	  it = obsList.erase(it);
 	  it--;
 	}
@@ -115,6 +118,7 @@ void Game::eraseBonusOut()
     {
       if ((*it)->getPositionX() < -15)
 	{
+	  sendBonusErase(*it);
 	  it = bonusList.erase(it);
 	  it--;
 	}
@@ -141,6 +145,9 @@ void Game::checkPlayer()
 	}
       addHumainUnitByPlayer(playerList.back()->getId());
       createRandomEnemie(1);
+      createRandomEnemie(1);
+      createRandomEnemie(1);
+      iaList.front()->fire();
     }
   mutexPlayers->MUnLock();
 }
@@ -159,7 +166,7 @@ void Game::update(double time)
   // createRandomBonus(time);
   //createRandomEnemie(time);
 
-  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+  for (std::list<IIa*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
   
   for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
@@ -200,7 +207,7 @@ void Game::sendObsErase(MovingObstacle *b)
   mutexPlayers->MUnLock();
 }
 
-void Game::sendIaErase(IAUnit *b)
+void Game::sendIaErase(IIa *b)
 {
   Protocol::drawable * d = new Protocol::drawable(); 
   memset(d, 0, sizeof(Protocol::drawable *));
@@ -247,7 +254,7 @@ void Game::sendShipErase(HumainUnit *b)
 
 void Game::collision()
 {
-  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+  for (std::list<IIa*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     if (collisionIaWithBullet((*it)) == true)
       {
 	sendIaErase(*it);
@@ -255,12 +262,21 @@ void Game::collision()
 	it--;
       }
   
-  // for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
-  //   collisionHumainWithBullet((*it));
+  for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
+    collisionHumainWithBullet((*it));
   
   for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
     collisionWithEnemie((*it));
 
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    {
+      if (collisionWithBullet((*it)) == true)
+	{
+	  sendBulletErase(*it);
+	  it = bulletList.erase(it);
+	  it--;
+	}
+    }
   // for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
   //   if (collisionBWithObs((*it)) == true)
   //     {
@@ -273,9 +289,9 @@ void Game::collision()
   //   collisionWithBonus((*it));
 }
 
-IAUnit* Game::createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_drawable type, Protocol::patern_enemie patern)
+IIa* Game::createAIUnit(std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t)
 {
-  IAUnit *u = new IAUnit(speed, type, id, coll, health, strength, isDestroyable, this, patern);
+  IIa *u = getInstance(iaList.size(), pos, 2, h, w, t, this);
   
   iaList.push_back(u);
   return (u);
@@ -362,9 +378,9 @@ HumainUnit *Game::getUnitHumanByPlayer(int id)const
   return NULL;
 }
 
-IAUnit *Game::getUnitAI(int id)const
+IIa *Game::getUnitAI(int id)const
 {
-    for (std::list<IAUnit*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
+    for (std::list<IIa*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
     {
       if ((*it)->getId() == id)
 	return (*it);
@@ -535,7 +551,7 @@ void Game::eraseHumain(int id)
 
 void Game::eraseIa(int id)
 {
-  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end();)
+  for (std::list<IIa*>::iterator it = iaList.begin(); it != iaList.end();)
     {
       if ((*it)->getId() == id)
 	{
@@ -610,9 +626,30 @@ void Game::resetGame(double *time)
 
 bool Game::isFriendlyBullet(Bullet *b)
 {
-  if (getUnitHumanByPlayer(b->getUnit()) != NULL)
+  if (b->getUnit() == 0)
     return (true);
   return (false);
+}
+
+bool Game::collisionWithBullet(Bullet *u)
+{
+  for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
+    {
+      float y = u->getPositionY();
+      float x = u->getPositionX();
+      float obsY = (*it)->getPositionY();
+      float obsX = (*it)->getPositionX();
+      if (u != (*it) && ((y + u->getHeight() > obsY
+	   && y < obsY + (*it)->getHeight()) &&
+	  (x + u->getWidth() > obsX &&
+	   x < obsX + (*it)->getWidth())))
+	{
+	  sendBulletErase(*it);
+	  bulletList.erase(it);
+	  return (true);
+	}
+    }
+  return (false);	
 }
 
 bool Game::collisionHumainWithBullet(HumainUnit *u)
@@ -620,7 +657,7 @@ bool Game::collisionHumainWithBullet(HumainUnit *u)
   for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
     {
       if (isFriendlyBullet(*it) == true)
-	return (false);
+      	return (false);
       float y = u->getPositionY();
       float x = u->getPositionX();
       float obsY = (*it)->getPositionY();
@@ -639,7 +676,7 @@ bool Game::collisionHumainWithBullet(HumainUnit *u)
   return (false);	
 }
 
-bool Game::collisionIaWithBullet(IAUnit *u)
+bool Game::collisionIaWithBullet(IIa *u)
 {
   for (std::list<Bullet*>::iterator it = bulletList.begin(); it != bulletList.end(); it++)
     {
@@ -654,8 +691,7 @@ bool Game::collisionIaWithBullet(IAUnit *u)
 	  (x + u->getWidth() > obsX &&
 	   x < obsX + (*it)->getWidth()))
 	{
-	  std::cout<<"COLLISIONNNNNN"<<std::endl;
-	  sendBulletErase(*it);
+	   sendBulletErase(*it);
 	  bulletList.erase(it);
 	  return (true);
 	}
@@ -665,7 +701,7 @@ bool Game::collisionIaWithBullet(IAUnit *u)
 
 bool Game::collisionWithEnemie(HumainUnit *u)
 {
-  for (std::list<IAUnit*>::iterator it = iaList.begin(); it != iaList.end(); it++)
+  for (std::list<IIa*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     {
       float y = u->getPositionY();
       float x = u->getPositionX();
@@ -736,7 +772,8 @@ bool Game::collisionWithBonus(HumainUnit *u)
 	  (x + u->getWidth() > bX &&
 	   x < bX + (*it)->getWidth()))
 	{
-	  (*it)->applyToUnit(u);
+	  if (u->getHealth() < 3)
+	    (*it)->applyToUnit(u);
 	  sendBonusErase(*it);
 	  bonusList.erase(it);
 	  return true;
@@ -758,30 +795,30 @@ void Game::fire(int id)
   ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 18, 18);
   
   // std::cout<<"FIREEE"<<std::endl;
-  createBullet(id, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
+  createBullet(0, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
   u->setTimeBullet(t);
 }
 
-void Game::fire_ia(int id)
-{
-  IAUnit *u = getUnitAI(id);
+// void Game::fire_ia(int id)
+// {
+//   IIa *u = getUnitAI(id);
   
-  if (u == NULL)
-    return;
+//   if (u == NULL)
+//     return;
   
-  ICollisionDefinition *coll;
+//   ICollisionDefinition *coll;
 
-  if (u->getType() == Protocol::ENEMY_EASY)
-     {
-       coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
-       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true,  Protocol::BULLET_LINEAR);
-     }    
-  else if (u->getType() == Protocol::ENEMY_HARD)
-     {
-       coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
-       createBullet(id, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true, Protocol::BULLET_RAYON);
-     }
-}
+//   if (u->getType() == Protocol::ENEMY_EASY)
+//      {
+//        coll = new RectangleCollisionDefinition(u->getPosition(), 1, 1);
+//        createBullet(1, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true,  Protocol::BULLET_LINEAR);
+//      }    
+//   else if (u->getType() == Protocol::ENEMY_HARD)
+//      {
+//        coll = new RectangleCollisionDefinition(u->getPosition(), 50, 1);
+//        createBullet(1, std::pair<float, float>(-1, -1), bulletList.size(), coll, 1, true, Protocol::BULLET_RAYON);
+//      }
+// }
 
 void Game::move(int id, Protocol::move *m)
 {
@@ -791,19 +828,18 @@ void Game::move(int id, Protocol::move *m)
   if (u == NULL)
     return;
   //  if (collisionUWithObs(u) == false)
-  u->getDefinition()->move(m);
+  u->getDefinition()->move(m, 2);
 }
-
-void Game::moveIa(int id, Protocol::move *m)
-{
-  //std::cout<<"move : id : "<<id<<std::endl;
-  Unit *u = getUnitAI(id);
+// void Game::moveIa(int id, Protocol::move *m)
+// {
+//   //std::cout<<"move : id : "<<id<<std::endl;
+//   Unit *u = getUnitAI(id);
   
-  if (u == NULL)
-    return;
-  //  if (collisionUWithObs(u) == false)
-  u->getDefinition()->move(m);
-}
+//   if (u == NULL)
+//     return;
+//   //  if (collisionUWithObs(u) == false)
+//   u->getDefinition()->move(m, 2);
+// }
 
 int Game::getIaSize()const
 {
@@ -835,7 +871,7 @@ void Game::createRandomObs(double time)
   std::pair<float, float> newSpeed(1,1);
   float x = XMAX + 1;
   float y;
-  srand(time);
+  //srand(time);
   y = rand() %  YMAX + 1;
   std::pair<float,float> pos(x,y);
   int strength = rand() % 3 + 1;
@@ -868,7 +904,7 @@ void Game::createRandomBonus(double time)
     {	
       float x = XMAX + 1;
       float y;
-      srand(time);
+      //srand(time);
       y = rand() % YMAX + 1;
       std::pair<float,float> pos(x, y);
       int life = rand() % 3 + 1;
@@ -876,24 +912,24 @@ void Game::createRandomBonus(double time)
       createBonus(life, this->bonusList.size(), Col, false, 0);
     }
 }
-void Game::CreateEnemiePack(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
-{
-		float x = XMAX + 1;
-		float y = rand() % (YMAX - 15) + 5;
-		std::pair<float, float> pos(x,y);
-		std::pair<float, float> pos1(x, y - 1);
-		std::pair<float, float> pos2(x, y + 1);
-		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
-		ICollisionDefinition *Col1 = new RectangleCollisionDefinition(pos1, 1, 2);
-		ICollisionDefinition *Col2 = new RectangleCollisionDefinition(pos2, 1, 2);
+// void Game::CreateEnemiePack(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
+// {
+// 		float x = XMAX + 1;
+// 		float y = rand() % (YMAX - 15) + 5;
+// 		std::pair<float, float> pos(x,y);
+// 		std::pair<float, float> pos1(x, y - 1);
+// 		std::pair<float, float> pos2(x, y + 1);
+// 		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
+// 		ICollisionDefinition *Col1 = new RectangleCollisionDefinition(pos1, 1, 2);
+// 		ICollisionDefinition *Col2 = new RectangleCollisionDefinition(pos2, 1, 2);
 
-		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
-					true, type, Protocol::PACKV);
-		createAIUnit(this->iaList.size() + 1,newSpeed, Col1, life, strength, 
-					true, type, Protocol::PACKV);
-		createAIUnit(this->iaList.size() + 1,newSpeed, Col2, life, strength, 
-					true, type, Protocol::PACKV);
-}
+// 		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
+// 					true, type, Protocol::PACKV);
+// 		createAIUnit(this->iaList.size() + 1,newSpeed, Col1, life, strength, 
+// 					true, type, Protocol::PACKV);
+// 		createAIUnit(this->iaList.size() + 1,newSpeed, Col2, life, strength, 
+// 					true, type, Protocol::PACKV);
+// }
 
 void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
 {
@@ -901,7 +937,7 @@ void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::
   //std::cout << "sa cree une ia " << patern << std::endl;
 		float x = XMAX + 1;
 		float y = rand() % YMAX + 1;
-		std::pair<float, float> pos(500, 50);
+		std::pair<float, float> pos(x, y);
 		Protocol::patern_enemie pat;
 
 		if (patern == 0)
@@ -909,38 +945,38 @@ void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::
  		else
 			pat = Protocol::SOLO;
 
-		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 28, 36);
-		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
-			     true, Protocol::ENEMY_EASY, Protocol::SOLO);
+		// ICollisionDefinition *Col = new RectangleCollis ionDefinition(pos, 28, 36);
+		createAIUnit(pos, 3, 28, 36, Protocol::ENEMY_EASY//,  Protocol::SOLO
+	);
 }
 
-void Game::CreateEnemiePaternLine(Protocol::type_drawable type, int patern, std::pair<float,float> newSpeed, int strength, int life)
-{
-		float x = XMAX + 1;
-		float y = rand() % YMAX + 1;
-		int i;
-		std::pair<float, float> pos(x,y);
-		Protocol::patern_enemie pat;
+// void Game::CreateEnemiePaternLine(Protocol::type_drawable type, int patern, std::pair<float,float> newSpeed, int strength, int life)
+// {
+// 		float x = XMAX + 1;
+// 		float y = rand() % YMAX + 1;
+// 		int i;
+// 		std::pair<float, float> pos(x,y);
+// 		Protocol::patern_enemie pat;
 
-		if (patern == 4)
-			pat = Protocol::LINEUP;
-		else if (patern == 5)
-			pat = Protocol::LINEDOWN;
-		else
-			pat = Protocol::LINE;
+// 		if (patern == 4)
+// 			pat = Protocol::LINEUP;
+// 		else if (patern == 5)
+// 			pat = Protocol::LINEDOWN;
+// 		else
+// 			pat = Protocol::LINE;
 
-		for (i = 0; i < 4; i++)
-		{
-			std::pair<float, float> pos(x - (2 * i), y);
-			ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
-			createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
-							true, type, pat);
-		}
-}
+// 		for (i = 0; i < 4; i++)
+// 		{
+// 			std::pair<float, float> pos(x - (2 * i), y);
+// 			ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
+// 			createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
+// 							true, type, pat);
+// 		}
+// }
 
-void Game::CreateEnemiePaternVFLY(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strenght, int life)
-{
-}
+// void Game::CreateEnemiePaternVFLY(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strenght, int life)
+// {
+// }
 
 void Game::createRandomEnemie(double time)
 {
@@ -954,7 +990,7 @@ void Game::createRandomEnemie(double time)
 		Protocol::type_drawable type;
 		Protocol::patern_enemie pat;
 
-		srand(time);
+		//srand(time);
 		difficult = rand() % 2;
 		patern = rand() % 2;
 
@@ -1039,7 +1075,7 @@ void Game::sendObs()const
 
 void Game::sendIA()const
 {
-  for (std::list<IAUnit*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
+  for (std::list<IIa*>::const_iterator it = iaList.begin(); it != iaList.end(); it++)
     {
       Protocol::drawable * d = new Protocol::drawable(); 
       memset(d, 0, sizeof(Protocol::drawable *));

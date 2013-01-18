@@ -15,16 +15,16 @@
 #include "MovingObstacle.hpp"
 #include "LifePowerUp.hpp"
 
-class IAUnit;
+class Ia;
+class IIa;
 class HumainUnit;
 class Game
 {
 
 public:
  std::list<Player*>		playerList;
-private:
   int _id;
-  std::list<IAUnit*>		iaList;
+  std::list<IIa*>		iaList;
   std::list<HumainUnit*>	humainList;
 
   MyMutex *mutexPlayers;
@@ -40,7 +40,7 @@ public:
   void loop();
   void update(double time);
   void collision();
-  IAUnit* createAIUnit(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int health, int strength, bool isDestroyable, Protocol::type_drawable type, Protocol::patern_enemie patern);
+  IIa* createAIUnit(std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t);
   HumainUnit* createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Player *p);
   MovingObstacle* createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable);
   Player* createPlayer(int id, std::string name, ISocket *socket_tcp, ISocket *socket_udp);
@@ -56,8 +56,8 @@ public:
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitHumanByPlayer(int id)const;
   HumainUnit* addHumainUnitByPlayer(int id);
-  void moveIa(int id, Protocol::move *m);
-  IAUnit *getUnitAI(int id)const;
+  //void moveIa(int id, Protocol::move *m);
+  IIa *getUnitAI(int id)const;
   MovingObstacle *getObs(int id)const;
   LifePowerUp *getLifePowerUp(int id)const;
   Player *getPlayer(int id)const;
@@ -69,7 +69,7 @@ public:
 
   void sendBulletErase(Bullet *b);
   void sendObsErase(MovingObstacle *b);
-  void sendIaErase(IAUnit *b);
+  void sendIaErase(IIa *b);
   void sendBonusErase(LifePowerUp *b);
   void sendShipErase(HumainUnit *b);
 
@@ -90,14 +90,15 @@ public:
   bool allDead();
 
   bool isFriendlyBullet(Bullet *b);
-  bool collisionIaWithBullet(IAUnit *u);
+  bool collisionWithBullet(Bullet *u);
+  bool collisionIaWithBullet(IIa *u);
   bool collisionHumainWithBullet(HumainUnit *u);
   bool collisionWithEnemie(HumainUnit *u);
   bool collisionUWithObs(Unit *u);
   bool collisionBWithObs(Bullet *b);
   bool collisionWithBonus(HumainUnit *u);
 
-  void fire_ia(int id);
+  //void fire_ia(int id);
   void fire(int id);
   void move(int id, Protocol::move *m);
 
@@ -125,5 +126,5 @@ public:
 
 #endif //__GAME__
 
-#include "IAUnit.hpp"
+#include "Ia.hpp"
 #include "HumainUnit.hpp"
