@@ -49,6 +49,7 @@ void Game::loop()
       Sleep(20000);
 #endif
       t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC);
+      std::cout<<" time "<<t<<std::endl;
     }  
 }
 

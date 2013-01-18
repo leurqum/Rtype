@@ -53,6 +53,7 @@ void IAUnit::update(double time)
 
 void IAUnit::paternSolo(int time)
 {
+  (void)time;
   this->_direction.left = 1;
 }
 
@@ -76,15 +77,16 @@ void IAUnit::paternPack(int time)
 
 void IAUnit::paternLineToDiago(int time)
 {
-	if (this->getPositionX() < XMAX / 2)
-	{
-		if (this->_patern == 5)
-			this->_direction.down = 1;
-		else
-			this->_direction.top = 1;
-
-		this->_canShoot = true;
-	}
+  (void)time;
+  if (this->getPositionX() < XMAX / 2)
+    {
+      if (this->_patern == 5)
+	this->_direction.down = 1;
+      else
+	this->_direction.top = 1;
+      
+      this->_canShoot = true;
+    }
 }
 
 void IAUnit::chooseDirection(double time)

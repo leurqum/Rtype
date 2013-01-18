@@ -5,7 +5,7 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Wed Jan 16 10:22:41 2013 mathieu leurquin
+// Last update Fri Jan 18 10:21:42 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
@@ -123,15 +123,14 @@ DWORD WINAPI callHandle(LPVOID data)
 
 void Server::createGame(int id)
 { 
-  
+  (void)id;
   MyThread *th;
   
 #ifdef __unix__
   th = new MyThread(NULL, callHandle, 0, this);
 #endif
 #ifdef _WIN32
-  // TODO PROBLEME ICI TEST
- th = new MyThread(this, (LPTHREAD_START_ROUTINE)callHandle, NULL);
+  th = new MyThread(this, (LPTHREAD_START_ROUTINE)callHandle, NULL);
 #endif
   threadList.push_back(th);
   th->THStart();

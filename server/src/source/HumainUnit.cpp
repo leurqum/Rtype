@@ -10,6 +10,7 @@ int HumainUnit::getPlayerId()const
 }
 void HumainUnit::update(double time)
 {
+  (void)time;
   if (this->getHealth() <= 0)
     _game->sendShipErase(this);
 }
