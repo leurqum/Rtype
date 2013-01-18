@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Wed Jan 16 12:26:27 2013 mathieu leurquin
+// Last update Fri Jan 18 15:06:40 2013 mathieu leurquin
 //
 
 #include "USocket.hpp"
@@ -115,7 +115,6 @@ int		USocket::recv(void ** header, void ** data)
   if ((ret = ::recvfrom(this->_connectSocket, *data, ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
     return ret;
   _host = inet_ntoa(_hints.sin_addr);
-  std::cout << "recvfrom:" << _host << std::endl;
   return 1;
 }
 

@@ -110,7 +110,6 @@ int WSocket::recv(void ** header, void ** data)
 	if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
 		return ret;
 	_host = inet_ntoa(_hints.sin_addr);
-	std::cout << "recvfrom:" << _host << std::endl;
 	return 1;
 }
 
@@ -145,7 +144,6 @@ int WSocket::sendv(std::string const & data)
 		std::cerr << "WSASend failed with error: " << err << std::endl;
 		return 0;
 	}
-	std::cout << "send: " << data << std::endl;
 	return rc;
 }
 

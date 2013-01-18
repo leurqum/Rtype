@@ -68,8 +68,6 @@ int		WServerSocket::selectSockets()
 
 void	WServerSocket::callBack(std::list<SOCKET>::iterator & it)
 {
-  std::cout << "start callBack" << std::endl;
-
   ISocket * tmp = _clientsSocksMap[*it];
   void	* data = 0;
   void	* header = 0;
@@ -86,14 +84,12 @@ void	WServerSocket::callBack(std::list<SOCKET>::iterator & it)
 		  _clientsSocksMap.erase(((WSocket*)(tmp))->getSocket());
 		  delete tmp;
 		  it--;
-		  std::cout << "end callBack" << std::endl;
 		  return ;
 	}
 
 	if (tmp->isUDP() == true)
 		tmp = this->_clientsSocksUdpMap[tmp->getHost()];
   this->_interPckg->executeCmd(header, data, tmp);
-  std::cout << "end callBack" << std::endl;
 }
 
 void	WServerSocket::launch()
