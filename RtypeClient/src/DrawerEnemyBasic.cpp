@@ -13,9 +13,9 @@ int DrawerEnemyBasic::getId() const
 
 void DrawerEnemyBasic::update(float ms)
 {
-  id = updater.id;
-  initialValue.position.x = updater.xPosition;
-  initialValue.position.y = updater.yPosition;
+  // FIXME: we don't have to calculate every time if we already calculated the value of this updater. (see DrawerShip)
+  initialValue.position.x = updater.xPosition - drawable->getModifiedValue().dimension.x / 2;;
+  initialValue.position.y = updater.yPosition - drawable->getModifiedValue().dimension.y / 2;;
   drawable->update(ms);
 
   // to call last because it stores the computed value and modify it when we call next update.
@@ -34,5 +34,6 @@ void DrawerEnemyBasic::drawTo(IGraphicsManager* gm, const ValueDrawer& v) const
 
 void DrawerEnemyBasic::setUpdate(const Protocol::drawable& u)
 {
+  id = u.id;
   updater = u;
 }

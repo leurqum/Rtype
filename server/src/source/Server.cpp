@@ -17,11 +17,11 @@
 	#include <Windows.h>
 #endif
 
-Server::Server()
+Server::Server(std::string const & port)
 {
   server_socket = new MyServerSocket(this);
   this->createGame(0);
-  if (server_socket->init("", "4242") == true)
+  if (server_socket->init("", port) == true)
     server_socket->launch();
 }
 

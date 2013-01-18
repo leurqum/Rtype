@@ -27,9 +27,14 @@ enum type_cmd
 	SEND_WORLD,
 	MOVE,
 	FIRE,
-	RESPONSE
+	PORT_UDP
 };
 
+
+typedef struct
+{
+	int	port;
+}	portUdp;
 
 
 typedef struct

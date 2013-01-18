@@ -15,7 +15,7 @@ public:
   std::list<MyThread*>	threadList;
   MyServerSocket*	server_socket;
 public:
-  Server();
+  Server(std::string const & port);
   
   int getNbGame()const;
   
