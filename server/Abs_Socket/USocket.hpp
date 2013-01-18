@@ -49,12 +49,12 @@ public:
   bool			connectFromAcceptedFd(void * fd);
   int			recv(void ** header, void ** data);
   int			sendv(std::string const & data);
-  int			sendv(int size, void * data);
+  int			sendv(int const & size, void * const & data);
   int			getSocket() const { return _connectSocket; }
-  void			setUDP(bool val);
+  void			setUDP(bool const & val);
   bool			isUDP() { return _udp; }
   void			setHost(std::string const & ip);
-  std::string const &	getHost();
+  std::string const &	getHost() const;
 
 private:
   struct hostent		* _server;

@@ -23,12 +23,12 @@ void	USocket::setHost(std::string const & host)
   _host = host;
 }
 
-std::string const & USocket::getHost()
+std::string const & USocket::getHost() const
 {
   return _host;
 }
 
-void	USocket::setUDP(bool val)
+void	USocket::setUDP(bool const & val)
 {
   if (_connectSocket == INVALID_SOCKET)
     _udp = val;
@@ -127,7 +127,7 @@ int		USocket::sendv(std::string const & data)
     return ::sendto(this->_connectSocket, data.c_str(), data.size(), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
 }
 
-int		USocket::sendv(int size, void * data)
+int		USocket::sendv(int const & size, void * const & data)
 {
   if (_udp == false)
     return ::send(this->_connectSocket, data, size, 0);

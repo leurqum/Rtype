@@ -15,9 +15,9 @@ class ISocket
   virtual bool		connectFromAcceptedFd(void * fd) = 0;
   virtual int		recv(void ** header, void ** data) = 0;
   virtual int		sendv(std::string const & data) = 0;
-  virtual int		sendv(int size, void * data) = 0;
-  virtual void		setUDP(bool val) = 0;
-  virtual bool		isUDP() = 0;
+  virtual int		sendv(int const & size, void * const & data) = 0;		//TODO
+  virtual void		setUDP(bool const & val) = 0;
+  virtual bool		isUDP() const = 0;										//TODO
   virtual void		setHost(std::string const & ip) = 0;
-  virtual std::string const & getHost() = 0;
+  virtual std::string const & getHost() const = 0;							//TODO
 };

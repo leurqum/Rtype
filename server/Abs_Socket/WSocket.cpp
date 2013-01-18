@@ -14,7 +14,7 @@ void	WSocket::setHost(std::string const & host)
 	_host = host;
 }
 
-std::string const & WSocket::getHost()
+std::string const & WSocket::getHost() const
 {
 	return _host;
 }
@@ -27,7 +27,7 @@ WSocket::WSocket()
 	_host = "";
 }
 
-void WSocket::setUDP(bool val)
+void WSocket::setUDP(bool const & val)
 {
 if (_connectSocket == INVALID_SOCKET)
     _udp = val;
@@ -114,7 +114,7 @@ int WSocket::recv(void ** header, void ** data)
 	return 1;
 }
 
-int WSocket::sendv(int size, void * data)
+int WSocket::sendv(int const & size, void * const & data)
 {
 	if (_udp == false)
 		return send(this->_connectSocket, (char*)data, size, NULL);

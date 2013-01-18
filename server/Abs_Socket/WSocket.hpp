@@ -33,12 +33,12 @@ public:
 	bool				connectFromAcceptedFd(void * fd);
 	int					recv(void ** header, void ** data);
 	int					sendv(std::string const & data);
-	int					sendv(int size, void * data);
+	int					sendv(int const & size, void * const & data);
 	SOCKET				getSocket() const { return _connectSocket; }
-	void				setUDP(bool val);
-	bool				isUDP() { return _udp; }
+	void				setUDP(bool const & val);
+	bool				isUDP() const { return _udp; }
 	void				setHost(std::string const & ip);
-	std::string const & getHost();
+	std::string const & getHost() const;
 
 private:
 	struct hostent		* _server;
