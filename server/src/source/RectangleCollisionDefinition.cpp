@@ -50,7 +50,7 @@ void RectangleCollisionDefinition::setWidth(float width)
 #include <iostream>
 
 void RectangleCollisionDefinition::move(Protocol::move *m, int speed)
-{  
+{
   _position.second = (m->top == 1) ?  _position.second + speed : _position.second;
   _position.first = (m->right == 1) ? _position.first + speed : _position.first;
   _position.second = (m->down == 1) ?  _position.second - speed : _position.second;

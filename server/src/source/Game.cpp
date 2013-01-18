@@ -144,10 +144,6 @@ void Game::checkPlayer()
 	  exit(0);
 	}
       addHumainUnitByPlayer(playerList.back()->getId());
-      createRandomEnemie(1);
-      createRandomEnemie(1);
-      createRandomEnemie(1);
-      iaList.front()->fire();
     }
   mutexPlayers->MUnLock();
 }
@@ -164,8 +160,7 @@ void Game::update(double time)
 {
   // createRandomObs(time);
   // createRandomBonus(time);
-  //createRandomEnemie(time);
-
+  createRandomEnemie(time);
   for (std::list<IIa*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
   
@@ -289,11 +284,13 @@ void Game::collision()
   //   collisionWithBonus((*it));
 }
 
-IIa* Game::createAIUnit(std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t)
+IIa* Game::createAIUnit(std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Protocol::patern_enemie patern)
 {
-  IIa *u = getInstance(iaList.size(), pos, 2, h, w, t, this);
+  static int i = 0;
+  IIa *u = getInstance(i, pos, 2, h, w, t, this, patern);
   
   iaList.push_back(u);
+  i++;
   return (u);
 }
 
@@ -309,9 +306,11 @@ HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int he
 
 MovingObstacle* Game::createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable)
 {
-  MovingObstacle* l = new MovingObstacle(speed, id, coll, strength, isDestroyable);
+  static int i = 0;
+  MovingObstacle* l = new MovingObstacle(speed, i, coll, strength, isDestroyable);
  
   obsList.push_back(l);
+  i++;
   return (l);
 }
 
@@ -328,18 +327,21 @@ Player* Game::createPlayer(int id, std::string name, ISocket *tcp, ISocket *udp)
 
 LifePowerUp* Game::createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength)
 {
-  LifePowerUp* l = new LifePowerUp(nb_life, id, coll, strength, isDestroyable);
+  static int i = 0;
+  LifePowerUp* l = new LifePowerUp(nb_life, i, coll, strength, isDestroyable);
 
   bonusList.push_back(l);
+  i++;
   return (l);
 }
 
 Bullet *Game::createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable type)
 {
-  
-  Bullet *b = new Bullet(idUnit, speed, id, rec, strength, isDestroyable, type);
+  static int i = 0;
+  Bullet *b = new Bullet(idUnit, speed, i, rec, strength, isDestroyable, type);
 
   bulletList.push_back(b);
+  i++;
   return (b);
 }
 
@@ -662,7 +664,7 @@ bool Game::collisionHumainWithBullet(HumainUnit *u)
       float x = u->getPositionX();
       float obsY = (*it)->getPositionY();
       float obsX = (*it)->getPositionX();
-      if ((y + u->getHeight() > obsY
+     if ((y + u->getHeight() > obsY
 	   && y < obsY + (*it)->getHeight()) &&
 	  (x + u->getWidth() > obsX &&
 	   x < obsX + (*it)->getWidth()))
@@ -822,8 +824,7 @@ void Game::fire(int id)
 
 void Game::move(int id, Protocol::move *m)
 {
-  //std::cout<<"move : id : "<<id<<std::endl;
-  Unit *u = getUnitHumanByPlayer(id);
+   Unit *u = getUnitHumanByPlayer(id);
   
   if (u == NULL)
     return;
@@ -902,9 +903,8 @@ void Game::createRandomBonus(double time)
 {
   if ((int)time % 15 == 0)
     {	
-      float x = XMAX + 1;
+      float x = rand() % XMAX + 1;
       float y;
-      //srand(time);
       y = rand() % YMAX + 1;
       std::pair<float,float> pos(x, y);
       int life = rand() % 3 + 1;
@@ -912,42 +912,27 @@ void Game::createRandomBonus(double time)
       createBonus(life, this->bonusList.size(), Col, false, 0);
     }
 }
-// void Game::CreateEnemiePack(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
-// {
-// 		float x = XMAX + 1;
-// 		float y = rand() % (YMAX - 15) + 5;
-// 		std::pair<float, float> pos(x,y);
-// 		std::pair<float, float> pos1(x, y - 1);
-// 		std::pair<float, float> pos2(x, y + 1);
-// 		ICollisionDefinition *Col = new RectangleCollisionDefinition(pos, 1, 2);
-// 		ICollisionDefinition *Col1 = new RectangleCollisionDefinition(pos1, 1, 2);
-// 		ICollisionDefinition *Col2 = new RectangleCollisionDefinition(pos2, 1, 2);
+void Game::CreateEnemiePack(Protocol::type_drawable type, int patern, int speed, int strength, int life)
+{
+  float x = XMAX + 1;
+  float y = rand() % (YMAX - 15) + 5;
+  std::pair<float, float> pos(x,y);
+  std::pair<float, float> pos1(x, y - 1);
+  std::pair<float, float> pos2(x, y + 1);
+  
+createAIUnit(pos, speed, 28, 36, type,  Protocol::PACKV);
+createAIUnit(pos1, speed, 28, 36, type,  Protocol::PACKV);
+createAIUnit(pos2, speed, 28, 36, type,  Protocol::PACKV);
+}
 
-// 		createAIUnit(this->iaList.size() + 1,newSpeed, Col, life, strength, 
-// 					true, type, Protocol::PACKV);
-// 		createAIUnit(this->iaList.size() + 1,newSpeed, Col1, life, strength, 
-// 					true, type, Protocol::PACKV);
-// 		createAIUnit(this->iaList.size() + 1,newSpeed, Col2, life, strength, 
-// 					true, type, Protocol::PACKV);
-// }
-
-void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::pair<float,float> newSpeed, int strength, int life)
+void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,int speed, int strength, int life)
 {
   
-  //std::cout << "sa cree une ia " << patern << std::endl;
-		float x = XMAX + 1;
-		float y = rand() % YMAX + 1;
-		std::pair<float, float> pos(x, y);
-		Protocol::patern_enemie pat;
-
-		if (patern == 0)
-			pat = Protocol::STATIC;
- 		else
-			pat = Protocol::SOLO;
-
-		// ICollisionDefinition *Col = new RectangleCollis ionDefinition(pos, 28, 36);
-		createAIUnit(pos, 3, 28, 36, Protocol::ENEMY_EASY//,  Protocol::SOLO
-	);
+  float x = XMAX + 1;
+  float y = rand() % YMAX + 1;
+  std::pair<float, float> pos(x, y);
+  
+  createAIUnit(pos, speed, 28, 36, type,  Protocol::SOLO);
 }
 
 // void Game::CreateEnemiePaternLine(Protocol::type_drawable type, int patern, std::pair<float,float> newSpeed, int strength, int life)
@@ -980,51 +965,53 @@ void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,std::
 
 void Game::createRandomEnemie(double time)
 {
-	// if (time > 3)
-	// {
-		int difficult;
-		int patern;
-		int life;
-		int strength;
-		std::pair<float, float> newSpeed;
-		Protocol::type_drawable type;
-		Protocol::patern_enemie pat;
+  static long verif = 0;
+  if (time > 3)
+    {
+      if ((int)time % 3 || verif == time)
+      	return;
+      verif = time;
+      // int difficult;
+      // int patern;
+      // int life;
+      // int strength;
+      // int newSpeed;
+      // Protocol::type_drawable type;
+      // Protocol::patern_enemie pat;
+  
+      // difficult = rand() % 2;
+      // patern = rand() % 2;
 
-		//srand(time);
-		difficult = rand() % 2;
-		patern = rand() % 2;
+      // if (difficult == 0)
+      // 	type = Protocol::ENEMY_EASY;
+      // else
+      // 	type = Protocol::ENEMY_HARD;
 
-		if (difficult == 0)
-			type = Protocol::ENEMY_EASY;
-		else
-			type = Protocol::ENEMY_HARD;
+      // if (type == 1)
+      // 	{
+      // 	  newSpeed = 3;
+      // 	  life = 1;
+      // 	  strength = 1;
+      // 	}
+      // else
+      // 	{
+      // 	  newSpeed = 4;
+      // 	  life = 2;
+      // 	  strength = 2;
+      // 	}
 
-		if (type == 1)
-		{
-			newSpeed.first = 1;
-			newSpeed.second = 1;
-			life = 1;
-			strength = 1;
-		}
-		else
-		{
-			newSpeed.first = 1.5;
-			newSpeed.second = 1.5;
-			life = 2;
-			strength = 2;
-		}
-
-		// if (patern < 2)
-		// if ((int)time % 5 == 0)
-		  CreateEnemiePaternSolo(type,patern, newSpeed, strength, life);
-		// else if (patern == 2)
-		// 	CreateEnemiePack(type, patern, newSpeed, strength, life);
-		// else if (patern >= 4)
-		// 	CreateEnemiePaternLine(type, patern, newSpeed, strength, life);
-		
-		// else
-		// 	CreateEnemiePaternVFLY(type, patern, newSpeed, strength, life);
-	// }
+      // if (patern < 2)
+	CreateEnemiePaternSolo(Protocol::ENEMY_EASY, 0, 3, 0, 1);
+      // CreateEnemiePaternSolo(type,patern, newSpeed, strength, life);
+      // else if (patern == 2)
+      // 	CreateEnemiePack(type, patern, newSpeed, strength, life);
+      // else if (patern >= 4)
+      // 	CreateEnemiePaternLine(type, patern, newSpeed, strength, life);
+      
+      // else
+      // 	CreateEnemiePaternVFLY(type, patern, newSpeed, strength, life);
+      // }
+    }
 }
 
 

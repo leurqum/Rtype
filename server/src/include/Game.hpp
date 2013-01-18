@@ -40,7 +40,7 @@ public:
   void loop();
   void update(double time);
   void collision();
-  IIa* createAIUnit(std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t);
+  IIa* createAIUnit(std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Protocol::patern_enemie patern);
   HumainUnit* createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Player *p);
   MovingObstacle* createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable);
   Player* createPlayer(int id, std::string name, ISocket *socket_tcp, ISocket *socket_udp);
@@ -107,8 +107,8 @@ public:
   void createRandomEnemie(double time);
   void CreateEnemiePaternVFLY(Protocol::type_drawable type, int,std::pair<float,float> newSpeed, int, int);
   void CreateEnemiePaternLine(Protocol::type_drawable type, int,std::pair<float,float> newSpeed, int, int);
-  void CreateEnemiePaternSolo(Protocol::type_drawable type, int, std::pair<float,float> newSpeed, int, int);
-  void CreateEnemiePack(Protocol::type_drawable type, int, std::pair<float,float> newSpeed, int, int);
+  void CreateEnemiePaternSolo(Protocol::type_drawable type, int,int newSpeed, int, int);
+  void CreateEnemiePack(Protocol::type_drawable type, int, int, int, int);
 
   int getIaSize()const;
   int getHumainSize()const;
