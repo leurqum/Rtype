@@ -53,7 +53,7 @@ void Ia::fire()
 
   if (_type == Protocol::ENEMY_EASY)
     {
-      coll = new RectangleCollisionDefinition(_position, 20, 10);
+      coll = new RectangleCollisionDefinition(_position, 30, 10);
       _game->createBullet(1, std::pair<float, float>(-1, -1), 0, coll, 1, true,  Protocol::BULLET_LINEAR);
     }    
   // else if (_type == Protocol::ENEMY_HARD)

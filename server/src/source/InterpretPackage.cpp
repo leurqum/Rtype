@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Sat Jan 19 17:40:12 2013 mathieu leurquin
+// Last update Sat Jan 19 19:51:48 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -72,8 +72,10 @@ void	InterpretPackage::execExit(ISocket * sock)
     if ((p = (*it)->getPlayerBySockTcp(sock)) != NULL)
       {
 	std::cout<<"ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"<<std::endl;
+	(*it)->eraseHumain(p->getId());
 	(*it)->erasePlayer(p->getId());
       }
+  
 }
 
 void	InterpretPackage::execRegister(void * data, ISocket * sock)

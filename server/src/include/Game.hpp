@@ -15,15 +15,72 @@
 #include "MovingObstacle.hpp"
 #include "LifePowerUp.hpp"
 
+#ifdef __unix__
+#include <unistd.h>
+#include <sys/time.h>
+#include <dlfcn.h>
+#endif
+#ifdef _WIN32
+#include <Windows.h>
+#include <sys/timeb.h>
+
+struct timeval
+{
+  long    tv_sec; 
+  long    tv_usec;
+};
+
+int gettimeofday (struct timeval *tp, void *tz)
+{
+  struct _timeb timebuffer;
+  _ftime (&timebuffer);
+  tp->tv_sec = timebuffer.time;
+  tp->tv_usec = timebuffer.millitm * 1000;
+  return 0;
+}
+#endif
+
+
 class IIa;
 class HumainUnit;
 
 typedef IIa *(*maker_Ia)();
 
+class MyTimer
+{
+public:
+  MyTimer()
+  {
+    this->reset();
+  }
+  long getDiff()
+  {
+    struct timeval now;
+    long seconds;
+    long useconds;
+    long mtime;
+
+    gettimeofday(&now, NULL);
+    seconds  = now.tv_sec  - _start.tv_sec;
+    useconds = now.tv_usec - _start.tv_usec;
+    mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+    return mtime;
+  }
+  void reset()
+  {
+    gettimeofday(&_start, NULL);
+  }
+
+private:
+  struct timeval _start;
+};
+
 class Game
 {
 
 public:
+  MyTimer			timer;
+  long t;
   maker_Ia			iaFactory;
   std::list<Player*>		playerList;
   int _id;

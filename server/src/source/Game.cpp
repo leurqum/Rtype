@@ -2,32 +2,8 @@
 #include <time.h>
 #include <stdio.h>
 #include "../include/Game.hpp"
-#ifdef __unix__
-#include <unistd.h>
-#include <sys/time.h>
-#include <dlfcn.h>
-#endif
-#ifdef _WIN32
-#include <Windows.h>
-#include <sys/timeb.h>
 
-struct timeval
-{
-  long    tv_sec; 
-  long    tv_usec;
-};
-
-int gettimeofday (struct timeval *tp, void *tz)
-{
-  struct _timeb timebuffer;
-  _ftime (&timebuffer);
-  tp->tv_sec = timebuffer.time;
-  tp->tv_usec = timebuffer.millitm * 1000;
-  return 0;
-}
-#endif
-
-long t;
+// long t;
 
 Game::Game(int id)
 {
@@ -76,8 +52,11 @@ void Game::loop()
 
   init = myclock();
   t = 0;
+  timer.reset();
   while (1)
     {
+      // std::cout << timer.getDiff() << std::endl;
+      // timer.reset();
       collision();
       checkPlayer();
       update(t);
@@ -86,7 +65,7 @@ void Game::loop()
       eraseIaOut();
       eraseBonusOut();
       eraseObsOut();
-    
+      
 #ifdef __unix__
       usleep(20000);
       t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC);
@@ -173,9 +152,7 @@ void Game::checkPlayer()
 	  exit(0);
 	}
       addHumainUnitByPlayer(playerList.back()->getId());
-        CreateEnemiePaternSolo(Protocol::ENEMY_EASY, 0, 3, 0, 1);
-      CreateEnemiePaternSolo(Protocol::ENEMY_EASY, 0, 3, 0, 1);
-    }
+      }
   mutexPlayers->MUnLock();
 }
 
@@ -191,7 +168,7 @@ void Game::update(double time)
 {
   // createRandomObs(time);
   // createRandomBonus(time);
-  //createRandomEnemie(time);
+  createRandomEnemie(time);
   for (std::list<IIa*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
   
@@ -317,7 +294,7 @@ void Game::collision()
 
 IIa* Game::createAIUnit(std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Protocol::patern_enemie patern)
 {
-   static int i = 0;
+  static int i = 0;
    IIa * u = iaFactory();
    u->init(i, pos, 2, h, w, t, this, patern);
    
@@ -479,12 +456,15 @@ void Game::addPlayer(std::string name, ISocket *udp, ISocket *tcp)
 
 HumainUnit* Game::addHumainUnitByPlayer(int idPlayer)
 {
+  static int i = 0;
+
   std::pair<float, float> pos(50, 50);
-  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 33, 17);
+  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 35, 25);
  
-  HumainUnit *h = new HumainUnit(std::pair<float, float> (1, 1), idPlayer, humainList.size(), coll, 3, 1, true, this);
+  HumainUnit *h = new HumainUnit(std::pair<float, float> (1, 1), idPlayer, idPlayer, coll, 3, 1, true, this);
   
   humainList.push_back(h);
+  i++;
   return (h);
 }
 
@@ -573,11 +553,9 @@ void Game::eraseHumain(int id)
 {
   for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end();)
     {
-      if ((*it)->getId() == id)
+      if ((*it)->getPlayerId() == id)
 	{
 	  humainList.erase(it);
-	  erasePlayer(getPlayer((*it)->getId())->getId());
-	  eraseBulletsPlayer((*it)->getId());
 	  return;
 	}
       else
@@ -831,7 +809,7 @@ void Game::fire(int id)
   if (t - time < 1)
       return;
   std::pair<float, float> pos = u->getPosition();
-  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 20, 10);
+  ICollisionDefinition *coll = new RectangleCollisionDefinition(pos, 30, 10);
   
   createBullet(0, std::pair<float, float>(1, 1), bulletList.size(), coll, 1, true, Protocol::BULLET_LINEAR);
   u->setTimeBullet(t);
@@ -968,7 +946,7 @@ void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,int s
   float y = rand() % YMAX + 1;
   std::pair<float, float> pos(x, y);
   
-  createAIUnit(pos, speed, 25, 15, type,  Protocol::SOLO);
+  createAIUnit(pos, speed, 35, 25, type,  Protocol::SOLO);
 }
 
 // void Game::CreateEnemiePaternLine(Protocol::type_drawable type, int patern, std::pair<float,float> newSpeed, int strength, int life)
@@ -1001,12 +979,14 @@ void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,int s
 
 void Game::createRandomEnemie(double time)
 {
-  static long verif = 0;
-  if (time > 3)
+  if (iaList.size() < 8)
     {
-      if ((int)time % 3 || verif == time)
-      	return;
-      verif = time;
+      static long verif = 0;
+      if (time > 3)
+	{
+	  if ((int)time % 3 || verif == time)
+	    return;
+	  verif = time;
       // int difficult;
       // int patern;
       // int life;
@@ -1047,6 +1027,7 @@ void Game::createRandomEnemie(double time)
       // else
       // 	CreateEnemiePaternVFLY(type, patern, newSpeed, strength, life);
       // }
+	}
     }
 }
 
@@ -1147,10 +1128,7 @@ void Game::sendShip()const
 	  d->life = (*it)->getHealth();
 	  mutexPlayers->MLock();
 	  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	    {
-	      std::cout<<"YAAAAAAAAAA    : "<<playerList.size()<<std::endl;
-	      (*it)->getSocketUdp()->sendv(sizeof(*d), d);
-	    }
+	    (*it)->getSocketUdp()->sendv(sizeof(*d), d);
 	  mutexPlayers->MUnLock();
 	}
     }
