@@ -12,8 +12,7 @@ void HumainUnit::update(double time)
 {
   (void)time;
   if (this->getHealth() <= 0)
-    this->setHealth(3);
-    // _game->sendShipErase(this);
+    _game->sendShipErase(this);
 }
 
 Protocol::type_drawable HumainUnit::getType()const

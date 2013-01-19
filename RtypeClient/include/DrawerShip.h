@@ -25,4 +25,5 @@ class DrawerShip : public ADrawer // NOTE: I do not inherit from DrawableDrawer 
   Protocol::drawable* updater;
   int id;
   int life;
+  float timeFromLastUpdate;
 };

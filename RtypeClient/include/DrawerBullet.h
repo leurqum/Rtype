@@ -19,8 +19,11 @@ class DrawerBullet : public ADrawer // NOTE: I do not inherit from DrawableDrawe
 
   int getId() const;
   DrawerUDrawable* createExplosion() const;
+  int getLife() const;
  private:
   int id;
   DrawableGeneric* drawable;
   Protocol::drawable* updater;
+  int life;
+  float timeFromLastUpdate;
 };

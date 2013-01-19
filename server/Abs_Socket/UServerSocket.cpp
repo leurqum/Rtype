@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Fri Jan 18 10:52:25 2013 mathieu leurquin
+// Last update Sat Jan 19 14:32:59 2013 mathieu leurquin
 //
 
 #include "UServerSocket.hpp"
@@ -81,7 +81,9 @@ void	UServerSocket::callBack(std::list<int>::iterator & it)
   if (!tmp->recv(&header, &data))
     {
       std::cout << "client disconnected" << std::endl;
+      this->_interPckg->executeCmd(0, 0, tmp);
       it = _clientsList.erase(it);
+      _clientsSocksUdpMap.erase(tmp->getHost());
       _clientsSocksMap.erase(((USocket*)(tmp))->getSocket());
       delete tmp;
       it--;

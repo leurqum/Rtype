@@ -21,15 +21,28 @@ int main()
   sm->changeScene(new SceneHoverMenu(*sb));
 
   bool isRunning = true;
+  
+  float imgPerSecond = 0;
+  float timeTotal = 0;
+  std::string lastFPS;
+
   while (isRunning)
     {
 #define LOOP_UPDATE_DRAW 16
       // FIXME: use real milliseconds..
       if (timer.getElapsedTime().asMilliseconds() > LOOP_UPDATE_DRAW) // around 60 updates and draw per second
 	{
-	  std::ostringstream oss;
-	  oss << 1000.f / timer.getElapsedTime().asMilliseconds();
-	  std::string str = oss.str();
+	  imgPerSecond += 1;
+	  timeTotal += timer.getElapsedTime().asMilliseconds();
+	  if (timeTotal >= 1000)
+	    {
+	      std::ostringstream oss;
+	      
+	      oss << timeTotal / (timeTotal / imgPerSecond);
+	      lastFPS = oss.str();
+	      imgPerSecond = 0;
+	      timeTotal = 0;
+	    }
 	  // std::cout << "update: " << timer.getElapsedTime().asMilliseconds() << std::endl;
 	  
 	  sm->update(timer.getElapsedTime().asMilliseconds());
@@ -38,7 +51,7 @@ int main()
 	  sm->draw();
 	  ValueDrawer d;
 	  d.position.y = 580;
-	  sm->getGraphicsManager()->write(str, d);
+	  sm->getGraphicsManager()->write(lastFPS, d);
 	  sm->getGraphicsManager()->display();
 	  
 	}

@@ -19,8 +19,11 @@ class DrawerEnemyBasic : public ADrawer // NOTE: I do not inherit from DrawableD
   virtual void setUpdate(const Protocol::drawable& u);
 
   DrawerUDrawable* createExplosion() const;
+  int getLife() const;
  private:
   DrawableGeneric* drawable;
-  Protocol::drawable updater;
+  Protocol::drawable* updater;
   int id;
+  int life;
+  float timeFromLastUpdate;
 };

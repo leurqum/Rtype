@@ -72,7 +72,7 @@ IScene* SceneGame::update(float elapsedTime)
     b.update(elapsedTime);
   for (DrawerUDrawable* e : explosions)
     e->update(elapsedTime);
-  removeCollisionsOver();
+  removeAllDeadBodies();
   drawer_2bars.update(elapsedTime);
 
 
@@ -121,9 +121,14 @@ void SceneGame::updateList(std::list<T>& l, Protocol::drawable& d)
     }
 }
 
-void SceneGame::removeCollisionsOver()
+void SceneGame::removeAllDeadBodies()
 {
   explosions.remove_if([] (DrawerUDrawable* d) -> bool { return !d->getDrawable()->isSetAnimation();});
+
+  // NOTE: this is to be sure we have no zombies, we do not make them explode because they are dead from 500 seconds
+  ships.remove_if([] (const DrawerShip& d) -> bool {return d.getLife() <= 0;});
+  bullets.remove_if([] (const DrawerBullet& b) -> bool {return b.getLife() <= 0;});
+  enemy.remove_if([] (const DrawerEnemyBasic& e) -> bool {return e.getLife() <= 0;});
 }
 
 void SceneGame::draw()

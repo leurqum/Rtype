@@ -4,6 +4,9 @@ DrawerEnemyBasic::DrawerEnemyBasic()
 {
   drawable = FactoryDrawable::getInstance()->createEnemyBasic();
   drawable->animate(0);
+  life = 1;
+  timeFromLastUpdate = 0;
+  updater = nullptr;
 }
 
 int DrawerEnemyBasic::getId() const
@@ -13,11 +16,20 @@ int DrawerEnemyBasic::getId() const
 
 void DrawerEnemyBasic::update(float ms)
 {
+  timeFromLastUpdate += ms;
   // FIXME: we don't have to calculate every time if we already calculated the value of this updater. (see DrawerShip)
-  initialValue.position.x = updater.xPosition - drawable->getModifiedValue().dimension.x / 2;;
-  initialValue.position.y = updater.yPosition - drawable->getModifiedValue().dimension.y / 2;;
+  if (updater != nullptr)
+    {
+      timeFromLastUpdate = 0;
+      initialValue.position.x = updater->xPosition - drawable->getModifiedValue().dimension.x / 2;;
+      initialValue.position.y = updater->yPosition - drawable->getModifiedValue().dimension.y / 2;;
+      life = updater->life;
+      delete updater;
+      updater = nullptr;
+    }
   drawable->update(ms);
-
+  if (timeFromLastUpdate >= 500)
+    life = 0;
   // to call last because it stores the computed value and modify it when we call next update.
   ADrawer::update(ms); // Don't know if I should call Modifiable::update(ms) rather..?
 }
@@ -35,7 +47,8 @@ void DrawerEnemyBasic::drawTo(IGraphicsManager* gm, const ValueDrawer& v) const
 void DrawerEnemyBasic::setUpdate(const Protocol::drawable& u)
 {
   id = u.id;
-  updater = u;
+  delete updater;
+  updater = new Protocol::drawable(u);
 }
 
 DrawerUDrawable* DrawerEnemyBasic::createExplosion() const
@@ -53,3 +66,9 @@ DrawerUDrawable* DrawerEnemyBasic::createExplosion() const
   d->setInitialValue(r);
   return d;
 }
+
+int DrawerEnemyBasic::getLife() const
+{
+  return life;
+}
+

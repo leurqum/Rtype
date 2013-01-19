@@ -4,7 +4,10 @@ SceneListGame::SceneListGame(IScene& decoratedScene) :
   ASceneHover(decoratedScene), menuGames("Back")
 {
   menuGames.addButton("Game 1"); // TODO: do a proper list..
-  menuGames.setInitialValue(ValueDrawer(400, 160,0, 0, 0));
+  menuGames.setInitialValue(ValueDrawer(400, 160, 0, 0, 0));
+
+  // it's to avoid unset values
+  update(0);
 }
 
 

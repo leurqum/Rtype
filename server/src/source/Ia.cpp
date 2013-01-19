@@ -3,12 +3,10 @@
 
 Ia::Ia()
 {
-  std::cout << "Une ia est nee en ce jour" << std::endl;
 }
 
 void Ia::init(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game *g, Protocol::patern_enemie patern)
 {
-  std::cout << "Une ia est initialisee en ce jour" << std::endl;
   _id = id;
   _position = pos;
   _speed = speed;
