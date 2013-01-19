@@ -28,6 +28,10 @@ Network::Network(const std::string& host, int portTCP, int portUDP) :
 
 Network::~Network(void)
 {
+	this->socketTCP->disconnect();
+	this->socketUDP->unbind();
+	this->socketUDPRead->unbind();
+
 }
 
 
