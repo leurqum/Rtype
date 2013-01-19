@@ -5,40 +5,32 @@
 ## Login   <leurqu_m@epitech.net>
 ## 
 ## Started on  Tue Jan  1 17:03:48 2013 mathieu leurquin
-## Last update Tue Jan  8 12:41:54 2013 mathieu leurquin
+## Last update Fri Jan 18 15:44:55 2013 mathieu leurquin
 ##
 
 
-SRC_SR	=	IAUnit.cpp 				\
-		HumainUnit.cpp				\
-		BasicWeapon.cpp				\
-		LifePowerUp.cpp				\
-		MovingObstacle.cpp			\
-		Obstacle.cpp				\
-		Player.cpp				\
-		RectangleCollisionDefinition.cpp	\
-		Unit.cpp				\
-		Game.cpp				\
-		Bullet.cpp				\
-		CommandManager.cpp
+NAME		=	./lib/ia.so
 
-NAME_SR =	server
+CC		=	g++
 
-OBJ_SR	=	$(SRC_SR:.cpp=.o)
+CXXFLAGS	=	-W -Wall -fPIC
 
-CXXFLAGS=	-W -Wall -Wextra -g
+SRC		=	./source/Ia.cpp
 
-CC	=	g++
+OBJ		=	$(SRC:.cpp=.o)
 
-all		:	$(NAME_SR)
 
-$(NAME_SR)	:	$(OBJ_SR)
-			$(CC) $(OBJ_SR) -o $(NAME_SR)
+LIB		=	-L/usr/lib -ldl
+
+all		:	$(NAME)
+
+$(NAME)		:	$(OBJ)
+			$(CC) $(OBJ) -o $(NAME) $(LIB) -shared
 
 clean		:
-			rm -f $(OBJ_SR)
+			rm -rf *~ *# $(OBJ)
 
 fclean		:	clean
-			rm -f $(NAME_SR)
+			rm -rf $(NAME)
 
 re		:	fclean all

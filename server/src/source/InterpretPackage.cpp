@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Fri Jan 18 10:18:47 2013 mathieu leurquin
+// Last update Sat Jan 19 10:15:18 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -88,21 +88,21 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
   p->size = size;
 
   memset(res, 0, size);
-  memcpy(&res, p, sizeof(Protocol::package*));
-  position += sizeof(Protocol::package*);
+  memcpy(&res, p, sizeof(Protocol::package));
+  position += sizeof(Protocol::package);
   
   Protocol::parties *pa = new Protocol::parties();
   pa->nb_parties = _server->getNbGame();
-  memcpy(&res + position, pa, sizeof(Protocol::parties*));
-  position = sizeof(Protocol::parties*);
+  memcpy(&res + position, pa, sizeof(Protocol::parties));
+  position = sizeof(Protocol::parties);
 
   std::list <Game*> listGameCpy = _server->gameList;
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
     {
       Protocol::party *pa = new Protocol::party();
       pa->nb_players = (*it)->getNbPlayer();
-      memcpy(&res + position, pa, sizeof(Protocol::party*));
-      position += sizeof(Protocol::party*);
+      memcpy(&res + position, pa, sizeof(Protocol::party));
+      position += sizeof(Protocol::party);
     }
   sock->sendv(p->size, res);
 }
@@ -112,8 +112,8 @@ void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
   std::list <Game*> listGameCpy = _server->gameList;
   Protocol::join_game *game = new Protocol::join_game();
 
-  memset(game, 0, sizeof(Protocol::join_game *));
-  memcpy(game, data, sizeof(Protocol::join_game *));
+  memset(game, 0, sizeof(Protocol::join_game));
+  memcpy(game, data, sizeof(Protocol::join_game));
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
     {
       Protocol::response *rep = new Protocol::response();
@@ -124,12 +124,12 @@ void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
 	  (*it)->addHumainUnitByPlayer(p->getId());
 	  _server->erasePlayerWaiting(p->getId());
 	  rep->response = Protocol::VALIDE;
-	  sock->sendv(sizeof(Protocol::response*), (void*)rep);
+	  sock->sendv(sizeof(Protocol::response), (void*)rep);
 	}
       else if ((*it)->getId() == game->id && (*it)->getNbPlayer() >= 4)
  	{
 	  rep->response = Protocol::CANT_JOIN_GAME;
-	  sock->sendv(sizeof(Protocol::response*), (void*)rep);
+	  sock->sendv(sizeof(Protocol::response), (void*)rep);
 	}
     }
 }

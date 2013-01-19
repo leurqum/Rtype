@@ -15,14 +15,17 @@
 #include "MovingObstacle.hpp"
 #include "LifePowerUp.hpp"
 
-class Ia;
 class IIa;
 class HumainUnit;
+
+typedef IIa *(*maker_Ia)();
+
 class Game
 {
 
 public:
- std::list<Player*>		playerList;
+  maker_Ia			iaFactory;
+  std::list<Player*>		playerList;
   int _id;
   std::list<IIa*>		iaList;
   std::list<HumainUnit*>	humainList;
@@ -124,7 +127,7 @@ public:
   void sendShip()const;
 };
 
-#endif //__GAME__
-
-#include "Ia.hpp"
+#include "IIA.hpp"
 #include "HumainUnit.hpp"
+
+#endif //__GAME__

@@ -1,8 +1,14 @@
 #include <dlfcn.h>
 #include "../include/Ia.hpp"
 
-Ia::Ia(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game *g, Protocol::patern_enemie patern)
+Ia::Ia()
 {
+  std::cout << "Une ia est nee en ce jour" << std::endl;
+}
+
+void Ia::init(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game *g, Protocol::patern_enemie patern)
+{
+  std::cout << "Une ia est initialisee en ce jour" << std::endl;
   _id = id;
   _position = pos;
   _speed = speed;
@@ -21,19 +27,19 @@ Ia::Ia(int id, std::pair<float, float> pos, int speed, float h, float w, Protoco
     _toShoot = true;
 }
 
-Ia *getInstance(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game* g
-		, Protocol::patern_enemie  patern)
-{
-  static int i = 0;
-  Ia * ia;
+// Ia *getInstance(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game* g
+// 		, Protocol::patern_enemie  patern)
+// {
+//   static int i = 0;
+//   Ia * ia;
 
-  if (i == 0)
-    {
-      std::cout<<"faire le dlopen bitch"<<std::endl;
-      i++;
-    } 
-  return new Ia(id, pos, speed, h, w, t, g, patern);
-}
+//   if (i == 0)
+//     {
+//       std::cout<<"faire le dlopen bitch"<<std::endl;
+//       i++;
+//     } 
+//   return new Ia(id, pos, speed, h, w, t, g, patern);
+// }
 
 void Ia::move()
 {
@@ -49,7 +55,7 @@ void Ia::fire()
 
   if (_type == Protocol::ENEMY_EASY)
     {
-      coll = new RectangleCollisionDefinition(_position, 18, 18);
+      coll = new RectangleCollisionDefinition(_position, 20, 10);
       _game->createBullet(1, std::pair<float, float>(-1, -1), 0, coll, 1, true,  Protocol::BULLET_LINEAR);
     }    
   // else if (_type == Protocol::ENEMY_HARD)
@@ -186,8 +192,8 @@ Protocol::type_drawable Ia::getType()const
   return _type;
 }
 
-// extern "C" IIa *entry_point()
-// {
-//   IIa *ia = new Ia();
-//   return ia;
-// }
+extern "C" Ia *entry_point()
+{
+  Ia *ia = new Ia();
+  return ia;
+}

@@ -2,7 +2,6 @@
 #define __IALINEAR__
 
 #include "IIA.hpp"
-#include "Game.hpp"
 
 
 class Ia : public IIa
@@ -21,7 +20,8 @@ private:
   bool				_toShoot;
   long				_verif;
 public:
-  Ia(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game *g,Protocol::patern_enemie patern);
+  Ia();
+  virtual void init(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game *g,Protocol::patern_enemie patern);
   virtual void move();
   virtual void fire();
   virtual void update(double time);
@@ -42,6 +42,8 @@ public:
   void chooseDirection(double time);
 };
 
-Ia *getInstance(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game* g, Protocol::patern_enemie patern);
+typedef Ia *(*maker_Ia)();
+
+// Ia *getInstance(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game* g, Protocol::patern_enemie patern);
 
 #endif
