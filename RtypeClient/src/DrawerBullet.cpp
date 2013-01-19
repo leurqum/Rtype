@@ -30,7 +30,7 @@ void DrawerBullet::update(float ms)
       updater = nullptr;
     }
   drawable->update(ms);
-  if (timeFromLastUpdate <= 0)
+  if (timeFromLastUpdate > 500)
     life = 0;
 
   // to call last because it stores the computed value and modify it when we call next update.
