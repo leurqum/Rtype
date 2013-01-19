@@ -23,7 +23,7 @@
  	Protocol::reponse_type				Login(std::string name, std::string pwd) const;
 	Protocol::reponse_type				Create();
  	Protocol::reponse_type				Join(int id);
- 	std::list<Protocol::party*>			GetGameList() const; 
+ 	std::list<Protocol::party>			GetGameList() const; 
 	void								Move(Protocol::cmd_client*) const; 
  	void								Fire() const; 
 

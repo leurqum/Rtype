@@ -98,13 +98,13 @@ void SceneListGame::refreshGames()
   int i = 0;
 
   menuGames.addButton("New");
-  for (Protocol::party* g : games)
+  for (Protocol::party g : games)
     {
       std::ostringstream oss;
       oss << "#";
       oss << i;
       oss << " ";
-      oss << g->nb_players;
+      oss << g.nb_players;
       oss << " players";
       menuGames.addButton(oss.str()); // TODO: do a proper list..
     }

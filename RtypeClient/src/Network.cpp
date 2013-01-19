@@ -129,17 +129,20 @@ Protocol::reponse_type				Network::Join(int id)
 	// send header + party_name
 	package = new char[sizeof(header) + sizeof(game)];
 	memcpy(package, &header, sizeof(header));
-	memcpy((&package + sizeof(header)), &game, sizeof(game));
+	memcpy((package + sizeof(header)), &game, sizeof(game));
+	// std::cout << "demande bientot envoyee" << std::endl;
 	this->socketTCP->send(package, sizeof(header) + sizeof(game));
 
+	// std::cout << "demande envoyee" << std::endl;
 	// get reponse
 	Protocol::response rep;
 	std::size_t received = 0;
 	this->socketTCP->receive((void*)&rep, sizeof(rep), received);
+	std::cout << "confirm recue" << std::endl;
 	return rep.response;
 }
 
-std::list<Protocol::party*>			Network::GetGameList() const
+std::list<Protocol::party>			Network::GetGameList() const
 {
 	void*						package;
 	Protocol::package			header;
@@ -147,7 +150,7 @@ std::list<Protocol::party*>			Network::GetGameList() const
 	header.size = 0;
 
 	//Protocol::response			rep;
-	std::list<Protocol::party*> partys;
+	std::list<Protocol::party> partys;
 
 	// send header
 	package = new char[sizeof(header)];
@@ -155,24 +158,24 @@ std::list<Protocol::party*>			Network::GetGameList() const
 	this->socketTCP->send(package, sizeof(header));
 
 	// get reponse
-	void*			data;
+	void*			data = malloc(1024);
 	std::size_t		received;
 	this->socketTCP->receive(data, 1024, received);
 	// get header;
-	Protocol::response* rep = (Protocol::response*)data;
-	data = &data + sizeof(Protocol::response);
 	Protocol::parties* nb_partie = (Protocol::parties*)(data);
-	data = &data + sizeof(Protocol::parties);
-	if (rep->response == Protocol::VALIDE)
-	{
-		for (int i = 0; i < nb_partie->nb_parties; i++)
-		{
-			Protocol::party* temp = new Protocol::party;;
-			temp = (Protocol::party*)&data;
-			partys.push_back(temp);
-			data = &data + sizeof(Protocol::party);
-		}
-	}
+	// if (rep->response == Protocol::VALIDE)
+	// {
+	data = data + sizeof(Protocol::parties);
+	std::cout << nb_partie->nb_parties << std::endl;
+	for (int i = 0; i < nb_partie->nb_parties; i++)
+	  {
+	    // Protocol::party* temp = new Protocol::party;;
+	    
+	    partys.push_back(*(Protocol::party*)data);
+	    // data = &data + sizeof(Protocol::party);
+	    data = data + sizeof(Protocol::party);
+	  }
+	// }
 
 	return partys;
 }

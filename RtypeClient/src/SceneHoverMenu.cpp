@@ -7,6 +7,19 @@ SceneHoverMenu::SceneHoverMenu(IScene& decoratedScene) :
   menu.addButton("Exit ?"); // confirm exit
   menu.setInitialValue(ValueDrawer(200, 160,0, 0, 0));
   isBackground = BgState::FOREGROUND;
+
+  std::list<ValueDrawer > arriveAnimation;
+  arriveAnimation.push_back(ValueDrawer());
+  arriveAnimation.push_back(ValueDrawer(0, 10, 0, 0, 5)); 
+  arriveAnimation.push_back(ValueDrawer(10, 10, 0, 0, 0));
+  arriveAnimation.push_back(ValueDrawer(10, 0, 0, 0, -5));
+  arriveAnimation.push_back(ValueDrawer());
+  arriveAnimation.push_back(ValueDrawer(-10, 0, 0, 0, 5));
+  arriveAnimation.push_back(ValueDrawer(-10, -10, 0, 0, 0));
+  arriveAnimation.push_back(ValueDrawer(0, -10, 0, 0, -5));
+  arriveAnimation.push_back(ValueDrawer());
+
+  menu.setAnimation((new Animation<ValueDrawer>(arriveAnimation, 1000, true)));
 }
 
 

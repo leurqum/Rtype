@@ -26,7 +26,7 @@ public:
 	void refreshGames();
 private:
 	DrawerMenu menuGames;
-	std::list<Protocol::party*> games;
+	std::list<Protocol::party> games;
 	Network* network;
 };
 
