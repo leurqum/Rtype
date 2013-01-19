@@ -46,10 +46,10 @@ DrawerUDrawable* DrawerEnemyBasic::createExplosion() const
   ValueDrawer r(getInitialValue());
 
   // FIXME: -= x en dur.. berk
-  r.position.x -= 11;
-  r.position.y -= 12;
-  r.scale.x += 0.7;
-  r.scale.y += 0.7;
+  r.position.x -= 0;
+  r.position.y -= 0;
+  r.scale.x += 0.2;
+  r.scale.y += 0.2;
   d->setInitialValue(r);
   return d;
 }

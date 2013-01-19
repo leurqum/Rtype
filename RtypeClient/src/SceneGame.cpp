@@ -32,7 +32,8 @@ IScene* SceneGame::update(float elapsedTime)
   
   bool recved = true;
   int i = 0;
-  while (recved && i < 100) // FIXME: it is done so we dont wait forever, but it makes a delay...
+  while (recved // && i < 100
+	 ) // FIXME: it is done so we dont wait forever, but it makes a delay...
     {
       i++;
       Protocol::drawable d = network->GetPieceWorld(recved);
@@ -178,12 +179,13 @@ IScene* SceneGame::manageInput()
 
   if (im->getKeyStatus(sf::Keyboard::Key::Up).y == true)
     {
-      c.top = true;
+      // y axis is inversed
+      c.down = true;
       std::cout << "Up !" << std::endl;
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Down).y == true)
     {
-      c.down = true;
+      c.top = true;
       std::cout << "Down !" << std::endl;
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Left).y == true)
@@ -203,7 +205,8 @@ IScene* SceneGame::manageInput()
   if (im->getKeyStatus(sf::Keyboard::Key::Escape).y == true)
     return new SceneHoverConfirmLeave(*this);
   // FIXME: don't send move if no movement.
-  network->Move(&c);
+  if (c.top || c.down || c.left || c.right)
+    network->Move(&c);
   return this;
 }
 

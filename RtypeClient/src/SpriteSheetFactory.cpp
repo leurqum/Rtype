@@ -2,6 +2,21 @@
 
 #include <iostream>
 
+static std::list<ValueDrawable> helper_createShip(int id)
+{
+  std::list<ValueDrawable > singleAnim;
+  singleAnim.push_back(ValueDrawable(33, 17, 0, 0 + 17 * id));
+  singleAnim.push_back(ValueDrawable(33, 17, 33, 0 + 17 * id));
+  singleAnim.push_back(ValueDrawable(33, 17, 66, 0 + 17 * id));
+  singleAnim.push_back(ValueDrawable(33, 17, 99, 0 + 17 * id));
+  singleAnim.push_back(ValueDrawable(33, 17, 132, 0 + 17 * id));
+  singleAnim.push_back(ValueDrawable(33, 17, 99, 0 + 17 * id));
+  singleAnim.push_back(ValueDrawable(33, 17, 66, 0 + 17 * id));
+  singleAnim.push_back(ValueDrawable(33, 17, 33, 0 + 17 * id));
+
+  return singleAnim;
+}
+
 SpriteSheetFactory::SpriteSheetFactory()
 {
   // FIXME: all these spriteSheets are leaked. OK, it doesn't matter as it's a singleton, but if we want to free some resource at runtime, make sure to fix this.
@@ -11,30 +26,17 @@ SpriteSheetFactory::SpriteSheetFactory()
   spriteSheets[0]->setFilename("sprites/r-typesheet42.gif");
 
   std::map<int, Animation<ValueDrawable>* > animList;
-  std::list<ValueDrawable > singleAnim;
-  singleAnim.push_back(ValueDrawable(33, 17, 0, 0));
-  singleAnim.push_back(ValueDrawable(33, 17, 33, 0));
-  singleAnim.push_back(ValueDrawable(33, 17, 66, 0));
-  singleAnim.push_back(ValueDrawable(33, 17, 99, 0));
-  singleAnim.push_back(ValueDrawable(33, 17, 132, 0));
-  singleAnim.push_back(ValueDrawable(33, 17, 99, 0));
-  singleAnim.push_back(ValueDrawable(33, 17, 66, 0));
-  singleAnim.push_back(ValueDrawable(33, 17, 33, 0));
-  // singleAnim.push_back({{33, 17}, {0, 0}});
-  animList[0] = new Animation<ValueDrawable>(singleAnim, 250, false);
 
-  singleAnim.clear();
-  singleAnim.push_back(ValueDrawable(33, 17, 0, 17));
-  singleAnim.push_back(ValueDrawable(33, 17, 33, 17));
-  singleAnim.push_back(ValueDrawable(33, 17, 66, 17));
-  singleAnim.push_back(ValueDrawable(33, 17, 99, 17));
-  singleAnim.push_back(ValueDrawable(33, 17, 132, 17));
-  singleAnim.push_back(ValueDrawable(33, 17, 99, 17));
-  singleAnim.push_back(ValueDrawable(33, 17, 66, 17));
-  singleAnim.push_back(ValueDrawable(33, 17, 33, 17));
-  animList[1] = new Animation<ValueDrawable>(singleAnim, 250, false);
+  animList[0] = new Animation<ValueDrawable>(helper_createShip(0), 250, false);
+
+  animList[1] = new Animation<ValueDrawable>(helper_createShip(1), 250, false);
+  animList[2] = new Animation<ValueDrawable>(helper_createShip(2), 250, false);
+  animList[3] = new Animation<ValueDrawable>(helper_createShip(3), 250, false);
+  animList[4] = new Animation<ValueDrawable>(helper_createShip(4), 250, false);
+
   spriteSheets[0]->setAnimations(animList);
   //
+  std::list<ValueDrawable > singleAnim;
 
   // Background fixed image
   animList.clear();

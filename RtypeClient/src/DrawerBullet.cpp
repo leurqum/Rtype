@@ -15,9 +15,9 @@ void DrawerBullet::update(float ms)
   if (updater)
     {
       id = updater->id;
-      if (initialValue.position.x < updater->xPosition)
+      if (initialValue.position.x + drawable->getModifiedValue().dimension.x / 2 < updater->xPosition)
 	drawable->animate(0);
-      else if (initialValue.position.x > updater->xPosition)
+      else if (initialValue.position.x + drawable->getModifiedValue().dimension.y / 2 > updater->xPosition)
 	drawable->animate(1);
       initialValue.position.x = updater->xPosition - drawable->getModifiedValue().dimension.x / 2;;
       initialValue.position.y = updater->yPosition - drawable->getModifiedValue().dimension.y / 2;;

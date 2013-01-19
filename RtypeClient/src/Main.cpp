@@ -7,6 +7,10 @@
 #include "SceneBackground.h"
 #include <thread>
 
+#include <sstream>
+#include <string>
+
+
 int main()
 {
   SceneManager* sm = SceneManager::getInstance();
@@ -23,12 +27,20 @@ int main()
       // FIXME: use real milliseconds..
       if (timer.getElapsedTime().asMilliseconds() > LOOP_UPDATE_DRAW) // around 60 updates and draw per second
 	{
+	  std::ostringstream oss;
+	  oss << 1000.f / timer.getElapsedTime().asMilliseconds();
+	  std::string str = oss.str();
 	  // std::cout << "update: " << timer.getElapsedTime().asMilliseconds() << std::endl;
+	  
 	  sm->update(timer.getElapsedTime().asMilliseconds());
 	  timer.restart();
 	  sm->getGraphicsManager()->clear();
 	  sm->draw();
+	  ValueDrawer d;
+	  d.position.y = 580;
+	  sm->getGraphicsManager()->write(str, d);
 	  sm->getGraphicsManager()->display();
+	  
 	}
       std::this_thread::sleep_for(std::chrono::milliseconds(LOOP_UPDATE_DRAW - timer.getElapsedTime().asMilliseconds()));
     }
