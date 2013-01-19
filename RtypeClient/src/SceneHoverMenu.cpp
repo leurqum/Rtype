@@ -23,13 +23,25 @@ IScene* SceneHoverMenu::update(float elapsedTime)
       menu.checkInput(SceneManager::getInstance()->getInputManager());
       if (menu.getSelectedId() == 0 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
 	  {
-		Network*	network = new Network(std::string("10.18.206.115"), 4242, 4245);
-	    return new SceneGame(this->decoratedScene, network
-				     );
+	  try {
+	    Network*	network = new Network(std::string("10.18.206.115"), 4242, 4245);
+	    return new SceneGame(*this, network);
+	  } catch( std::exception e)
+	    {
+	      std::cout << "failed initializing selected game, maybe you need to be connected" << std::endl;
+	      menu.resetSelections();
+	    }
 	  }
       if (menu.getSelectedId() == 1 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
 	{
-	  return new SceneListGame(*this);
+	  try {
+	    Network*	network = new Network(std::string("10.18.206.115"), 4242, 4245);
+	    return new SceneListGame(*this, network);
+	  } catch( std::exception e)
+	    {
+	      std::cout << "failed initializing list of games, maybe you need to be connected" << std::endl;
+	      menu.resetSelections();
+	    }
 	}
       if (menu.getSelectedId() == 2 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
 	{

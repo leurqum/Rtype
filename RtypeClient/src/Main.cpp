@@ -36,6 +36,7 @@ int main()
 	  timeTotal += timer.getElapsedTime().asMilliseconds();
 	  if (timeTotal >= 1000)
 	    {
+
 	      std::ostringstream oss;
 	      
 	      oss << timeTotal / (timeTotal / imgPerSecond);

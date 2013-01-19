@@ -8,7 +8,7 @@ Network::Network(const std::string& host, int portTCP, int portUDP) :
 
 	sf::Socket::Status status = this->socketTCP->connect(host, portTCP);
 	if (status != sf::Socket::Done)
-		throw std::exception("error socket tcp");
+	  throw std::exception();
 
 	if (this->socketUDP->bind(portUDP) != sf::Socket::Status::Done)
 	  std::cout << "fail bind on port (writing)" << std::endl;
