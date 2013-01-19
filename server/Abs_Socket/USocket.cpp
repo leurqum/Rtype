@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Fri Jan 18 15:06:40 2013 mathieu leurquin
+Last update Sat Jan 19 14:51:35 2013 mathieu leurquin
 //
 
 #include "USocket.hpp"
@@ -101,11 +101,11 @@ int		USocket::recv(void ** header, void ** data)
     {
       *header = new int[2];
       if ((ret = ::recv(this->_connectSocket, *header, 2 * sizeof(int), 0)) <= 0)
-	return ret;
+	return 0;
       *data = new char[((int *)(*header))[1]];
       memset(*data, 0, ((int *)(*header))[1]);
       if ((ret = ::recv(this->_connectSocket, *data, ((int *)(*header))[1], 0)) <= 0)
-	return ret;
+	return 0;
       return 1;
     }
   socklen_t tosize = sizeof(_hints);
@@ -113,7 +113,7 @@ int		USocket::recv(void ** header, void ** data)
   *data = new char[((int *)(*header))[1]];
   memset(*data, 0, ((int *)(*header))[1]);
   if ((ret = ::recvfrom(this->_connectSocket, *data, ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
-    return ret;
+    return 0;
   _host = inet_ntoa(_hints.sin_addr);
   return 1;
 }
