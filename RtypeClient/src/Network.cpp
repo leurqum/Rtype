@@ -6,7 +6,10 @@ Network::Network(const std::string& host, int portTCP, int portUDP) :
 	this->socketTCP = new sf::TcpSocket();
 	this->socketUDP = new sf::UdpSocket();
 
-	this->socketTCP->connect(host, portTCP);
+	sf::Socket::Status status = this->socketTCP->connect(host, portTCP);
+	if (status != sf::Socket::Done)
+		throw std::exception("error socket tcp");
+
 	if (this->socketUDP->bind(portUDP) != sf::Socket::Status::Done)
 	  std::cout << "fail bind on port (writing)" << std::endl;
 	else
