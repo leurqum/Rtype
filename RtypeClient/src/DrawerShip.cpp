@@ -5,12 +5,16 @@ DrawerShip::DrawerShip()
   id = -1;
   updater = nullptr;
   drawable = FactoryDrawable::getInstance()->createShip();
+  timeFromLastUpdate = 0;
+  life = 1;
 }
 
 void DrawerShip::update(float ms)
 {
+  timeFromLastUpdate += ms;
   if (updater)
     {
+      timeFromLastUpdate = 0;
       drawable->animate(id % 5); // there are only 5 animations/colors.
       drawable->update(ms); // we do it here because otherwise the initial (and modified) value would be 0, we then couldn't center the sprite.
       initialValue.position.x = updater->xPosition - drawable->getModifiedValue().dimension.x / 2;
@@ -26,6 +30,10 @@ void DrawerShip::update(float ms)
     }
   else
     drawable->update(ms);
+
+  if (timeFromLastUpdate > 500)
+    life = 0; // we consider it might be dead, so we set the life to 0.
+
   ADrawer::update(ms);  
 }
 

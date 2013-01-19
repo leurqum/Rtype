@@ -35,7 +35,7 @@ public ASceneHover
   template<typename T>
     void updateList(std::list<T>& l, Protocol::drawable&);
   
-  void removeCollisionsOver();
+  void removeAllDeadBodies();
   
   IScene* manageInput();
 
