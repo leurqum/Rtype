@@ -129,7 +129,7 @@ Protocol::reponse_type				Network::Join(int id)
 	// send header + party_name
 	package = new char[sizeof(header) + sizeof(game)];
 	memcpy(package, &header, sizeof(header));
-	memcpy((package + sizeof(header)), &game, sizeof(game));
+	memcpy((((char*)package) + sizeof(header)), &game, sizeof(game));
 	// std::cout << "demande bientot envoyee" << std::endl;
 	this->socketTCP->send(package, sizeof(header) + sizeof(game));
 
@@ -165,7 +165,7 @@ std::list<Protocol::party>			Network::GetGameList() const
 	Protocol::parties* nb_partie = (Protocol::parties*)(data);
 	// if (rep->response == Protocol::VALIDE)
 	// {
-	data = data + sizeof(Protocol::parties);
+	data = ((char*)data) + sizeof(Protocol::parties);
 	std::cout << nb_partie->nb_parties << std::endl;
 	for (int i = 0; i < nb_partie->nb_parties; i++)
 	  {
@@ -173,7 +173,7 @@ std::list<Protocol::party>			Network::GetGameList() const
 	    
 	    partys.push_back(*(Protocol::party*)data);
 	    // data = &data + sizeof(Protocol::party);
-	    data = data + sizeof(Protocol::party);
+	    data = ((char*)data) + sizeof(Protocol::party);
 	  }
 	// }
 
