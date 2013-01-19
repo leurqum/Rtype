@@ -86,7 +86,7 @@ void Game::loop()
       eraseIaOut();
       eraseBonusOut();
       eraseObsOut();
-      
+    
 #ifdef __unix__
       usleep(20000);
       t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC);
@@ -166,12 +166,15 @@ void Game::checkPlayer()
   mutexPlayers->MLock();
   if (humainList.size() < playerList.size())
     {
+      std::cout<<"CHECK PLAYER"<<std::endl;
       if (playerList.back() == NULL)
 	{
 	  std::cout<<"fail"<<std::endl;
 	  exit(0);
 	}
       addHumainUnitByPlayer(playerList.back()->getId());
+        CreateEnemiePaternSolo(Protocol::ENEMY_EASY, 0, 3, 0, 1);
+      CreateEnemiePaternSolo(Protocol::ENEMY_EASY, 0, 3, 0, 1);
     }
   mutexPlayers->MUnLock();
 }
@@ -188,7 +191,7 @@ void Game::update(double time)
 {
   // createRandomObs(time);
   // createRandomBonus(time);
-  createRandomEnemie(time);
+  //createRandomEnemie(time);
   for (std::list<IIa*>::iterator it = iaList.begin(); it != iaList.end(); it++)
     (*it)->update(time);
   
@@ -504,7 +507,7 @@ Player *Game::getPlayerBySockTcp(ISocket *sock)const
   mutexPlayers->MUnLock();
   return (NULL);
 }
-
+ 
 Player *Game::getPlayerBySockUdp(ISocket *sock)const
 {
   mutexPlayers->MLock();
@@ -1144,7 +1147,10 @@ void Game::sendShip()const
 	  d->life = (*it)->getHealth();
 	  mutexPlayers->MLock();
 	  for (std::list<Player*>::const_iterator it = playerList.begin(); it != playerList.end();it++)
-	    (*it)->getSocketUdp()->sendv(sizeof(*d), d);
+	    {
+	      std::cout<<"YAAAAAAAAAA    : "<<playerList.size()<<std::endl;
+	      (*it)->getSocketUdp()->sendv(sizeof(*d), d);
+	    }
 	  mutexPlayers->MUnLock();
 	}
     }

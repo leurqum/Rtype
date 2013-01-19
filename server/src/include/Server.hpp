@@ -18,7 +18,8 @@ public:
   Server(std::string const & port);
   
   int getNbGame()const;
-  
+
+  Player *getPlayerWaitingByTcp(ISocket * sock)const;
   Player *getPlayerWaiting(int id)const;
   Game *getGame(int id)const;
   std::list<Game*> &getGameList();

@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Sat Jan 19 14:56:06 2013 mathieu leurquin
+// Last update Sat Jan 19 17:40:12 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -16,6 +16,7 @@ InterpretPackage::InterpretPackage(Server *s)
   _funcMap[Protocol::LOGIN] = &InterpretPackage::execLogin;
   _funcMap[Protocol::GET_GAME_LIST] = &InterpretPackage::execGetGameList;
   _funcMap[Protocol::JOIN_GAME] = &InterpretPackage::execJoinGame;
+
   _funcMap[Protocol::CREATE_GAME] = &InterpretPackage::execCreateGame;
   //_funcMap[Protocol::MOVE] = &InterpretPackage::execMove;
   //_funcMap[Protocol::FIRE] = &InterpretPackage::execFire;
@@ -26,7 +27,7 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
   if (header == 0 && data == 0) // Client disconnected on TCP socket
     {
-      std::cout<<"EXIIIIIIIIIIIIIIIIIIIIIITTTTTTTTTTTTTTTTTT"<<std::endl;
+      std::cout<<"ERASEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEeEE"<<std::endl;
       execExit(sock);
       return ;
     }
@@ -68,8 +69,11 @@ void	InterpretPackage::execExit(ISocket * sock)
   Player *p;
   
   for (std::list<Game*>::iterator it = _server->gameList.begin(); it != _server->gameList.end(); it++)
-    if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
-      (*it)->erasePlayer(p->getId());
+    if ((p = (*it)->getPlayerBySockTcp(sock)) != NULL)
+      {
+	std::cout<<"ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"<<std::endl;
+	(*it)->erasePlayer(p->getId());
+      }
 }
 
 void	InterpretPackage::execRegister(void * data, ISocket * sock)
@@ -95,31 +99,28 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
   int	size = 0;
   int position = 0;
 
+  std::cout<<"GET GAME LIST"<<std::endl;
   (void)data;
-  Protocol::package *p = new Protocol::package();
-  p->id = Protocol::GET_GAME_LIST;
-  
-  size = sizeof(Protocol::parties) + (_server->getNbGame() * sizeof (Protocol::party));
-  p->size = size;
 
-  memset(res, 0, size);
-  memcpy(&res, p, sizeof(Protocol::package));
-  position += sizeof(Protocol::package);
-  
+  size = sizeof(Protocol::parties) + (_server->getNbGame() * sizeof (Protocol::party));
+  res = new char[size];
+
   Protocol::parties *pa = new Protocol::parties();
   pa->nb_parties = _server->getNbGame();
-  memcpy(&res + position, pa, sizeof(Protocol::parties));
-  position = sizeof(Protocol::parties);
+  memcpy((((char*)res) + position), pa, sizeof(*pa));
+  position = sizeof(*pa);
 
   std::list <Game*> listGameCpy = _server->gameList;
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
     {
       Protocol::party *pa = new Protocol::party();
       pa->nb_players = (*it)->getNbPlayer();
-      memcpy(&res + position, pa, sizeof(Protocol::party));
-      position += sizeof(Protocol::party);
+      memcpy((((char*)res) + position), pa, sizeof(*pa));
+      position += sizeof(*pa);
     }
-  sock->sendv(p->size, res);
+  std::cout<<"Envoi de la liste"<<std::endl;
+  sock->sendv(size, res);
+  std::cout<<"liste envoyee"<<std::endl;
 }
 
 void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
@@ -127,32 +128,49 @@ void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
   std::list <Game*> listGameCpy = _server->gameList;
   Protocol::join_game *game = new Protocol::join_game();
 
-  memset(game, 0, sizeof(Protocol::join_game));
+  memset(game, 0, sizeof(*game));
   memcpy(game, data, sizeof(Protocol::join_game));
   for (std::list<Game*>::iterator it = listGameCpy.begin(); it != listGameCpy.end(); it++)
     {
       Protocol::response *rep = new Protocol::response();
       if ((*it)->getId() == game->id && (*it)->getNbPlayer() < 4)
 	{
-	  Player *p = (*it)->getPlayerBySockUdp(sock);
+	  Player *p = _server->getPlayerWaitingByTcp(sock);
 	  
-	  (*it)->addHumainUnitByPlayer(p->getId());
+	  (*it)->addPlayer(p);
 	  _server->erasePlayerWaiting(p->getId());
 	  rep->response = Protocol::VALIDE;
 	  sock->sendv(sizeof(Protocol::response), (void*)rep);
+	  return;
 	}
       else if ((*it)->getId() == game->id && (*it)->getNbPlayer() >= 4)
  	{
 	  rep->response = Protocol::CANT_JOIN_GAME;
 	  sock->sendv(sizeof(Protocol::response), (void*)rep);
+	  return;
 	}
     }
 }
 
 void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
 {
-  (void)data;
-  (void)sock;
+  std::cout<<"JE CREE UNE GAME"<<std::endl;
+  _server->createGame(1);
+  Player *p = _server->getPlayerWaitingByTcp(sock);
+
+  usleep(50000);
+  if (p == NULL)
+    {
+      std::cout<<"PUTIN DE FDP 1"<<std::endl;
+      return ;
+    }
+  if (_server->gameList.back() == NULL)
+    std::cout<<"PUTIN DE FDP 2"<<std::endl;
+  _server->gameList.back()->addPlayer(p);
+  _server->erasePlayerWaiting(p->getId());
+  Protocol::response *rep = new Protocol::response();
+  rep->response = Protocol::VALIDE;
+  sock->sendv(sizeof(*rep), rep);
 }
 
 void	InterpretPackage::execMove(Protocol::move * data, ISocket * sock)

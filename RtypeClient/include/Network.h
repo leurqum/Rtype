@@ -13,7 +13,7 @@
  { 
  public: 
  	Network(const std::string& host, int portTCP, int portUDP);
- 	~Network(void); 
+ 	~Network(void);
 
  	//udp communication 
  	Protocol::drawable GetPieceWorld(bool&);

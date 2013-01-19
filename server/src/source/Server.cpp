@@ -5,7 +5,7 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Sat Jan 19 14:03:40 2013 mathieu leurquin
+// Last update Sat Jan 19 16:28:44 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
@@ -20,7 +20,6 @@
 Server::Server(std::string const & port)
 {
   server_socket = new MyServerSocket(this);
-  this->createGame(0);
   if (server_socket->init("", port) == true)
     server_socket->launch();
 }
@@ -31,6 +30,20 @@ Player *Server::getPlayerWaiting(int id)const
     {
       if ((*it)->getId() == id)
 	return (*it);
+    }
+  return NULL;
+}
+
+Player *Server::getPlayerWaitingByTcp(ISocket * sock)const
+{
+  for (std::list<Player*>::const_iterator it = playerListWaiting.begin(); it != playerListWaiting.end(); it++)
+    {
+      std::cout<<"PASS"<<std::endl;
+      if ((*it)->getSocketTcp() == sock)
+	{
+	  std::cout<<"PLlayer trouver"<<std::endl;
+	  return (*it);
+	}
     }
   return NULL;
 }
@@ -80,15 +93,15 @@ Player* Server::createPlayerWaiting(int id, std::string name, ISocket *socket_tc
 
   playerListWaiting.push_back(p);
 
-  //TEST
+  // //TEST
   
-  Protocol::join_game *game = new Protocol::join_game();
-  game->id = 0;
+  // Protocol::join_game *game = new Protocol::join_game();
+  // game->id = 0;
   
-  (*(gameList.begin()))->addPlayer(p);
+  // (*(gameList.begin()))->addPlayer(p);
 
-  std::cout<<p->getId()<<std::endl;
-  this->erasePlayerWaiting(p->getId());
+  // std::cout<<p->getId()<<std::endl;
+  // this->erasePlayerWaiting(p->getId());
 
   i++;
   return (p);
