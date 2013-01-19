@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Sat Jan 19 10:15:18 2013 mathieu leurquin
+// Last update Sat Jan 19 14:56:06 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -24,6 +24,12 @@ InterpretPackage::InterpretPackage(Server *s)
 
 void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
+  if (header == 0 && data == 0) // Client disconnected on TCP socket
+    {
+      std::cout<<"EXIIIIIIIIIIIIIIIIIIIIIITTTTTTTTTTTTTTTTTT"<<std::endl;
+      execExit(sock);
+      return ;
+    }
   if (sock->isUDP() == true)
     {
       // std::cout<<"receive something Udp"<<std::endl;
@@ -37,11 +43,11 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 	  memset(m, 0, sizeof(*m));
 	  if (cmd->top == true)
 	    m->top = 1;
-	  else if (cmd->down == true)
+	  if (cmd->down == true)
 	    m->down = 1;
-	  else if (cmd->left == true)
+	  if (cmd->left == true)
 	    m->left = 1;
-	  else if (cmd->right == true)
+	  if (cmd->right == true)
 	    m->right = 1;
 	  this->execMove(m, sock);
 	}
@@ -55,6 +61,15 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
   // std::cout << "size:" << hdTmp[1] << std::endl;
   void (InterpretPackage::*pMethod)(void *, ISocket *) = (this->_funcMap[((Protocol::type_cmd)hdTmp[0])]);
   (this->*pMethod)(data, sock);
+}
+
+void	InterpretPackage::execExit(ISocket * sock)
+{
+  Player *p;
+  
+  for (std::list<Game*>::iterator it = _server->gameList.begin(); it != _server->gameList.end(); it++)
+    if ((p = (*it)->getPlayerBySockUdp(sock)) != NULL)
+      (*it)->erasePlayer(p->getId());
 }
 
 void	InterpretPackage::execRegister(void * data, ISocket * sock)
@@ -84,7 +99,7 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
   Protocol::package *p = new Protocol::package();
   p->id = Protocol::GET_GAME_LIST;
   
-  size = sizeof(Protocol::parties*) + (_server->getNbGame() * sizeof (Protocol::party*));
+  size = sizeof(Protocol::parties) + (_server->getNbGame() * sizeof (Protocol::party));
   p->size = size;
 
   memset(res, 0, size);

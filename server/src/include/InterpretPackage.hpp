@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:26 2013 marche_m (Maxime Marchès)
-// Last update Wed Jan 16 15:58:30 2013 mathieu leurquin
+// Last update Sat Jan 19 14:04:12 2013 mathieu leurquin
 //
 
 #ifndef __INTERPRET_PACKAGE__
@@ -25,6 +25,7 @@ public:
   void executeCmd(void * header, void * data, ISocket * sock);	//Max
   
 private:
+  void execExit(ISocket * sock);
   void execRegister(void * data, ISocket * sock);	//Max
   void execLogin(void * data, ISocket * sock);		//Max
   void execGetGameList(void * data, ISocket * sock);	//Matthieu
