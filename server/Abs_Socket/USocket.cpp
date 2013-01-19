@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-// Last update Wed Jan 16 12:26:27 2013 mathieu leurquin
+// Last update Fri Jan 18 15:06:40 2013 mathieu leurquin
 //
 
 #include "USocket.hpp"
@@ -23,12 +23,12 @@ void	USocket::setHost(std::string const & host)
   _host = host;
 }
 
-std::string const & USocket::getHost()
+std::string const & USocket::getHost() const
 {
   return _host;
 }
 
-void	USocket::setUDP(bool val)
+void	USocket::setUDP(bool const & val)
 {
   if (_connectSocket == INVALID_SOCKET)
     _udp = val;
@@ -115,7 +115,6 @@ int		USocket::recv(void ** header, void ** data)
   if ((ret = ::recvfrom(this->_connectSocket, *data, ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
     return ret;
   _host = inet_ntoa(_hints.sin_addr);
-  std::cout << "recvfrom:" << _host << std::endl;
   return 1;
 }
 
@@ -127,7 +126,7 @@ int		USocket::sendv(std::string const & data)
     return ::sendto(this->_connectSocket, data.c_str(), data.size(), 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
 }
 
-int		USocket::sendv(int size, void * data)
+int		USocket::sendv(int const & size, void * const & data)
 {
   if (_udp == false)
     return ::send(this->_connectSocket, data, size, 0);

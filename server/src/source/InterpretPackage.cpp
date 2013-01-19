@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Thu Jan 17 13:11:16 2013 mathieu leurquin
+// Last update Fri Jan 18 10:18:47 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -59,11 +59,13 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 
 void	InterpretPackage::execRegister(void * data, ISocket * sock)
 {
-
+  (void)data;
+  (void)sock;
 }
 
 void	InterpretPackage::execLogin(void * data, ISocket * sock)
 {
+  (void)sock;
   std::cout << "execLogin" << std::endl;
   Protocol::login * dataTmp = new Protocol::login();
   memset(dataTmp, 0, sizeof(*dataTmp));
@@ -78,6 +80,7 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
   int	size = 0;
   int position = 0;
 
+  (void)data;
   Protocol::package *p = new Protocol::package();
   p->id = Protocol::GET_GAME_LIST;
   
@@ -133,7 +136,8 @@ void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
 
 void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
 {
-
+  (void)data;
+  (void)sock;
 }
 
 void	InterpretPackage::execMove(Protocol::move * data, ISocket * sock)
@@ -156,6 +160,7 @@ void	InterpretPackage::execMove(Protocol::move * data, ISocket * sock)
 
 void	InterpretPackage::execFire(void * data, ISocket * sock)
 {
+  (void)data;
   Player *p;
   std::list <Game*> listGameCpy = _server->gameList;
   
