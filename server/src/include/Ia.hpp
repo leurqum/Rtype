@@ -42,7 +42,7 @@ public:
   void chooseDirection(double time);
 };
 
-typedef Ia *(*maker_Ia)();
+//typedef Ia *(*maker_Ia)();
 
 // Ia *getInstance(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game* g, Protocol::patern_enemie patern);
 
