@@ -43,7 +43,7 @@ IScene* SceneGame::update(float elapsedTime)
       // 	y = 3;
       // d.life = (y -= 0.0002);
       // d.id = 0;
-      // d.xPosition = 50;
+      // d.xPosition = 400;
       // d.yPosition = 50;
       // std::cout << d.life << std::endl;
       // std::cout << "new update !" << std::endl;
@@ -58,17 +58,20 @@ IScene* SceneGame::update(float elapsedTime)
 	    updateList(bullets, d);
 	}
     }
-
   if (ships.size() > 0)
     drawer_2bars.setBar1(ships.front().getLife() * 100 / 3);
   else
     drawer_2bars.setBar1(0);
+
   for (DrawerShip& s : ships)
     s.update(elapsedTime);
   for (DrawerEnemyBasic& e : enemy)
     e.update(elapsedTime);
   for (DrawerBullet& b : bullets)
     b.update(elapsedTime);
+  for (DrawerUDrawable* e : explosions)
+    e->update(elapsedTime);
+  removeCollisionsOver();
   drawer_2bars.update(elapsedTime);
 
 
@@ -97,8 +100,13 @@ void SceneGame::updateList(std::list<T>& l, Protocol::drawable& d)
     {
       if (d.life <= 0)
 	{
+	  DrawerUDrawable* explosion = i->createExplosion();
+	  if (explosion != nullptr)
+	    {
+	      explosions.push_back(explosion);
+	      std::cout << "EXPLOSION: " << explosion->getInitialValue().position.x << ";" << explosion->getInitialValue().position.y << std::endl;
+	    }
 	  l.erase(i);
-	  // TODO: create explosion !!!
 	}
       else
 	i->setUpdate(d);
@@ -112,6 +120,11 @@ void SceneGame::updateList(std::list<T>& l, Protocol::drawable& d)
     }
 }
 
+void SceneGame::removeCollisionsOver()
+{
+  explosions.remove_if([] (DrawerUDrawable* d) -> bool { return !d->getDrawable()->isSetAnimation();});
+}
+
 void SceneGame::draw()
 {
   ASceneHover::draw();
@@ -119,6 +132,11 @@ void SceneGame::draw()
 
   IGraphicsManager* gm = SceneManager::getInstance()->getGraphicsManager();
 
+  for (DrawerUDrawable* e : explosions)
+    {
+      e->drawTo(gm);
+      std::cout << "draw explosion" << std::endl;
+    }
   for (DrawerBullet& b : bullets)
     b.drawTo(gm);
   for (DrawerEnemyBasic& e : enemy)
@@ -184,6 +202,8 @@ IScene* SceneGame::manageInput()
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Escape).y == true)
     return new SceneHoverConfirmLeave(*this);
+  // FIXME: don't send move if no movement.
   network->Move(&c);
   return this;
 }
+

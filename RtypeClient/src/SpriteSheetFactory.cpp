@@ -144,7 +144,24 @@ SpriteSheetFactory::SpriteSheetFactory()
   animList[1] = new Animation<ValueDrawable>(singleAnim, 250, false);
   spriteSheets[7]->setAnimations(animList);
 
-  
+  // EXPLOSION
+
+  spriteSheets[8] = new SpriteSheet();
+  spriteSheets[8]->setFilename("sprites/r-typesheet43.gif");
+
+  singleAnim.clear();
+
+  singleAnim.push_back(ValueDrawable(20, 20, 0, 78));
+  singleAnim.push_back(ValueDrawable(29, 25, 27, 55));
+  singleAnim.push_back(ValueDrawable(34, 30, 62, 54));
+  singleAnim.push_back(ValueDrawable(35, 32, 96, 53));
+  singleAnim.push_back(ValueDrawable(34, 31, 131, 53));
+  singleAnim.push_back(ValueDrawable(34, 31, 131, 53));
+  singleAnim.push_back(ValueDrawable(34, 32, 166, 53));
+
+  animList[0] = new Animation<ValueDrawable>(singleAnim, 100, false);
+
+  spriteSheets[8]->setAnimations(animList);
 
 }
 

@@ -15,7 +15,7 @@ virtual public Drawable
   DrawableGeneric(const SpriteSheet& ss, const ValueDrawable&);
   ~DrawableGeneric(void);
 
-  virtual bool animate(int idAnimation);
+  virtual bool animate(int idAnimation, float t = -1);
 
  private:
   int idAnimation;

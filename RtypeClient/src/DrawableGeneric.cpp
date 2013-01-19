@@ -21,14 +21,14 @@ DrawableGeneric::~DrawableGeneric(void)
 
 #include <iostream>
 
-bool DrawableGeneric::animate(int _idAnimation)
+bool DrawableGeneric::animate(int _idAnimation, float ms)
 {
   // std::cout << "animating: " << _idAnimation << std::endl;
   if (_idAnimation != idAnimation && spriteSheet->getAnimations().at(_idAnimation) != nullptr)
     {
       idAnimation = _idAnimation;
       // FIXME: lines too long.
-      setAnimation(spriteSheet->getAnimations().at(idAnimation));
+      setAnimation(spriteSheet->getAnimations().at(idAnimation), ms);
       // std::cout << "animated" << std::endl;
     }
   // else
