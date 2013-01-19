@@ -6,7 +6,8 @@
 #include <SFML/Network.hpp>
 
  #include <string.h> 
- #include <list> 
+ #include <list>
+#include <exception>
 
  class Network 
  { 
