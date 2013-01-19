@@ -12,8 +12,9 @@ class DrawerUDrawable : public ADrawer // we don't inherit from Drawable because
   virtual void drawTo(IGraphicsManager*) const override;
 
   virtual void drawTo(IGraphicsManager*, const ValueDrawer&) const override;
-  void animate(int id);
+  void animate(int id, float lastForMs = -1);
   virtual void update(float ms) override;
+  void setTimerAnimation(float t);
  private:
 
   DrawableGeneric d;

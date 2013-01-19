@@ -4,6 +4,7 @@
 #include "DrawableGeneric.h"
 #include "FactoryDrawable.h"
 #include "../../protocol.h"
+#include "DrawerUDrawable.h"
 
 class DrawerBullet : public ADrawer // NOTE: I do not inherit from DrawableDrawer because I might be interested in linking other drawers to my ship (explosions... bonuses..); and neither from DrawerLayer because... well, I want to have explicit verbose control over my attributes (maintenance stuff)
 {
@@ -17,6 +18,7 @@ class DrawerBullet : public ADrawer // NOTE: I do not inherit from DrawableDrawe
   virtual void setUpdate(const Protocol::drawable& u);
 
   int getId() const;
+  DrawerUDrawable* createExplosion() const;
  private:
   int id;
   DrawableGeneric* drawable;

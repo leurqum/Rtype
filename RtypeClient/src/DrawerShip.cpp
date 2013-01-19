@@ -26,10 +26,7 @@ void DrawerShip::update(float ms)
     }
   else
     drawable->update(ms);
-  ADrawer::update(ms);
- 
-  
-  
+  ADrawer::update(ms);  
 }
 
 void DrawerShip::drawTo(IGraphicsManager* gm) const
@@ -57,4 +54,20 @@ int DrawerShip::getId() const
 int DrawerShip::getLife() const
 {
   return life;
+}
+
+DrawerUDrawable* DrawerShip::createExplosion() const
+{
+  DrawerUDrawable* d = new DrawerUDrawable(DrawableGeneric(*FactoryDrawable::getInstance()->createExplosion()));
+  
+  d->setTimerAnimation(480);
+  ValueDrawer r(getInitialValue());
+
+  // FIXME: -= x en dur.. berk
+  r.position.x -= 11;
+  r.position.y -= 12;
+  r.scale.x += 0.7;
+  r.scale.y += 0.7;
+  d->setInitialValue(r);
+  return d;
 }

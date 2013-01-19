@@ -31,14 +31,18 @@ public ASceneHover
   void setToBackground();
   void setToForeground();
 
+ private:
   template<typename T>
     void updateList(std::list<T>& l, Protocol::drawable&);
- private:
-IScene* manageInput();
+  
+  void removeCollisionsOver();
+  
+  IScene* manageInput();
 
  std::list<DrawerShip> ships;
  std::list<DrawerEnemyBasic> enemy;
  std::list<DrawerBullet> bullets;
+ std::list<DrawerUDrawable*> explosions;
  Drawer2Bars drawer_2bars;
  Network*		network;
 };

@@ -51,3 +51,8 @@ int DrawerBullet::getId() const
 {
   return id;
 }
+
+DrawerUDrawable* DrawerBullet::createExplosion() const
+{
+  return nullptr;
+}

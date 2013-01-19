@@ -37,3 +37,19 @@ void DrawerEnemyBasic::setUpdate(const Protocol::drawable& u)
   id = u.id;
   updater = u;
 }
+
+DrawerUDrawable* DrawerEnemyBasic::createExplosion() const
+{
+  DrawerUDrawable* d = new DrawerUDrawable(DrawableGeneric(*FactoryDrawable::getInstance()->createExplosion()));
+  
+  d->setTimerAnimation(480);
+  ValueDrawer r(getInitialValue());
+
+  // FIXME: -= x en dur.. berk
+  r.position.x -= 11;
+  r.position.y -= 12;
+  r.scale.x += 0.7;
+  r.scale.y += 0.7;
+  d->setInitialValue(r);
+  return d;
+}

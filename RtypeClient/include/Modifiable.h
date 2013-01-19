@@ -38,7 +38,7 @@ class Modifiable
   {
     initialValue = v; // copy...
   }
-  const T& getInitialValue()
+  const T& getInitialValue() const
   {
     return initialValue;
   }
@@ -61,6 +61,15 @@ class Modifiable
 	std::cout << "animation to null" << std::endl;
       }
   }
+  void setTimer(float timer)
+  {
+    timeLeft = timer;
+  }
+  bool isSetAnimation() const
+  {
+    return it != nullptr;
+  }
+
  protected:
   T initialValue;
  private:

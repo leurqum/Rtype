@@ -54,6 +54,11 @@ DrawableGeneric* FactoryDrawable::createBullet() const
   return fromSpriteSheet(7);
 }
 
+DrawableGeneric* FactoryDrawable::createExplosion() const
+{
+  return fromSpriteSheet(8);
+}
+
 DrawableGeneric* FactoryDrawable::fromSpriteSheet(int id) const
 {
   SpriteSheet* s = SpriteSheetFactory::getInstance()->getSpriteSheet(id);
