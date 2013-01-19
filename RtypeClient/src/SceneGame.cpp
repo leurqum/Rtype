@@ -208,7 +208,7 @@ IScene* SceneGame::manageInput()
       network->Fire();
     }
   if (im->getKeyStatus(sf::Keyboard::Key::Escape).y == true)
-    return new SceneHoverConfirmLeave(*this);
+    return new SceneHoverConfirmLeave(*this, true, network);
   // FIXME: don't send move if no movement.
   if (c.top || c.down || c.left || c.right)
     network->Move(&c);

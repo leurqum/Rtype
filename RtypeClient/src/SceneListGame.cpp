@@ -34,6 +34,7 @@ IScene* SceneListGame::update(float elapsedTime)
       if (menuGames.getSelectedId() == 0)
 	{
 	  decoratedScene.setToForeground();
+	  delete network;
 	  // FIXME: DAT FAT LEAK
 	  return &this->decoratedScene;
 	}

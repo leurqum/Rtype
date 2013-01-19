@@ -47,7 +47,7 @@ SpriteSheetFactory::SpriteSheetFactory()
   // std::cout << v.position.y << std::endl;
   // std::cout << "mmh"<<std::endl;
   spriteSheets[1] = new SpriteSheet();
-  spriteSheets[1]->setFilename("sprites/farback.gif");
+  spriteSheets[1]->setFilename("sprites/SpaceBackground1.png");
   spriteSheets[1]->setAnimations(animList);
   //
 

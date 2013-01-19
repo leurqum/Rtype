@@ -5,12 +5,13 @@
 #include "SceneGame.h"
 #include "DrawerMenu.h"
 #include "SceneListGame.h"
+#include "Network.h"
 
 class SceneHoverConfirmLeave :
 	public ASceneHover
 {
 public:
-  SceneHoverConfirmLeave(IScene& decoratedScene, bool homeLink = true);
+  SceneHoverConfirmLeave(IScene& decoratedScene, bool homeLink = true, Network* n = nullptr);
   ~SceneHoverConfirmLeave(void);
   
   virtual IScene* update(float elapsedTime);
@@ -20,5 +21,6 @@ public:
   virtual void setToBackground();
   virtual void setToForeground();
  private:
-	DrawerMenu menu;
+  DrawerMenu menu;
+  Network* network;
 };

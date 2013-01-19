@@ -1,7 +1,7 @@
 #include "SceneHoverConfirmLeave.h"
 
-SceneHoverConfirmLeave::SceneHoverConfirmLeave(IScene& decoratedScene, bool homeLink) :
-  ASceneHover(decoratedScene), menu("Back")
+SceneHoverConfirmLeave::SceneHoverConfirmLeave(IScene& decoratedScene, bool homeLink, Network* n) :
+  ASceneHover(decoratedScene), menu("Back"), network(n)
 {
   menu.addButton("Exit !!"); // then exit totally
   // NOTE: I am aware that the user design is not perfect here, because these two opposite buttons shouldn't be next to one another, but it's pretty convenient to code, so f*ck you.
@@ -27,10 +27,12 @@ IScene* SceneHoverConfirmLeave::update(float elapsedTime)
     }
   if (menu.getSelectedId() == 1 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
     {
+      delete network;
       exit(0); // FIXME: well... that's a bit rough.
     }
   if (menu.getSelectedId() == 2 && menu.getSelectionType() == DrawerMenu::selectionType::VALIDATED)
     {
+      delete network;
       // NOTE: this is leaked, delete this ?
       return new SceneHoverMenu(*(new SceneBackground()));
     }
