@@ -191,7 +191,6 @@ bool	UServerSocket::init(std::string const & listenHost, std::string const & lis
   udp->setUDP(true);
   udp->connectFromAcceptedFd(&_listenSocketUdp);
   this->_clientsSocksMap[((USocket *)(udp))->getSocket()] = udp;
-  
   return true;
 }
 

@@ -59,10 +59,11 @@ Game::Game(int id)
   if (dll == NULL)
   {
 	  std::cerr << "could not load DLL" << std::endl;
-	  iaFactory = 0;
+	  iaFactory = NULL;
+	system("PAUSE");
 	  return ;
   }
-  iaFactory = *((maker_Ia *)GetProcAddress(dll, "entry_point"));
+  iaFactory = (maker_Ia *)GetProcAddress(dll, "entry_point");
 #endif
 }
 

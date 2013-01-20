@@ -162,15 +162,6 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
 	ss.str("");
 	ss.clear();
 	// ========= TCP =========
-	_listenSocketTcp = socket(AF_INET, SOCK_STREAM, 0);
-	if(_listenSocketTcp == INVALID_SOCKET)
-	{
-		std::cerr << "socket error" << std::endl;
-		perror("socket()");
-	    exit(errno);
-	}
-
-
   memset((char *) &(this->_servAddr), 0, sizeof(this->_servAddr));
   this->_servAddr.sin_family = AF_INET;
   this->_servAddr.sin_addr.s_addr = INADDR_ANY;

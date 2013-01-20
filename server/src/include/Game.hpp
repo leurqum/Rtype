@@ -44,7 +44,12 @@
 class IIa;
 class HumainUnit;
 
+#ifdef __unix__
 typedef IIa *(*maker_Ia)();
+#endif
+#ifdef _WIN32
+typedef IIa * maker_Ia();
+#endif
 
 //class MyTimer
 //{
@@ -81,7 +86,12 @@ class Game
 public:
   //MyTimer			timer;
   long t;
+#ifdef __unix__
   maker_Ia			iaFactory;
+#endif
+#ifdef _WIN32
+  maker_Ia			* iaFactory;
+#endif
   std::list<Player*>		playerList;
   int _id;
   std::list<IIa*>		iaList;

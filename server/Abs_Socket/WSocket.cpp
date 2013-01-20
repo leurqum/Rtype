@@ -9,6 +9,14 @@ std::wstring StringToWString(const std::string& s)
   return temp;
 }
 
+WSocket::WSocket()
+{
+	_connectSocket = INVALID_SOCKET;
+	_WSAClose = true;
+	_udp = false;
+	_host = "";
+}
+
 void	WSocket::setHost(std::string const & host)
 {
 	_host = host;
@@ -17,14 +25,6 @@ void	WSocket::setHost(std::string const & host)
 std::string const & WSocket::getHost() const
 {
 	return _host;
-}
-
-WSocket::WSocket()
-{
-	_connectSocket = INVALID_SOCKET;
-	_WSAClose = true;
-	_udp = false;
-	_host = "";
 }
 
 void WSocket::setUDP(bool const & val)
@@ -115,15 +115,6 @@ int WSocket::recv(void ** header, void ** data)
 	return 1;
 }
 
-int WSocket::sendv(int const & size, void * const & data)
-{
-	if (_udp == false)
-		return send(this->_connectSocket, (char*)data, size, NULL);
-	else
-		return ::sendto(this->_connectSocket, ((char*)data), size, 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
-	return 1;
-}
-
 int WSocket::sendv(std::string const & data)
 {
 	int				err;
@@ -147,6 +138,15 @@ int WSocket::sendv(std::string const & data)
 		return 0;
 	}
 	return rc;
+}
+
+int WSocket::sendv(int const & size, void * const & data)
+{
+	if (_udp == false)
+		return send(this->_connectSocket, (char*)data, size, 0);
+	else
+		return ::sendto(this->_connectSocket, ((char*)data), size, 0, (struct sockaddr *)&this->_hints, sizeof(this->_hints));
+	return 1;
 }
 
 WSocket::~WSocket()
