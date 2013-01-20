@@ -152,7 +152,13 @@ void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
   _server->createGame(1);
   Player *p = _server->getPlayerWaitingByTcp(sock);
 
-  usleep(50000);
+
+#ifdef __unix__
+      usleep(50000);
+#endif
+#ifdef _WIN32
+      Sleep(50);
+#endif
   if (p == NULL)
       return ;
   if (_server->gameList.back() == NULL)

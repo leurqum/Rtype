@@ -3,7 +3,31 @@
 #include <stdio.h>
 #include "../include/Game.hpp"
 
-// long t;
+#ifdef __unix__
+#include <unistd.h>
+#include <sys/time.h>
+#include <dlfcn.h>
+#endif
+#ifdef _WIN32
+#include <Windows.h>
+#include <sys/timeb.h>
+
+struct timeval
+{
+  long    tv_sec; 
+  long    tv_usec;
+};
+
+int gettimeofday (struct timeval *tp, void *tz)
+{
+  struct _timeb timebuffer;
+  _ftime (&timebuffer);
+  tp->tv_sec = timebuffer.time;
+  tp->tv_usec = timebuffer.millitm * 1000;
+  return 0;
+}
+#endif
+
 
 Game::Game(int id)
 {
@@ -11,8 +35,8 @@ Game::Game(int id)
   mutexPlayers = new MyMutex();
 
 
+	#ifdef __unix__
   void * hndl;
- 
   // Ouverture de la librairie
   hndl = dlopen("./src/lib/ia.so", RTLD_LAZY);
   if(hndl == NULL)
@@ -20,7 +44,6 @@ Game::Game(int id)
       std::cerr << "dlopen failed" << std::endl; 
       exit(0);
     }
- 
   // Chargement du créateur
   void *mkr = dlsym(hndl, "entry_point");
   if (mkr == NULL)
@@ -29,6 +52,12 @@ Game::Game(int id)
       exit(0);
     }
   iaFactory = (maker_Ia)mkr;
+	#endif
+#ifdef _WIN32
+
+
+
+#endif
 }
 
 static long myclock()
@@ -45,7 +74,6 @@ void Game::loop()
 
   init = myclock();
   t = 0;
-  timer.reset();
   while (1)
     {
       collision();
