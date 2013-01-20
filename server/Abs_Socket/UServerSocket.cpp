@@ -23,6 +23,7 @@ void	UServerSocket::addNewPeer(void * peer)
 
   // TODO: a decommenter
   sockUdp->connectToServer(acc->getHost(), "4246");
+
   // sockUdp->connectToServer(acc->getHost(), convert.str());
   // int * header = new int[2];
   // Protocol::portUdp portNo;
@@ -35,7 +36,6 @@ void	UServerSocket::addNewPeer(void * peer)
   // acc->sendv((2 * sizeof(int)) + sizeof(portNo), pckg);
   // this->_portUdpPeer++;
 
-  std::cout<<"new player!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<std::endl;
   this->_server->createPlayerWaiting(id, acc->getHost(), acc, sockUdp);
 
   this->_clientsList.push_back(((USocket *)(acc))->getSocket());

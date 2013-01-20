@@ -96,11 +96,13 @@ int WSocket::recv(void ** header, void ** data)
     {
 		*header = new int[2];
 		if ((ret = ::recv(this->_connectSocket, (char*)(*header), 2 * sizeof(int), 0)) <= 0)
-		return ret;
+			return 0;
+		if (((int *)(*header))[1] == 0)
+			return 1;
 		*data = new char[((int *)(*header))[1]];
 		memset(*data, 0, ((int *)(*header))[1]);
 		if ((ret = ::recv(this->_connectSocket, (char*)(*data), ((int *)(*header))[1], 0)) <= 0)
-			return ret;
+			return 0;
 		return 1;
 	}
 	socklen_t tosize = sizeof(_hints);
@@ -108,7 +110,7 @@ int WSocket::recv(void ** header, void ** data)
 	*data = new char[((int *)(*header))[1]];
 	memset(*data, 0, ((int *)(*header))[1]);
 	if ((ret = ::recvfrom(this->_connectSocket, (char *)(*data), ((int *)(*header))[1], 0, (struct sockaddr *)&_hints, &tosize)) <= 0)
-		return ret;
+		return 0;
 	_host = inet_ntoa(_hints.sin_addr);
 	return 1;
 }

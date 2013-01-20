@@ -26,17 +26,21 @@ void	WServerSocket::addNewPeer(void * peer)
 	sockUdp->setUDP(true);
 	std::ostringstream convert;
 	convert << this->_portUdpPeer;
-	sockUdp->connectToServer(acc->getHost(), convert.str());
-	int * header = new int[2];
-	Protocol::portUdp portNo;
-	portNo.port = this->_portUdpPeer;
-	header[0] = Protocol::PORT_UDP;
-	header[1] = sizeof(portNo);
-	void * pckg = new char[(2 * sizeof(int)) + sizeof(portNo)];
-	memcpy(pckg, header, (2 * sizeof(int)));
-	memcpy(((char *)pckg) + (2 * sizeof(int)), &portNo, sizeof(portNo));
-	acc->sendv((2 * sizeof(int)) + sizeof(portNo), pckg);
-	this->_portUdpPeer++;
+
+	// TODO: a decommenter
+	sockUdp->connectToServer(acc->getHost(), "4246");
+	
+//	sockUdp->connectToServer(acc->getHost(), convert.str());
+//	int * header = new int[2];
+//	Protocol::portUdp portNo;
+//	portNo.port = this->_portUdpPeer;
+//	header[0] = Protocol::PORT_UDP;
+//	header[1] = sizeof(portNo);
+//	void * pckg = new char[(2 * sizeof(int)) + sizeof(portNo)];
+//	memcpy(pckg, header, (2 * sizeof(int)));
+//	memcpy(((char *)pckg) + (2 * sizeof(int)), &portNo, sizeof(portNo));
+//	acc->sendv((2 * sizeof(int)) + sizeof(portNo), pckg);
+//	this->_portUdpPeer++;
 
 	this->_server->createPlayerWaiting(id, acc->getHost(), acc, sockUdp);
 
@@ -80,7 +84,9 @@ void	WServerSocket::callBack(std::list<SOCKET>::iterator & it)
   if (!tmp->recv(&header, &data))
 	{
 		  std::cout << "client disconnected" << std::endl;
+		  this->_interPckg->executeCmd(0, 0, tmp);
 		  it = _clientsList.erase(it);
+		  _clientsSocksUdpMap.erase(tmp->getHost());
 		  _clientsSocksMap.erase(((WSocket*)(tmp))->getSocket());
 		  delete tmp;
 		  it--;
@@ -189,8 +195,9 @@ bool	WServerSocket::init(std::string const & listenHost, std::string const & lis
     }
 
 
-  this->_servAddr.sin_port = htons(this->_portUdpPeer);
-  this->_portUdpPeer++;
+	this->_servAddr.sin_port = htons(4245);
+//  this->_servAddr.sin_port = htons(this->_portUdpPeer);
+ // this->_portUdpPeer++;
 	this->_listenSocketUdp = socket(AF_INET, SOCK_DGRAM, 0);
   if (this->_listenSocketUdp <= 0)
     {
