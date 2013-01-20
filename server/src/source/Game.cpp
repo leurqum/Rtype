@@ -326,7 +326,7 @@ void Game::collision()
   //   collisionWithBonus((*it));
 }
 
-IIa* Game::createAIUnit(std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Protocol::patern_enemie patern)
+IIa* Game::createAIUnit(std::pair<float, float> pos, int , float h, float w, Protocol::type_drawable t, Protocol::patern_enemie patern)
 {
   static int i = 0;
    IIa * u = iaFactory();
@@ -337,7 +337,7 @@ IIa* Game::createAIUnit(std::pair<float, float> pos, int speed, float h, float w
    return (u);
 }
 
-HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int health, int strength, bool isDestroyable, Player *p)
+HumainUnit* Game::createHumainUnit(int , std::pair<float, float> speed, int health, int strength, bool isDestroyable, Player *p)
 {
   static int i = 0;
   std::pair<float, float> pos(0, 0);
@@ -349,7 +349,7 @@ HumainUnit* Game::createHumainUnit(int id, std::pair<float, float> speed, int he
   return (h);
 }
 
-MovingObstacle* Game::createLinearMovingObstacle(int id, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable)
+MovingObstacle* Game::createLinearMovingObstacle(int, std::pair<float, float> speed, ICollisionDefinition *coll, int strength, bool isDestroyable)
 {
   static int i = 0;
   MovingObstacle* l = new MovingObstacle(speed, i, coll, strength, isDestroyable);
@@ -370,7 +370,7 @@ Player* Game::createPlayer(int id, std::string name, ISocket *tcp, ISocket *udp)
   return (p);
 }
 
-LifePowerUp* Game::createBonus(int nb_life, int id, ICollisionDefinition *coll, bool isDestroyable, int strength)
+LifePowerUp* Game::createBonus(int nb_life, int , ICollisionDefinition *coll, bool isDestroyable, int strength)
 {
   static int i = 0;
   LifePowerUp* l = new LifePowerUp(nb_life, i, coll, strength, isDestroyable);
@@ -380,7 +380,7 @@ LifePowerUp* Game::createBonus(int nb_life, int id, ICollisionDefinition *coll, 
   return (l);
 }
 
-Bullet *Game::createBullet(int idUnit, std::pair<float, float> speed, int id, ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable type)
+Bullet *Game::createBullet(int idUnit, std::pair<float, float> speed, int , ICollisionDefinition *rec, int strength, bool isDestroyable, Protocol::type_drawable type)
 {
   static int i = 0;
   Bullet *b = new Bullet(idUnit, speed, i, rec, strength, isDestroyable, type);
@@ -960,7 +960,8 @@ void Game::createRandomBonus(double time)
       createBonus(life, this->bonusList.size(), Col, false, 0);
     }
 }
-void Game::CreateEnemiePack(Protocol::type_drawable type, int patern, int speed, int strength, int life)
+
+void Game::CreateEnemiePack(Protocol::type_drawable type, int , int speed, int , int )
 {
   float x = XMAX + 1;
   float y = rand() % (YMAX - 15) + 5;
@@ -973,7 +974,7 @@ createAIUnit(pos1, speed, 28, 36, type,  Protocol::PACKV);
 createAIUnit(pos2, speed, 28, 36, type,  Protocol::PACKV);
 }
 
-void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int patern,int speed, int strength, int life)
+void Game::CreateEnemiePaternSolo(Protocol::type_drawable type, int ,int speed, int , int)
 {
   
   float x = XMAX + 1;
