@@ -1,11 +1,11 @@
 //
-// USocket.cpp for  in /home/marche_m/workspace/tek3/cpp/r-type/Rtype/server
+// USocket.cpp for  in /home/leurqu_m//Documents/test/Rtype/server
 // 
-// Made by marche_m (Maxime Marchès)
-// Login   <marche_m@epitech.net>
+// Made by mathieu leurquin
+// Login   <leurqu_m@epitech.net>
 // 
-// Started on  Sat Dec 29 11:22:15 2012 marche_m (Maxime Marchès)
-Last update Sat Jan 19 14:51:35 2013 mathieu leurquin
+// Started on  Sat Jan 19 15:13:21 2013 mathieu leurquin
+// Last update Sat Jan 19 15:35:05 2013 mathieu leurquin
 //
 
 #include "USocket.hpp"
@@ -102,6 +102,8 @@ int		USocket::recv(void ** header, void ** data)
       *header = new int[2];
       if ((ret = ::recv(this->_connectSocket, *header, 2 * sizeof(int), 0)) <= 0)
 	return 0;
+      if (((int *)(*header))[1] == 0)
+	return 1;
       *data = new char[((int *)(*header))[1]];
       memset(*data, 0, ((int *)(*header))[1]);
       if ((ret = ::recv(this->_connectSocket, *data, ((int *)(*header))[1], 0)) <= 0)

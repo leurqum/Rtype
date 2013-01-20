@@ -5,7 +5,7 @@
 // Login   <leurqu_m@epitech.net>
 // 
 // Started on  Fri Jan 11 10:59:06 2013 mathieu leurquin
-// Last update Sat Jan 19 19:56:13 2013 mathieu leurquin
+// Last update Sun Jan 20 10:41:49 2013 mathieu leurquin
 //
 
 #include "../include/Server.hpp"
@@ -38,10 +38,8 @@ Player *Server::getPlayerWaitingByTcp(ISocket * sock)const
 {
   for (std::list<Player*>::const_iterator it = playerListWaiting.begin(); it != playerListWaiting.end(); it++)
     {
-      std::cout<<"PASS"<<std::endl;
       if ((*it)->getSocketTcp() == sock)
 	{
-	  std::cout<<"PLlayer trouver"<<std::endl;
 	  return (*it);
 	}
     }

@@ -29,13 +29,6 @@ Game::Game(int id)
       exit(0);
     }
   iaFactory = (maker_Ia)mkr;
-
- 
-  // Création, affichagedu cercle
-  // Ia * my_ia = pMaker();
-  // my_ia->init(0, std::pair<float, float>(50, 50), 1, 12, 12, Protocol::ENEMY_EASY, this, Protocol::SOLO);
-  // iaList.push_back(my_ia);
-  //dlclose(hndl); 
 }
 
 static long myclock()
@@ -55,12 +48,11 @@ void Game::loop()
   timer.reset();
   while (1)
     {
-      // std::cout << timer.getDiff() << std::endl;
-      // timer.reset();
       collision();
       checkPlayer();
       update(t);
       sendGame();
+      eraseShipOut();
       eraseBulletOut();
       eraseIaOut();
       eraseBonusOut();
@@ -75,6 +67,21 @@ void Game::loop()
       t = ((long)(myclock() - init) / (long)CLOCKS_PER_SEC) / 1000;
 #endif
     }  
+}
+
+void Game::eraseShipOut()
+{
+  for (std::list<HumainUnit*>::iterator it = humainList.begin(); it != humainList.end(); it++)
+    {
+      if ((*it)->getPositionX() > XMAX ||
+	  (*it)->getPositionY() > YMAX || 
+	  (*it)->getPositionX() < -15 ||
+	  (*it)->getPositionY() < -15)
+	{
+	  (*it)->setHealth(0);
+	  return;
+	}
+    }
 }
 
 void Game::eraseBulletOut()
@@ -145,7 +152,6 @@ void Game::checkPlayer()
   mutexPlayers->MLock();
   if (humainList.size() < playerList.size())
     {
-      std::cout<<"CHECK PLAYER"<<std::endl;
       if (playerList.back() == NULL)
 	{
 	  std::cout<<"fail"<<std::endl;

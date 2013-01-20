@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Sat Jan  5 16:52:31 2013 marche_m (Maxime Marchès)
-// Last update Sat Jan 19 14:32:59 2013 mathieu leurquin
+// Last update Sat Jan 19 19:51:47 2013 mathieu leurquin
 //
 
 #include "UServerSocket.hpp"
@@ -34,7 +34,8 @@ void	UServerSocket::addNewPeer(void * peer)
   // memcpy(((char *)pckg) + (2 * sizeof(int)), &portNo, sizeof(portNo));
   // acc->sendv((2 * sizeof(int)) + sizeof(portNo), pckg);
   // this->_portUdpPeer++;
-  
+
+  std::cout<<"new player!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<std::endl;
   this->_server->createPlayerWaiting(id, acc->getHost(), acc, sockUdp);
 
   this->_clientsList.push_back(((USocket *)(acc))->getSocket());

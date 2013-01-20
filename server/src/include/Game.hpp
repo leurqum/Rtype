@@ -111,7 +111,7 @@ public:
   void eraseBulletOut();
   void eraseBonusOut();
   void eraseObsOut();
-
+  void eraseShipOut();
   void addPlayer(Player *p);
   Bullet *getBullet(int id)const;
   HumainUnit *getUnitHumanByPlayer(int id)const;

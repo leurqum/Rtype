@@ -5,7 +5,7 @@
 // Login   <marche_m@epitech.net>
 // 
 // Started on  Wed Jan  9 10:54:24 2013 marche_m (Maxime Marchès)
-// Last update Sat Jan 19 19:51:48 2013 mathieu leurquin
+// Last update Sun Jan 20 10:42:42 2013 mathieu leurquin
 //
 
 #include "../include/InterpretPackage.hpp"
@@ -27,7 +27,6 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
 {
   if (header == 0 && data == 0) // Client disconnected on TCP socket
     {
-      std::cout<<"ERASEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEeEE"<<std::endl;
       execExit(sock);
       return ;
     }
@@ -58,8 +57,6 @@ void	InterpretPackage::executeCmd(void * header, void * data, ISocket * sock)
   int hdTmp[2];
   
   memcpy(hdTmp, header, 2 * sizeof(int));
-  // std::cout << "id:" << hdTmp[0] << std::endl;
-  // std::cout << "size:" << hdTmp[1] << std::endl;
   void (InterpretPackage::*pMethod)(void *, ISocket *) = (this->_funcMap[((Protocol::type_cmd)hdTmp[0])]);
   (this->*pMethod)(data, sock);
 }
@@ -71,7 +68,6 @@ void	InterpretPackage::execExit(ISocket * sock)
   for (std::list<Game*>::iterator it = _server->gameList.begin(); it != _server->gameList.end(); it++)
     if ((p = (*it)->getPlayerBySockTcp(sock)) != NULL)
       {
-	std::cout<<"ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"<<std::endl;
 	(*it)->eraseHumain(p->getId());
 	(*it)->erasePlayer(p->getId());
       }
@@ -101,7 +97,6 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
   int	size = 0;
   int position = 0;
 
-  std::cout<<"GET GAME LIST"<<std::endl;
   (void)data;
 
   size = sizeof(Protocol::parties) + (_server->getNbGame() * sizeof (Protocol::party));
@@ -120,9 +115,7 @@ void	InterpretPackage::execGetGameList(void * data, ISocket * sock)
       memcpy((((char*)res) + position), pa, sizeof(*pa));
       position += sizeof(*pa);
     }
-  std::cout<<"Envoi de la liste"<<std::endl;
   sock->sendv(size, res);
-  std::cout<<"liste envoyee"<<std::endl;
 }
 
 void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
@@ -156,18 +149,14 @@ void	InterpretPackage::execJoinGame(void * data, ISocket * sock)
 
 void	InterpretPackage::execCreateGame(void * data, ISocket * sock)
 {
-  std::cout<<"JE CREE UNE GAME"<<std::endl;
   _server->createGame(1);
   Player *p = _server->getPlayerWaitingByTcp(sock);
 
   usleep(50000);
   if (p == NULL)
-    {
-      std::cout<<"PUTIN DE FDP 1"<<std::endl;
       return ;
-    }
   if (_server->gameList.back() == NULL)
-    std::cout<<"PUTIN DE FDP 2"<<std::endl;
+    return;
   _server->gameList.back()->addPlayer(p);
   _server->erasePlayerWaiting(p->getId());
   Protocol::response *rep = new Protocol::response();
