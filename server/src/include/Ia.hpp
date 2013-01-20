@@ -1,10 +1,17 @@
-#ifndef __IALINEAR__
-#define __IALINEAR__
+#pragma once
 
 #include "IIA.hpp"
 
+#ifdef __unix__
+#include <dlfcn.h>
 
 class Ia : public IIa
+#endif
+
+#ifdef _WIN32
+#include <Windows.h>
+class __declspec(dllexport) Ia : public IIa
+#endif
 {
 private:
   int				_id;
@@ -45,5 +52,3 @@ public:
 //typedef Ia *(*maker_Ia)();
 
 // Ia *getInstance(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game* g, Protocol::patern_enemie patern);
-
-#endif

@@ -1,4 +1,3 @@
-#include <dlfcn.h>
 #include "../include/Ia.hpp"
 
 Ia::Ia()
@@ -24,20 +23,6 @@ void Ia::init(int id, std::pair<float, float> pos, int speed, float h, float w, 
   if (patern == 1 || patern == 2 || patern == 3)
     _toShoot = true;
 }
-
-// Ia *getInstance(int id, std::pair<float, float> pos, int speed, float h, float w, Protocol::type_drawable t, Game* g
-// 		, Protocol::patern_enemie  patern)
-// {
-//   static int i = 0;
-//   Ia * ia;
-
-//   if (i == 0)
-//     {
-//       std::cout<<"faire le dlopen bitch"<<std::endl;
-//       i++;
-//     } 
-//   return new Ia(id, pos, speed, h, w, t, g, patern);
-// }
 
 void Ia::move()
 {
@@ -190,8 +175,18 @@ Protocol::type_drawable Ia::getType()const
   return _type;
 }
 
+#ifdef __unix__
 extern "C" Ia *entry_point()
 {
-  Ia *ia = new Ia();
-  return ia;
+	return new Ia();
 }
+#endif
+#ifdef _WIN32
+extern "C"
+{
+    __declspec(dllexport) Ia * entry_point()
+    {
+		return new Ia();
+    }
+}
+#endif
