@@ -38,7 +38,7 @@ Game::Game(int id)
 	#ifdef __unix__
   void * hndl;
   // Ouverture de la librairie
-  hndl = dlopen("./src/lib/ia.so", RTLD_LAZY);
+  hndl = dlopen("./src/lib/IARType.so", RTLD_LAZY);
   if(hndl == NULL)
     {
       std::cerr << "dlopen failed" << std::endl; 
@@ -55,8 +55,14 @@ Game::Game(int id)
 	#endif
 #ifdef _WIN32
 
-
-
+  HMODULE dll = LoadLibrary("../src/lib/IARType.dll");
+  if (dll == NULL)
+  {
+	  std::cerr << "could not load DLL" << std::endl;
+	  iaFactory = 0;
+	  return ;
+  }
+  iaFactory = *((maker_Ia *)GetProcAddress(dll, "entry_point"));
 #endif
 }
 

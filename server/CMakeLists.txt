@@ -88,17 +88,17 @@ if(UNIX)
     ${src_files_unix}
     ${src_files_common}
   )
-  target_link_libraries (RtypeServer pthread mylib dl)
+  target_link_libraries (RtypeServer pthread dl)
 
 endif(UNIX)
 
 if(WIN32)
 SET(mylibSRCS ./src/source/Ia.cpp ./src/include/Ia.hpp ./src/include/IIA.hpp ${src_files_common} ${src_files_win})
-ADD_LIBRARY(mylib SHARED ${mylibSRCS})
+ADD_LIBRARY(IARType SHARED ${mylibSRCS})
   add_executable(
     RtypeServer
 	${src_files_win}
     ${src_files_common}
     )
-	target_link_libraries(mylib)
+	target_link_libraries(IARType)
 endif(WIN32)
