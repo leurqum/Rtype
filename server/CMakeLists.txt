@@ -42,7 +42,6 @@ file (
      ./src/include/IWeapon.hpp
      ./src/include/Player.hpp
      ./src/include/InterpretPackage.hpp
-     ./src/include/IAUnit.hpp
      ./src/include/HumainUnit.hpp
      ./src/include/Server.hpp
      ./src/include/RectangleCollisionDefinition.hpp
@@ -61,7 +60,6 @@ file (
      ./src/source/RectangleCollisionDefinition.cpp
      ./src/source/Server.cpp
      ./src/source/CommandManager.cpp
-     ./src/source/IAUnit.cpp
      ./src/source/HumainUnit.cpp
      ./src/source/Game.cpp
      ./src/source/Bullet.cpp
